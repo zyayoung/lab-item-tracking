@@ -85,8 +85,8 @@ class PTAO(models.Model):
 
 class Item(models.Model):
     name = models.CharField(max_length=128)
-    # chem_formula = models.CharField('Chemical formula', max_length=45,
-    #                                 blank=True, null=True)
+    chem_formula = models.CharField('Chemical formula', max_length=45,
+                                    blank=True, null=True)
 
     vendor = models.ForeignKey(Vendor, on_delete=models.PROTECT)
     catalog = models.CharField('Catalog number', max_length=45,
