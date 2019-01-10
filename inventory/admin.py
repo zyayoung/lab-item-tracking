@@ -1,5 +1,11 @@
 from django.contrib import admin
-from inventory.models import Item, Category, Unit, Manufacturer, Vendor, PTAO, Order, OrderItem
+from inventory.models import Item, Category, Unit, Manufacturer, Vendor, PTAO, Order, OrderItem, Material
+
+class MaterialAdmin(admin.ModelAdmin):
+    fields = ('name', 'location', 'size', 'unit')
+    list_display = ('name', 'location', 'size', 'unit')
+
+admin.site.register(Material, MaterialAdmin)
 
 class OrderItemInline(admin.StackedInline):
     model = OrderItem

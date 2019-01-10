@@ -1,6 +1,6 @@
 {% extends "inventory/base.html" %}
 
-{% block title %} meliza-lab : inventory {% endblock %}
+{% block title %} Lab Item Tracking : inventory {% endblock %}
 
 {% block content %}
 
@@ -17,6 +17,10 @@
 <ul>
   <li><a href="{% url 'admin:inventory_order_add' %}">create a new order</a></li>
   <li><a href="{% url 'admin:inventory_item_add' %}">add a new item</a></li>
+</ul>
+
+<ul>
+  <li><a href="{% url 'inventory:materials' %}">list materials</a></li>
 </ul>
 
 {% endblock %}

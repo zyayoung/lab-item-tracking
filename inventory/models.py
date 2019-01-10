@@ -32,8 +32,11 @@ class Unit(models.Model):
 class Manufacturer(models.Model):
     name = models.CharField(max_length=64)
     url = models.CharField(max_length=64, blank=True, null=True)
-    lookup_url = models.CharField(max_length=64, blank=True, null=True,
-                                  help_text="url pattern to look up part number")
+    lookup_url = models.CharField(
+        max_length=64,
+        blank=True,
+        null=True,
+        help_text="url pattern to look up part number")
     rep = models.CharField(max_length=128, blank=True, null=True)
     rep_phone = models.CharField(max_length=16, blank=True, null=True)
     rep_email = models.CharField(max_length=64, blank=True, null=True)
@@ -49,8 +52,11 @@ class Manufacturer(models.Model):
 class Vendor(models.Model):
     name = models.CharField(max_length=64)
     url = models.CharField(max_length=64, blank=True, null=True)
-    lookup_url = models.CharField(max_length=128, blank=True, null=True,
-                                  help_text="url pattern to look up catalog number")
+    lookup_url = models.CharField(
+        max_length=128,
+        blank=True,
+        null=True,
+        help_text="url pattern to look up catalog number")
     phone = models.CharField(max_length=16, blank=True, null=True)
     rep = models.CharField(max_length=45, blank=True, null=True)
     rep_phone = models.CharField(max_length=16, blank=True, null=True)
@@ -85,35 +91,39 @@ class PTAO(models.Model):
 
 class Item(models.Model):
     name = models.CharField(max_length=128)
-    chem_formula = models.CharField('Chemical formula', max_length=45,
-                                    blank=True, null=True)
+    chem_formula = models.CharField(
+        'Chemical formula', max_length=45, blank=True, null=True)
 
     vendor = models.ForeignKey(Vendor, on_delete=models.PROTECT)
-    catalog = models.CharField('Catalog number', max_length=45,
-                               blank=True, null=True)
-    manufacturer = models.ForeignKey('Manufacturer', blank=True, null=True,
-                                     on_delete=models.SET_NULL,
-                                     help_text="leave blank if unknown or same as vendor")
-    manufacturer_number = models.CharField(max_length=45,
-                                           blank=True, null=True)
-    size = models.DecimalField('Size of unit',
-                               max_digits=10, decimal_places=2,
-                               blank=True, null=True)
+    catalog = models.CharField(
+        'Catalog number', max_length=45, blank=True, null=True)
+    manufacturer = models.ForeignKey(
+        'Manufacturer',
+        blank=True,
+        null=True,
+        on_delete=models.SET_NULL,
+        help_text="leave blank if unknown or same as vendor")
+    manufacturer_number = models.CharField(
+        max_length=45, blank=True, null=True)
+    size = models.DecimalField(
+        'Size of unit', max_digits=10, decimal_places=2, blank=True, null=True)
     unit = models.ForeignKey(Unit, on_delete=models.PROTECT)
     category = models.ForeignKey(Category, on_delete=models.PROTECT)
     date_added = models.DateField(auto_now_add=True)
-    parent_item = models.ForeignKey('self', blank=True, null=True,
-                                    on_delete=models.SET_NULL,
-                                    help_text="example: for printer cartriges, select printer")
+    parent_item = models.ForeignKey(
+        'self',
+        blank=True,
+        null=True,
+        on_delete=models.SET_NULL,
+        help_text="example: for printer cartriges, select printer")
     comments = models.TextField(blank=True)
 
     def __str__(self):
         return self.name
 
     def unit_size(self):
-        return "%s%s%s" % (self.size or "",
-                           "" if str(self.unit).startswith("/") else " ",
-                           self.unit)
+        return "%s%s%s" % (self.size or "", "" if str(
+            self.unit).startswith("/") else " ", self.unit)
 
     def total_price(self):
         return (self.cost or 0) * self.units_purchased
@@ -139,7 +149,8 @@ class Order(models.Model):
     name = models.CharField(max_length=64)
     created = models.DateTimeField(auto_now_add=True)
     items = models.ManyToManyField(Item, through='OrderItem')
-    ptao = models.ForeignKey(PTAO, blank=True, null=True, on_delete=models.SET_NULL)
+    ptao = models.ForeignKey(
+        PTAO, blank=True, null=True, on_delete=models.SET_NULL)
     ordered = models.BooleanField()
     order_date = models.DateField(default=datetime.date.today)
     ordered_by = models.ForeignKey(User, on_delete=models.PROTECT)
@@ -163,22 +174,33 @@ class Order(models.Model):
 
 
 class OrderItem(models.Model):
-    item  = models.ForeignKey(Item, on_delete=models.CASCADE)
+    item = models.ForeignKey(Item, on_delete=models.CASCADE)
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
 
     units_purchased = models.IntegerField()
-    cost = models.DecimalField('Cost per unit', max_digits=10, decimal_places=2,
-                               blank=True, null=True)
+    cost = models.DecimalField(
+        'Cost per unit',
+        max_digits=10,
+        decimal_places=2,
+        blank=True,
+        null=True)
 
     date_arrived = models.DateField(blank=True, null=True)
-    serial = models.CharField('Serial number', max_length=45,
-                              blank=True, null=True)
-    uva_equip = models.CharField('UVa equipment number', max_length=32,
-                                 blank=True, null=True)
-    location = models.CharField(max_length=45, blank=True, null=True,
-                                help_text="example: -80 freezer, refrigerator, Gilmer 283")
-    expiry_years = models.DecimalField('Warranty or Item expiration (y)', max_digits=4,
-                                       decimal_places=2, blank=True, null=True)
+    serial = models.CharField(
+        'Serial number', max_length=45, blank=True, null=True)
+    uva_equip = models.CharField(
+        'UVa equipment number', max_length=32, blank=True, null=True)
+    location = models.CharField(
+        max_length=45,
+        blank=True,
+        null=True,
+        help_text="example: -80 freezer, refrigerator, Gilmer 283")
+    expiry_years = models.DecimalField(
+        'Warranty or Item expiration (y)',
+        max_digits=4,
+        decimal_places=2,
+        blank=True,
+        null=True)
 
     reconciled = models.BooleanField()
 
@@ -196,3 +218,10 @@ class OrderItem(models.Model):
 
     class Meta:
         db_table = "inventory_order_items"
+
+class Material(models.Model):
+    name = models.CharField(max_length=128)
+    location = models.TextField()
+    size = models.DecimalField(
+        max_digits=10, decimal_places=2, blank=True, null=True)
+    unit = models.ForeignKey(Unit, on_delete=models.PROTECT)

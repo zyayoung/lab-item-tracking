@@ -3,10 +3,16 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.urls import reverse
 from django.views import generic
 
-from inventory.models import Order, Item
+from inventory.models import Order, Item, Material
 
 def index(request):
     return render(request, 'inventory/index.html')
+
+class MaterialsView(generic.ListView):
+    template_name = 'inventory/materials.html'
+    context_object_name = 'material_list'
+    def get_queryset(self):
+        return Material.objects.order_by('-name')
 
 class OrdersView(generic.ListView):
     template_name = 'inventory/orders.html'
