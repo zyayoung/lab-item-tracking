@@ -29,6 +29,16 @@ class Unit(models.Model):
         ordering = ['name']
 
 
+class Unit(models.Model):
+    name = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        ordering = ['name']
+
+
 class Manufacturer(models.Model):
     name = models.CharField(max_length=64)
     url = models.CharField(max_length=64, blank=True, null=True)
@@ -144,7 +154,6 @@ class Item(models.Model):
         return reverse("inventory:item", kwargs={'pk': self.pk})
 
 
-
 class Order(models.Model):
     name = models.CharField(max_length=64)
     created = models.DateTimeField(auto_now_add=True)
@@ -219,9 +228,14 @@ class OrderItem(models.Model):
     class Meta:
         db_table = "inventory_order_items"
 
+
 class Material(models.Model):
-    name = models.CharField(max_length=128)
-    location = models.TextField()
-    size = models.DecimalField(
-        max_digits=10, decimal_places=2, blank=True, null=True)
-    unit = models.ForeignKey(Unit, on_delete=models.PROTECT)
+    name = models.CharField(max_length=128, verbose_name="名称")
+    location = models.TextField(verbose_name="位置")
+    quantity = models.DecimalField(
+        default=0,
+        max_digits=10,
+        decimal_places=2,
+        blank=True,
+        verbose_name="数量")
+    unit = models.ForeignKey(Unit, on_delete=models.PROTECT, verbose_name="单位")

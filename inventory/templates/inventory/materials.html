@@ -1,29 +1,29 @@
 {% extends "inventory/base.html" %}
 
-{% block title %} Lab Item Tracking : materials {% endblock %}
+<!-- {% block title %} Lab Item Tracking : 物品 {% endblock %} -->
 
 {% block content %}
 {% if material_list %}
-<p class="lead">Materials:</p>
+<p class="lead">物品：</p>
 <table class="table table-striped table-condensed">
   <thead>
-    <th>Material name</th>
-    <th>Location</th>
-    <th>Size</th>
-    <th>Unit</th>
+    <th>名称</th>
+    <th>位置</th>
+    <th>数量</th>
+    <th>单位</th>
   </thead>
   <tbody>
     {% for material in material_list %}
         <tr>
           <td>{{ material.name }}</td>
           <td>{{ material.location }}</td>
-          <td>{{ material.size }}</td>
+          <td>{{ material.quantity }}</td>
           <td>{{ material.unit }}</td>
         </tr>
     {% endfor %}
   </tbody>
 </table>
 {% else %}
-    <p class="lead">No materials are available.</p>
+    <p class="lead">没有可用的物品</p>
 {% endif %}
 {% endblock %}
