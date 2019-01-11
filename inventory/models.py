@@ -20,16 +20,6 @@ class Category(models.Model):
 
 
 class Unit(models.Model):
-    name = models.CharField(max_length=45)
-
-    def __str__(self):
-        return self.name
-
-    class Meta:
-        ordering = ['name']
-
-
-class Unit(models.Model):
     name = models.CharField(max_length=50)
 
     def __str__(self):
@@ -229,9 +219,29 @@ class OrderItem(models.Model):
         db_table = "inventory_order_items"
 
 
+class Location(models.Model):
+    loc1 = models.CharField(max_length=45, verbose_name="位置1")
+    loc2 = models.CharField(max_length=45, verbose_name="位置2", blank=True, null=True)
+    loc3 = models.CharField(max_length=45, verbose_name="位置3", blank=True, null=True)
+    loc4 = models.CharField(max_length=45, verbose_name="位置4", blank=True, null=True)
+    loc5 = models.CharField(max_length=45, verbose_name="位置5", blank=True, null=True)
+
+    def __str__(self):
+        re = self.loc1 if self.loc1 else ""
+        re += self.loc2 + " " if self.loc2 else ""
+        re += self.loc3 + " " if self.loc3 else ""
+        re += self.loc4 + " " if self.loc4 else ""
+        re += self.loc5 if self.loc5 else ""
+        return re
+
+    class Meta:
+        ordering = ['loc1']
+
+
 class Material(models.Model):
     name = models.CharField(max_length=128, verbose_name="名称")
-    location = models.TextField(verbose_name="位置")
+    location = models.ForeignKey(
+        Location, verbose_name="位置", on_delete=models.PROTECT)
     quantity = models.DecimalField(
         default=0,
         max_digits=10,
@@ -239,3 +249,8 @@ class Material(models.Model):
         blank=True,
         verbose_name="数量")
     unit = models.ForeignKey(Unit, on_delete=models.PROTECT, verbose_name="单位")
+
+    class Meta:
+        ordering = ['id']
+        verbose_name = "物品"
+        verbose_name_plural = verbose_name
