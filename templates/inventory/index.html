@@ -1,4 +1,4 @@
-{% extends "inventory/base.html" %}
+{% extends "base.html" %}
 
 <!-- {% block title %} 实验室物品管理 {% endblock %} -->
 
@@ -18,7 +18,6 @@
   <li><a href="{% url 'admin:inventory_order_add' %}">create a new order</a></li>
   <li><a href="{% url 'admin:inventory_item_add' %}">add a new item</a></li>
 </ul> -->
-
 <ul>
   <li><a href="{% url 'inventory:materials' %}">列出物品清单</a></li>
 </ul>

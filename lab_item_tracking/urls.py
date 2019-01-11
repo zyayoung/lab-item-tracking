@@ -21,10 +21,6 @@ from login import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     url(r'^inventory/', include('inventory.urls')),
-    url(r'^$', views.index),
-    url(r'^index/', views.index),
-    url(r'^login/', views.login),
-    url(r'^register/', views.register),
-    url(r'^logout/', views.logout),
-    url(r'^captcha', include('captcha.urls')),
+    url(r'^captcha/', include('captcha.urls')),
+    url(r'^', include('login.urls')),
 ]
