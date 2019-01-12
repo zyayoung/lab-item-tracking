@@ -2,7 +2,7 @@
 {% block title %}注册{% endblock %}
 {% block content %}
     <div class="container">
-        <div class="col-md-4 col-md-offset-4">
+        <div class="col-md-4 offset-md-4">
           <form class='form-register' action="/register/" method="post">
 
               {% if message %}
@@ -29,17 +29,12 @@
                   {{ register_form.email }}
               </div>
               <div class="form-group">
-                  {{ register_form.sex.label_tag }}
-                  {{ register_form.sex }}
-              </div>
-              <div class="form-group">
                   {{ register_form.captcha.errors }}
                   {{ register_form.captcha.label_tag }}
                   {{ register_form.captcha }}
               </div>
 
-              <button type="reset" class="btn btn-default pull-left">重置</button>
-              <button type="submit" class="btn btn-primary pull-right">提交</button>
+              <button type="submit" class="btn btn-primary">提交</button>
 
           </form>
         </div>

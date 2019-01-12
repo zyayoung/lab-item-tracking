@@ -15,7 +15,6 @@ def password_hash(password):
 
 
 def index(request):
-    pass
     return render(request, 'login/index.html')
 
 
@@ -57,7 +56,6 @@ def register(request):
             password1 = register_form.cleaned_data['password1']
             password2 = register_form.cleaned_data['password2']
             email = register_form.cleaned_data['email']
-            sex = register_form.cleaned_data['sex']
             if password1 != password2:  # 判断两次密码是否相同
                 message = "两次输入的密码不同！"
                 return render(request, 'login/register.html', locals())
@@ -77,7 +75,6 @@ def register(request):
                 new_user.name = username
                 new_user.password = password_hash(password1)  # 使用加密密码
                 new_user.email = email
-                new_user.sex = sex
                 new_user.save()
                 return redirect('/login/')  # 自动跳转到登录页面
     register_form = forms.RegisterForm()

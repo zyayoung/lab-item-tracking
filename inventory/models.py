@@ -220,7 +220,7 @@ class OrderItem(models.Model):
 
 
 class Location(models.Model):
-    loc1 = models.CharField(max_length=45, verbose_name="位置1")
+    loc1 = models.CharField(max_length=45, verbose_name="位置1", blank=True, null=True)
     loc2 = models.CharField(max_length=45, verbose_name="位置2", blank=True, null=True)
     loc3 = models.CharField(max_length=45, verbose_name="位置3", blank=True, null=True)
     loc4 = models.CharField(max_length=45, verbose_name="位置4", blank=True, null=True)

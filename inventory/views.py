@@ -6,7 +6,7 @@ from django.views import generic
 from inventory.models import Order, Item, Material
 
 
-class IndexView(generic.ListView):
+class IndexView(generic.View):
     def get(self, request):
         if not request.session.get('is_login', None):
             return redirect("/index/")
@@ -16,9 +16,11 @@ class MaterialsView(generic.ListView):
     template_name = 'inventory/materials.html'
     context_object_name = 'material_list'
 
-    def get(self, request):
+    def dispatch(self, request, *args, **kwargs):
         if not request.session.get('is_login', None):
             return redirect("/index/")
+        else:
+            return super(MaterialsView, self).dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
         return Material.objects.order_by('-name')
