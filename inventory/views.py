@@ -12,18 +12,22 @@ class IndexView(generic.View):
             return redirect("/index/")
         return render(request, 'inventory/index.html')
 
+
 class MaterialsView(generic.ListView):
     template_name = 'inventory/materials.html'
     context_object_name = 'material_list'
+    user_id = 0
 
     def dispatch(self, request, *args, **kwargs):
         if not request.session.get('is_login', None):
             return redirect("/index/")
         else:
-            return super(MaterialsView, self).dispatch(request, *args, **kwargs)
+            self.user_id = request.session.get('user_id', None)
+            return super(MaterialsView, self).dispatch(request, *args,
+                                                       **kwargs)
 
     def get_queryset(self):
-        return Material.objects.order_by('-name')
+        return Material.objects.filter(user=self.user_id).order_by('-name')
 
 
 class OrdersView(generic.ListView):

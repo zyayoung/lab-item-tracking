@@ -1,9 +1,11 @@
 {% extends 'base.html' %}
 {% block title %}实验室物品管理{% endblock %}
 {% block content %}
+<p class="lead">
     {% if request.session.is_login %}
-    <h1>您好,{{ request.session.user_name }}！欢迎回来！</h1>
+    您好,{{ request.session.user_name }}！欢迎回来！
     {% else %}
-    <h1>您尚未登录，只能访问公开内容！</h1>
+    您尚未登录，只能访问公开内容！
     {% endif %}
+</p>
 {% endblock %}

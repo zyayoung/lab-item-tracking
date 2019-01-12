@@ -5,6 +5,7 @@ from __future__ import unicode_literals
 from django.contrib.auth.models import User
 from django.urls import reverse
 from django.db import models
+from login.models import User as myUser
 import datetime
 
 
@@ -220,11 +221,16 @@ class OrderItem(models.Model):
 
 
 class Location(models.Model):
-    loc1 = models.CharField(max_length=45, verbose_name="位置1", blank=True, null=True)
-    loc2 = models.CharField(max_length=45, verbose_name="位置2", blank=True, null=True)
-    loc3 = models.CharField(max_length=45, verbose_name="位置3", blank=True, null=True)
-    loc4 = models.CharField(max_length=45, verbose_name="位置4", blank=True, null=True)
-    loc5 = models.CharField(max_length=45, verbose_name="位置5", blank=True, null=True)
+    loc1 = models.CharField(
+        max_length=45, verbose_name="位置1", blank=True, null=True)
+    loc2 = models.CharField(
+        max_length=45, verbose_name="位置2", blank=True, null=True)
+    loc3 = models.CharField(
+        max_length=45, verbose_name="位置3", blank=True, null=True)
+    loc4 = models.CharField(
+        max_length=45, verbose_name="位置4", blank=True, null=True)
+    loc5 = models.CharField(
+        max_length=45, verbose_name="位置5", blank=True, null=True)
 
     def __str__(self):
         re = self.loc1 if self.loc1 else ""
@@ -249,6 +255,7 @@ class Material(models.Model):
         blank=True,
         verbose_name="数量")
     unit = models.ForeignKey(Unit, on_delete=models.PROTECT, verbose_name="单位")
+    user = models.ManyToManyField(myUser, default='', verbose_name="用户")
 
     class Meta:
         ordering = ['id']
