@@ -2,35 +2,48 @@
 {% load staticfiles %}
 {% block title %}登录{% endblock %}
 {% block css %}{% endblock %}
-
-
 {% block content %}
-    <div class="container">
-        <div class="col-md-4 offset-md-4">
-          <form class='form-login' action="/login/" method="post">
-
-              {% if message %}
-                  <div class="alert alert-warning">{{ message }}</div>
-              {% endif %}
-              {% csrf_token %}
-              <h2 class="text-center">欢迎登录</h2>
-              <div class="form-group">
-                  {{ login_form.username.label_tag }}
-                  {{ login_form.username}}
-              </div>
-              <div class="form-group">
-                  {{ login_form.password.label_tag }}
-                  {{ login_form.password }}
-              </div>
-              <div class="form-group">
-                  {{ login_form.captcha.errors }}
-                  {{ login_form.captcha.label_tag }}
-                  {{ login_form.captcha }}
-              </div>
-
-              <button type="submit" class="btn btn-primary">提交</button>
-
-          </form>
-        </div>
-    </div> <!-- /container -->
+<div class="container">
+    <div class="col-md-4 offset-md-4">
+        <form class='form-login' action="/login/" method="post">
+            {% if message %}
+            <div class="alert alert-warning">{{ message }}</div>
+            {% endif %}
+            {% csrf_token %}
+            <h2 class="text-center">欢迎登录</h2>
+            <div class="form-group">
+                {{ login_form.username.label_tag }}
+                {{ login_form.username}}
+            </div>
+            <div class="form-group">
+                {{ login_form.password.label_tag }}
+                {{ login_form.password }}
+            </div>
+            <div class="form-group">
+                <!-- {{ login_form.captcha.errors }} -->
+                {{ login_form.captcha.label_tag }}(点击图片更换)
+                <!-- {{ login_form.captcha }} -->
+                <div class="form-row">
+                    <div class="col">
+                        <input type="text" id="id_captcha_1" name="captcha_1" class="form-control">
+                        <input id="id_captcha_0" name="captcha_0" type="hidden" value="{{ hashkey }}">
+                    </div>
+                    <img src="{{ image_url }}" class="captcha" alt="captcha" style="cursor:pointer;">
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">提交</button>
+        </form>
+    </div>
+</div> <!-- /container -->
+{% endblock %}
+{% block script %}
+<script>
+    $('.captcha').click(function () {
+        $.getJSON('/captcha/refresh/', function (json) {
+            $(".captcha").attr("src", json.image_url);
+            $("#id_reg_captcha_0").val(json.key);
+        });
+        return false;
+    });
+</script>
 {% endblock %}

@@ -1,8 +1,11 @@
 from django.shortcuts import render
 from django.shortcuts import redirect
 from . import models
+from captcha.models import CaptchaStore
+from captcha.helpers import captcha_image_url
 from . import forms
 import hashlib
+
 # Create your views here.
 
 
@@ -21,6 +24,8 @@ def index(request):
 def login(request):
     if request.session.get('is_login', None):
         return redirect("/index/")
+    hashkey = CaptchaStore.generate_key()
+    image_url = captcha_image_url(hashkey)
     if request.method == "POST":
         login_form = forms.UserForm(request.POST)
         message = "请检查填写的内容！"
@@ -29,7 +34,8 @@ def login(request):
             password = login_form.cleaned_data['password']
             try:
                 user = models.User.objects.get(name=username)
-                if user.password == password_hash(password):  # 哈希值和数据库内的值进行比对
+                # 哈希值和数据库内的值进行比对
+                if user.password == password_hash(password):
                     request.session['is_login'] = True
                     request.session['user_id'] = user.id
                     request.session['user_name'] = user.name
@@ -48,6 +54,8 @@ def register(request):
     if request.session.get('is_login', None):
         # 登录状态不允许注册。你可以修改这条原则！
         return redirect("/index/")
+    hashkey = CaptchaStore.generate_key()
+    image_url = captcha_image_url(hashkey)
     if request.method == "POST":
         register_form = forms.RegisterForm(request.POST)
         message = "请检查填写的内容！"
@@ -70,13 +78,15 @@ def register(request):
                     return render(request, 'login/register.html', locals())
 
                 # 当一切都OK的情况下，创建新用户
-
                 new_user = models.User.objects.create()
                 new_user.name = username
                 new_user.password = password_hash(password1)  # 使用加密密码
                 new_user.email = email
                 new_user.save()
                 return redirect('/login/')  # 自动跳转到登录页面
+        else:
+            if request.POST.get('captcha_1') == "":
+                message = "验证码不能为空"
     register_form = forms.RegisterForm()
     return render(request, 'login/register.html', locals())
 
