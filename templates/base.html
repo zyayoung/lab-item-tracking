@@ -8,7 +8,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block title %}base{% endblock %}</title>
 
-  <link rel="icon" type="image/png" href="{% static '/img/favicon.png' %}" />
+  <link rel="icon" type="image/png" href="{% static 'img/favicon.png' %}" />
   <!-- Bootstrap -->
   <link href="https://cdn.bootcss.com/twitter-bootstrap/4.2.1/css/bootstrap.min.css" rel="stylesheet" />
   <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
@@ -24,7 +24,7 @@
   <nav class="navbar navbar-expand-lg navbar-light bg-light" style="margin-bottom: 10px;">
     <div class="container">
       <!-- Brand and toggle get grouped for better mobile display -->
-      <a class="navbar-brand" href="/index/">
+      <a class="navbar-brand" href="/">
         <!-- <img src="{% static 'img/favicon.png' %}" width="30" height="30" class="d-inline-block align-top" alt=""> -->
         实验室物品管理
       </a>
@@ -37,9 +37,9 @@
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
           {% block navbar %}
-          <li class="nav-item">
+          <!-- <li class="nav-item">
             <a class="nav-link" href="{% url 'inventory:index' %}">物品目录</a>
-          </li>
+          </li> -->
           <li class="nav-item">
             <a class="nav-link" href="{% url 'admin:index' %}">数据库管理</a>
           </li>

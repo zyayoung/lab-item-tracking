@@ -77,13 +77,14 @@ def register(request):
                     message = '该邮箱地址已被注册，请使用别的邮箱！'
                     return render(request, 'login/register.html', locals())
 
-                # 当一切都OK的情况下，创建新用户
-                new_user = models.User.objects.create()
-                new_user.name = username
-                new_user.password = password_hash(password1)  # 使用加密密码
-                new_user.email = email
-                new_user.save()
-                return redirect('/login/')  # 自动跳转到登录页面
+            # 当一切都OK的情况下，创建新用户
+            new_user = models.User.objects.create()
+            new_user.name = username
+            new_user.password = password_hash(password1)  # 使用加密密码
+            new_user.email = email
+            new_user.save()
+            message = "注册成功！"
+            return redirect('/login/')  # 自动跳转到登录页面
         else:
             if request.POST.get('captcha_1') == "":
                 message = "验证码不能为空"

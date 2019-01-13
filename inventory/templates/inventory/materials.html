@@ -11,6 +11,7 @@
     <th>位置</th>
     <th>数量</th>
     <th>单位</th>
+    <th>属性</th>
   </thead>
   <tbody>
     {% for material in material_list %}
@@ -19,6 +20,7 @@
           <td>{{ material.location }}</td>
           <td>{{ material.quantity }}</td>
           <td>{{ material.unit }}</td>
+          <td>{{ material.attribute }}</td>
         </tr>
     {% endfor %}
   </tbody>

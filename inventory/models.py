@@ -255,6 +255,7 @@ class Material(models.Model):
         blank=True,
         verbose_name="数量")
     unit = models.ForeignKey(Unit, on_delete=models.PROTECT, verbose_name="单位")
+    attribute = models.TextField(blank=True, verbose_name="属性")
     user = models.ManyToManyField(myUser, default='', verbose_name="用户")
 
     class Meta:

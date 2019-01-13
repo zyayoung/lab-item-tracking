@@ -11,7 +11,7 @@ class UserForm(forms.Form):
         label="密码",
         max_length=256,
         widget=forms.PasswordInput(attrs={'class': 'form-control'}))
-    captcha = CaptchaField(label='验证码')
+    captcha = CaptchaField(label='验证码(点击图片更换)')
 
 
 class RegisterForm(forms.Form):
@@ -29,4 +29,4 @@ class RegisterForm(forms.Form):
         widget=forms.PasswordInput(attrs={'class': 'form-control'}))
     email = forms.EmailField(
         label="邮箱地址", widget=forms.EmailInput(attrs={'class': 'form-control'}))
-    captcha = CaptchaField(label='验证码')
+    captcha = CaptchaField(label='验证码(点击图片更换)')
