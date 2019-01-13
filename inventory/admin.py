@@ -1,5 +1,5 @@
 from django.contrib import admin
-from inventory.models import Item, Category, Unit, Manufacturer, Vendor, PTAO, Order, OrderItem, Material, Location
+from inventory.models import Item, Category, Unit, Manufacturer, Vendor, PTAO, Order, OrderItem, Material, Location, Client
 
 # class MaterialAdmin(admin.ModelAdmin):
 #     # fields = ('name', 'location', 'quantity', 'unit')
@@ -58,5 +58,5 @@ class PTAOAdmin(admin.ModelAdmin):
 
 admin.site.register(PTAO, PTAOAdmin)
 
-for model in (Category, Unit, Manufacturer, Vendor, Location):
+for model in (Category, Unit, Manufacturer, Vendor, Location, Client):
     admin.site.register(model)

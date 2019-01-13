@@ -69,6 +69,22 @@ class Vendor(models.Model):
     class Meta:
         ordering = ['name']
 
+class Client(models.Model):
+    company = models.CharField(max_length=64, blank=True, verbose_name="委托单位")
+    name = models.CharField(max_length=64, verbose_name="委托人")
+    address = models.CharField(max_length=128, blank=True, verbose_name="委托人联系地址")
+    phone = models.CharField(max_length=16, blank=True, null=True, verbose_name="委托人手机号")
+    email = models.CharField(max_length=64, blank=True, null=True, verbose_name="委托人邮箱")
+    othercontacts = models.CharField(max_length=64, blank=True, null=True, verbose_name="委托人其他联系方式")
+
+    def __str__(self):
+        return self.company + ' ' + self.name
+
+    class Meta:
+        ordering = ['name']
+        verbose_name = "委托人"
+        verbose_name_plural = verbose_name
+
 
 class PTAO(models.Model):
     code = models.CharField(max_length=64, unique=True)
