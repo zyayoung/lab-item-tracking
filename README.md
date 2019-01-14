@@ -1,5 +1,7 @@
 # Lab Item Assistant
 
+[![Build Status](https://travis-ci.org/zyayoung/lab-item-tracking.svg?branch=master)](https://travis-ci.org/zyayoung/lab-item-tracking)
+
 ## Deploy
 
 ```bash
@@ -9,7 +11,7 @@ python manage.py createsuperuser
 python manage.py runserver
 ```
 
-## Modular item manage system
+## Modular item managing system
 
 ```python
 class Object:
