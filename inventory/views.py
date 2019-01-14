@@ -4,7 +4,7 @@ from django.urls import reverse
 from django.views import generic
 from . import forms
 
-from inventory.models import Order, Item, Material, Location, Unit
+from inventory.models import Material
 from login.models import User as myUser
 
 
@@ -47,47 +47,15 @@ class AddView(generic.View):
         message = "请检查填写的内容！"
         if add_form.is_valid():  # 获取数据
             name = add_form.cleaned_data['name']
-            location = add_form.cleaned_data['location']
             quantity = add_form.cleaned_data['quantity']
             new_material = Material.objects.create(
                 name=name,
-                location=Location.objects.create(),
                 quantity=quantity,
-                unit=Unit.objects.get(id=1),
-                # user=myUser.objects.get(id=request.session['user_id']),
+                user=myUser.objects.get(id=request.session['user_id']),
             )
             new_material.save()
             message = "添加成功！"
+            print(message)
             return redirect('/add/')
         else:
             return self.get(request)
-
-
-class OrdersView(generic.ListView):
-    template_name = 'inventory/orders.html'
-    context_object_name = 'order_list'
-
-    def get_queryset(self):
-        return Order.objects.order_by('-created')
-
-
-class OrderView(generic.DetailView):
-    model = Order
-    template_name = 'inventory/order.html'
-
-    def get_context_data(self, **kwargs):
-        context = super(OrderView, self).get_context_data(**kwargs)
-        context['lineitems'] = context['order'].orderitem_set.order_by(
-            "item__vendor")
-        return context
-
-
-class ItemView(generic.DetailView):
-    model = Item
-    template_name = 'inventory/item.html'
-
-    def get_context_data(self, **kwargs):
-        context = super(ItemView, self).get_context_data(**kwargs)
-        context['lineitems'] = context['item'].orderitem_set.order_by(
-            "order__order_date")
-        return context
