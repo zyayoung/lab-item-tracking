@@ -87,12 +87,14 @@ class LocationView(generic.View):
     template_name = 'inventory/location.html'
     context_object_name = 'location_list'
     myPath = None
+    user_id = 0
 
     def dispatch(self, request, *args, **kwargs):
         if not request.session.get('is_login', None):
             return redirect("/")
         else:
             # self.myPathList = kwargs['path'].split("/")
+            self.user_id = request.session.get('user_id', None)
             return super(LocationView, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
@@ -106,7 +108,7 @@ class LocationView(generic.View):
                 location_list = Location.objects.filter(id=my_ID)[0].parentPath.all()
                 if len(location_list) == 0:
                     item_ID = Location.objects.filter(id=my_ID).values('item_id')[0]['item_id']
-                    item_list = Item.objects.filter(id=item_ID)
+                    item_list = Item.objects.filter(id=item_ID, user=self.user_id)
         except:
             pass
         finally:
