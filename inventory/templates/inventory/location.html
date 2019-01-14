@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block title %}位置列表{% endblock %}
+{% block content %}
+{% if location_list %}
+<p class="lead">位置：</p>
+<table class="table table-striped table-condensed">
+    <thead>
+        <th>名称</th>
+    </thead>
+    <tbody>
+        {% for location in location_list %}
+        <tr>
+            <td><a href="./{{ location.path }}">{{ location.path }}</a></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<p class="lead">物品：</p>
+<table class="table table-striped table-condensed">
+    <thead>
+        <th>名称</th>
+        <th>位置</th>
+        <th>数量</th>
+        <th>单位</th>
+        <th>属性</th>
+    </thead>
+    <tbody>
+        {% for item in location_list %}
+        <tr>
+            <td><a href="{% url "inventory:item" item.id %}">{{ item.name }}</a></td>
+            <td>{{ item.location }}</td>
+            <td>{{ item.quantity }}</td>
+            <td>{{ item.unit }}</td>
+            <td>{{ item.attribute }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% else %}
+<p class="lead">位置不合法！</p>
+{% endif %}
+{% endblock %}
