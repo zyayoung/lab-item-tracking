@@ -10,5 +10,6 @@ urlpatterns = [
     url(r'^items/$', views.ItemsView.as_view(), name='items'),
     url(r'^item/(?P<pk>\d+)/$', views.ItemView.as_view(), name='item'),
     url(r'^add/$', views.AddView.as_view(), name='add'),
-    url(r'^location(?P<path>.*)/$', views.LocationView.as_view(), name='location'),
+    url(r'^location/(?P<id>\d*)/$', views.LocationView.as_view(), name='location'),
+    url(r'^location/$', views.LocationView.as_view(), name='location_root'),
 ]

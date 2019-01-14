@@ -31,7 +31,7 @@ class Item(models.Model):
 
 
 class Location(models.Model):
-    path = models.CharField(max_length=32, unique=True, verbose_name="路径")
+    path = models.CharField(max_length=32, verbose_name="路径")
     parent = models.ForeignKey(
         "self",
         null=True,

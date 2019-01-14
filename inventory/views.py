@@ -92,21 +92,21 @@ class LocationView(generic.View):
         if not request.session.get('is_login', None):
             return redirect("/")
         else:
-            self.myPathList = kwargs['path'].split("/")
+            # self.myPathList = kwargs['path'].split("/")
             return super(LocationView, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
+        my_ID = kwargs.get('id')
         location_list = None
         item_list = None
         try:
-            if len(self.myPathList) <= 1:
+            if my_ID == None:
                 location_list = Location.objects.filter(parent=None)
             else:
-                myPath = self.myPathList[-1]
-                location_list = Location.objects.filter(path=myPath)[0].parentPath.all()
+                location_list = Location.objects.filter(id=my_ID)[0].parentPath.all()
                 if len(location_list) == 0:
-                    item_id = Location.objects.filter(path=myPath).values('item_id')[0]['item_id']
-                    item_list = Item.objects.filter(id=item_id)
+                    item_ID = Location.objects.filter(id=my_ID).values('item_id')[0]['item_id']
+                    item_list = Item.objects.filter(id=item_ID)
         except:
             pass
         finally:

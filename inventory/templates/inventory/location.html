@@ -11,7 +11,7 @@
     <tbody>
         {% for location in location_list %}
         <tr>
-            <td><a href="./{{ location.path }}">{{ location.path }}</a></td>
+            <td><a href="{% url "inventory:location" location.id %}">{{ location.path }}</a></td>
         </tr>
         {% endfor %}
     </tbody>
