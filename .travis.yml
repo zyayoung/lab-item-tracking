@@ -1,12 +1,17 @@
 language: python
 python:
-- '3.6'
-install:
-- pip install -r requirements.txt
-before_script:
-- python manage.py makemigrations inventory login
-- python manage.py migrate
-script: python manage.py test
+  - '3.6'
 before_install:
-- openssl aes-256-cbc -K $encrypted_3c5635537c13_key -iv $encrypted_3c5635537c13_iv
-  -in id_rsa.enc -out ~\/.ssh/id_rsa -d
+  - openssl aes-256-cbc -K $encrypted_3c5635537c13_key -iv $encrypted_3c5635537c13_iv
+    -in id_rsa.enc -out ~\/.ssh/id_rsa -d
+  - chmod 600 ~/.ssh/id_rsa
+install:
+  - pip install -r requirements.txt
+before_script:
+  - python manage.py makemigrations inventory login
+  - python manage.py migrate
+script: python manage.py test
+after_success:
+  - ssh ubuntu@118.25.94.244 "./lit-auto-deploy.sh"
+addons:
+  ssh_known_hosts: 118.25.94.244
