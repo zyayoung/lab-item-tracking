@@ -83,8 +83,7 @@ class ItemView(generic.DetailView):
         return context
 
 
-class LocationView(generic.ListView):
-    model = Location
+class LocationView(generic.View):
     template_name = 'inventory/location.html'
     context_object_name = 'location_list'
     myPath = None
@@ -96,19 +95,19 @@ class LocationView(generic.ListView):
             self.myPathList = kwargs['path'].split("/")
             return super(LocationView, self).dispatch(request, *args, **kwargs)
 
-    def get_queryset(self):
-        re = None
+    def get(self, request, *args, **kwargs):
+        location_list = None
+        item_list = None
         try:
             if len(self.myPathList) <= 1:
-                re = Location.objects.filter(parent=None)
+                location_list = Location.objects.filter(parent=None)
             else:
                 myPath = self.myPathList[-1]
-                re = Location.objects.filter(path=myPath)[0].parentPath.all()
-                if len(re) == 0:
+                location_list = Location.objects.filter(path=myPath)[0].parentPath.all()
+                if len(location_list) == 0:
                     item_id = Location.objects.filter(path=myPath).values('item_id')[0]['item_id']
-                    re = Item.objects.filter(id=1)
-                    print(re)
+                    item_list = Item.objects.filter(id=item_id)
         except:
             pass
         finally:
-            return re
+            return render(request, 'inventory/location.html', locals())
