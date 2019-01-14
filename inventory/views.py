@@ -51,11 +51,10 @@ class AddView(generic.View):
             new_material = Material.objects.create(
                 name=name,
                 quantity=quantity,
-                user=myUser.objects.get(id=request.session['user_id']),
             )
+            new_material.user.add(myUser.objects.get(id=request.session['user_id']))
             new_material.save()
             message = "添加成功！"
-            print(message)
             return redirect('/add/')
         else:
             return self.get(request)
