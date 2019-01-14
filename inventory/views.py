@@ -65,8 +65,18 @@ class AddView(generic.View):
 class ItemView(generic.DetailView):
     model = Item
     template_name = 'inventory/item.html'
+    user_id = 0
 
-    # def get_context_data(self, **kwargs):
-    #     context = super(ItemView, self).get_context_data(**kwargs)
-    #     context['lineitems'] = context['item']
-    #     return context
+    def dispatch(self, request, *args, **kwargs):
+        if not request.session.get('is_login', None):
+            return redirect("/")
+        else:
+            self.user_id = request.session.get('user_id', None)
+            return super(ItemView, self).dispatch(request, *args,
+                                                   **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super(ItemView, self).get_context_data(**kwargs)
+        item = context['item']
+        context['permission'] = self.user_id in [user.id for user in item.user.all()]
+        return context

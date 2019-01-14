@@ -3,15 +3,25 @@
 {% block title %} Lab Item Tracking : item : {{ item.name }} {% endblock %}
 
 {% block content %}
+{% if permission %}
 
-<p class="lead">{{ item.name }}</p>
+<h4>物品详情</h4>
 
 <hr>
-
-<dl class="dl-horizontal">
-    <dt>数量</dt><dd>{{ item.quantity }}</dd>
-    {% if item.unit %}<dt>单位</dt><dd>{{ item.unit }}</dd>{% endif %}
-</dl>
+<table class="table table-striped table-condensed">
+<tbody>
+    <tr><td>名称</td><td>{{ item.name }}</td></tr>
+    <tr><td>数量</td><td>{{ item.quantity }} {% if item.unit %}{{ item.unit }}{% endif %}</td></tr>
+    <tr>
+        <td>用户</td>
+        <td>
+            {%  for user in item.user.all %}
+                {{ user.name }}
+            {% endfor %}
+        </td>
+    </tr>
+</tbody>
+</table>
 
 {#<dl class="dl-horizontal">#}
 {#  <dt>comments</dt><dd>{{ item.comments }}</dd>#}
@@ -21,4 +31,9 @@
 <a href="{% url 'admin:inventory_item_change' item.id %}">edit item</a><br/>
 
 
+{% else %}
+    <div>You have no permission to view this page.</div>
+{% endif %}
+
 {% endblock %}
+
