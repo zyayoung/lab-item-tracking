@@ -7,7 +7,7 @@
 {% if request.session.is_login %}
 您好,{{ request.session.user_name }}！欢迎回来！
 <ul>
-  <li><a href="{% url 'inventory:materials' %}">我的物品</a></li>
+  <li><a href="{% url 'inventory:items' %}">我的物品</a></li>
   <li><a href="{% url 'inventory:add' %}">添加物品</a></li>
 </ul>
 {% else %}

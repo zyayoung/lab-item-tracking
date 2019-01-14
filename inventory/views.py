@@ -4,7 +4,7 @@ from django.urls import reverse
 from django.views import generic
 from . import forms
 
-from inventory.models import Material
+from inventory.models import Item
 from login.models import User as myUser
 
 
@@ -13,9 +13,9 @@ class IndexView(generic.View):
         return render(request, 'inventory/index.html')
 
 
-class MaterialsView(generic.ListView):
-    template_name = 'inventory/materials.html'
-    context_object_name = 'material_list'
+class ItemsView(generic.ListView):
+    template_name = 'inventory/items.html'
+    context_object_name = 'item_list'
     user_id = 0
 
     def dispatch(self, request, *args, **kwargs):
@@ -23,11 +23,11 @@ class MaterialsView(generic.ListView):
             return redirect("/")
         else:
             self.user_id = request.session.get('user_id', None)
-            return super(MaterialsView, self).dispatch(request, *args,
+            return super(ItemsView, self).dispatch(request, *args,
                                                        **kwargs)
 
     def get_queryset(self):
-        return Material.objects.filter(user=self.user_id).order_by('-name')
+        return Item.objects.filter(user=self.user_id).order_by('-name')
 
 
 class AddView(generic.View):
@@ -41,7 +41,7 @@ class AddView(generic.View):
         add_form = forms.AddItemForm()
         return render(request, 'inventory/add.html', locals())
 
-    # TODO:add materials properly
+    # TODO:add items properly
     def post(self, request):
         add_form = forms.AddItemForm(request.POST)
         message = "请检查填写的内容！"
@@ -49,13 +49,13 @@ class AddView(generic.View):
             name = add_form.cleaned_data['name']
             quantity = add_form.cleaned_data['quantity']
             unit = add_form.cleaned_data['unit']
-            new_material = Material.objects.create(
+            new_item = Item.objects.create(
                 name=name,
                 quantity=quantity,
                 unit = unit,
             )
-            new_material.user.add(myUser.objects.get(id=request.session['user_id']))
-            new_material.save()
+            new_item.user.add(myUser.objects.get(id=request.session['user_id']))
+            new_item.save()
             message = "添加成功！"
             return redirect('/add/')
         else:

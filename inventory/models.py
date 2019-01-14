@@ -9,7 +9,7 @@ from login.models import User as myUser
 import datetime
 
 
-class Material(models.Model):
+class Item(models.Model):
     name = models.CharField(max_length=128, verbose_name="名称")
     quantity = models.DecimalField(
         default=0,
