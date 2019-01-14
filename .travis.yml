@@ -7,7 +7,7 @@ before_install:
 install:
   - pip install -r requirements.txt
 before_script:
-  - python manage.py makemigrations inventory login
+  - python manage.py makemigrations
   - python manage.py migrate
 script: python manage.py test
 after_success:
