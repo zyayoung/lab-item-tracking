@@ -2,21 +2,29 @@
 {% load staticfiles %}
 {% block title %}位置列表{% endblock %}
 {% block content %}
-{% if location_list %}
-<p class="lead">位置：</p>
+{% if location %}
+<p class="lead">位置：{{ location }}</p>
+{% else %}
+<p class="lead">位置：Root</p>
+{% endif %}
 <table class="table table-striped table-condensed">
     <thead>
         <th>名称</th>
     </thead>
     <tbody>
-        {% for location in location_list %}
+        {% if location.parent %}
+        <td><a href="{% url "inventory:location" location.parent.id %}">Back</a></td>
+        {% elif my_ID %}
+        <td><a href="{% url "inventory:location_root" %}">Back</a></td>
+        {% endif %}
+        {% for sublocation in location_list %}
         <tr>
-            <td><a href="{% url "inventory:location" location.id %}">{{ location.path }}</a></td>
+            <td><a href="{% url "inventory:location" sublocation.id %}">{{ sublocation.path }}</a></td>
         </tr>
         {% endfor %}
     </tbody>
 </table>
-{% elif item_list %}
+{% if item_list %}
 <p class="lead">物品：</p>
 <table class="table table-striped table-condensed">
     <thead>
@@ -39,6 +47,6 @@
     </tbody>
 </table>
 {% else %}
-<p class="lead">没有可用的位置或物品</p>
+<p class="lead">当前位置没有物品</p>
 {% endif %}
 {% endblock %}

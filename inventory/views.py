@@ -99,13 +99,15 @@ class LocationView(generic.View):
 
     def get(self, request, *args, **kwargs):
         my_ID = kwargs.get('id')
+        location = None
         location_list = None
         item_list = None
         try:
             if my_ID == None:
                 location_list = Location.objects.filter(parent=None)
             else:
-                location_list = Location.objects.filter(id=my_ID)[0].parentPath.all()
+                location = Location.objects.filter(id=my_ID)[0]
+                location_list = location.parentPath.all()
                 if len(location_list) == 0:
                     item_ID = Location.objects.filter(id=my_ID).values('item_id')[0]['item_id']
                     item_list = Item.objects.filter(id=item_ID, user=self.user_id)
