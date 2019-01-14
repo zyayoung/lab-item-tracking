@@ -60,3 +60,13 @@ class AddView(generic.View):
             return redirect('/add/')
         else:
             return self.get(request)
+
+
+class ItemView(generic.DetailView):
+    model = Item
+    template_name = 'inventory/item.html'
+
+    # def get_context_data(self, **kwargs):
+    #     context = super(ItemView, self).get_context_data(**kwargs)
+    #     context['lineitems'] = context['item']
+    #     return context

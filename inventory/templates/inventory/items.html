@@ -16,7 +16,7 @@
   <tbody>
     {% for item in item_list %}
         <tr>
-          <td>{{ item.name }}</td>
+          <td><a href="{% url "inventory:item" item.id %}">{{ item.name }}</a></td>
           <td>{{ item.location }}</td>
           <td>{{ item.quantity }}</td>
           <td>{{ item.unit }}</td>
