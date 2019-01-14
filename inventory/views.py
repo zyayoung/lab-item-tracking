@@ -38,19 +38,21 @@ class AddView(generic.View):
             return super(AddView, self).dispatch(request, *args, **kwargs)
 
     def get(self, request):
-        add_form = forms.AddForm()
+        add_form = forms.AddItemForm()
         return render(request, 'inventory/add.html', locals())
 
     # TODO:add materials properly
     def post(self, request):
-        add_form = forms.AddForm(request.POST)
+        add_form = forms.AddItemForm(request.POST)
         message = "请检查填写的内容！"
         if add_form.is_valid():  # 获取数据
             name = add_form.cleaned_data['name']
             quantity = add_form.cleaned_data['quantity']
+            unit = add_form.cleaned_data['unit']
             new_material = Material.objects.create(
                 name=name,
                 quantity=quantity,
+                unit = unit,
             )
             new_material.user.add(myUser.objects.get(id=request.session['user_id']))
             new_material.save()

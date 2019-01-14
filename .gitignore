@@ -55,6 +55,7 @@ coverage.xml
 *.log
 local_settings.py
 db.sqlite3
+*/migrations
 
 # Flask stuff:
 instance/
@@ -102,6 +103,3 @@ venv.bak/
 
 # mypy
 .mypy_cache/
-
-# Django
-*/migrations
