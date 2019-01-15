@@ -74,6 +74,7 @@
 {% elif location %}
 <p class="lead">没有存放物品</p>
 {% endif %}
+{% if permission %}
 {% if pending and location %}
 <a class="btn btn-outline-primary" href="#" onClick="cfm('{% url 'inventory:put' pending.pk location.pk %}', '{{ pending }}', '{{ location }}')" role="button">
     将{{ pending }}存入此位置
@@ -100,6 +101,9 @@
 </div>
 {% elif location %}
 <a class="btn btn-outline-primary" role="button" href="{% url 'inventory:additem2loc' location.id %}">添加物品</a>
+{% endif %}
+{% else %}
+<p class="text-muted">*您没有在该位置存入物品的权限！</p>
 {% endif %}
 {% endblock %}
 {% block script %}

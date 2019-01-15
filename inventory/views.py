@@ -104,6 +104,7 @@ class LocationView(generic.View):
         location = None
         location_list = None
         item_list = None
+        permission = False
         pending = get_object_or_404(
             Item, pk=request.
             GET['pending']) if 'pending' in request.GET.keys() else None
@@ -112,6 +113,9 @@ class LocationView(generic.View):
                 location_list = Location.objects.filter(parent=None)
             else:
                 location = Location.objects.filter(id=location_id)[0]
+                permission = request.session.get('user_id', None) in [
+                    user.id for user in location.allowed_users.all()
+                ]
                 location_list = location.parentPath.all()
                 # if len(location_list) == 0:
                 item_list = Item.objects.filter(
