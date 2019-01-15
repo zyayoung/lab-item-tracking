@@ -13,13 +13,13 @@
     </thead>
     <tbody>
         {% if location.parent %}
-        <td><a href="{% url "inventory:location" location.parent.id %}">Back</a></td>
+        <td><a href="{% url "inventory:location" location.parent.id %}{% if pending %}?pending={{ pending.pk }}{% endif %}">Back</a></td>
         {% elif my_ID %}
-        <td><a href="{% url "inventory:location_root" %}">Back</a></td>
+        <td><a href="{% url "inventory:location_root" %}{% if pending %}?pending={{ pending.pk }}{% endif %}">Back</a></td>
         {% endif %}
         {% for sublocation in location_list %}
         <tr>
-            <td><a href="{% url "inventory:location" sublocation.id %}">{{ sublocation.path }}</a></td>
+            <td><a href="{% url "inventory:location" sublocation.id %}{% if pending %}?pending={{ pending.pk }}{% endif %}">{{ sublocation.path }}</a></td>
         </tr>
         {% endfor %}
     </tbody>
@@ -49,4 +49,7 @@
 {% elif not location_list %}
 <p class="lead">当前位置没有物品</p>
 {% endif %}
+{% if pending and location %}
+<a href="{% url "inventory:put" pending.pk location.pk %}">将{{ pending }}存入此位置</a>
+{%  endif %}
 {% endblock %}

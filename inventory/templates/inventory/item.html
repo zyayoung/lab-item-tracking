@@ -28,8 +28,8 @@
 {#</dl>#}
 
 <hr>
-<a href="{% url 'admin:inventory_item_change' item.id %}">edit item</a><br/>
-
+<a href="{% url 'admin:inventory_item_change' item.id %}">编辑物品</a><br/>
+<a href="{% url "inventory:location_root" %}?pending={{ item.pk }}">选择位置</a><br/>
 
 {% else %}
     <div>You have no permission to view this page.</div>

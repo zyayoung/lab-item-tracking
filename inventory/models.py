@@ -19,6 +19,7 @@ class Location(models.Model):
         verbose_name="父位置",
         related_name="parentPath",
     )
+    allowed_users = models.ManyToManyField(myUser, blank=True, default='', verbose_name="允许用户")
 
     def __str__(self):
         path_list = [self.path]

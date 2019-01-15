@@ -102,6 +102,7 @@ class LocationView(generic.View):
         location = None
         location_list = None
         item_list = None
+        pending = get_object_or_404(Item, pk=request.GET['pending']) if 'pending' in request.GET.keys() else None
         try:
             if my_ID == None:
                 location_list = Location.objects.filter(parent=None)
@@ -114,3 +115,16 @@ class LocationView(generic.View):
             pass
         finally:
             return render(request, 'inventory/location.html', locals())
+
+
+def put_item_to_location(request, item_pk, location_pk):
+    user_id = request.session.get('user_id', None)
+    item = get_object_or_404(Item, pk=item_pk)
+    if not user_id in [user.id for user in item.user.all()]:
+        return HttpResponse("You Have no access to this item!")
+    location = get_object_or_404(Location, pk=location_pk)
+    if not user_id in [user.id for user in location.allowed_users.all()]:
+        return HttpResponse("You Have no access to this location!")
+    item.location = location
+    item.save()
+    return redirect('inventory:location', location_pk)
