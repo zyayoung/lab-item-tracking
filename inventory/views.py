@@ -41,7 +41,6 @@ class AddView(generic.View):
         add_form = forms.AddItemForm()
         return render(request, 'inventory/add.html', locals())
 
-    # TODO:add items properly
     def post(self, request):
         add_form = forms.AddItemForm(request.POST)
         message = "请检查填写的内容！"
@@ -101,7 +100,7 @@ class LocationView(generic.View):
             return super(LocationView, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
-        my_ID = kwargs.get('id')
+        location_id = kwargs.get('id')
         location = None
         location_list = None
         item_list = None
@@ -109,10 +108,10 @@ class LocationView(generic.View):
             Item, pk=request.
             GET['pending']) if 'pending' in request.GET.keys() else None
         try:
-            if my_ID == None:
+            if location_id == None:
                 location_list = Location.objects.filter(parent=None)
             else:
-                location = Location.objects.filter(id=my_ID)[0]
+                location = Location.objects.filter(id=location_id)[0]
                 location_list = location.parentPath.all()
                 # if len(location_list) == 0:
                 item_list = Item.objects.filter(
@@ -123,19 +122,25 @@ class LocationView(generic.View):
         return render(request, 'inventory/location.html', locals())
 
 
-def put_item_to_location(request, item_pk, location_pk):
+def put_item_to_location(request, item_pk, location_id):
     user_id = request.session.get('user_id', None)
     item = get_object_or_404(Item, pk=item_pk)
     if not user_id in [user.id for user in item.user.all()]:
         messages.error(request, "您没有更改该物品的权限！")
         return redirect('inventory:info')
-    location = get_object_or_404(Location, pk=location_pk)
-    if not user_id in [user.id for user in location.allowed_users.all()]:
-        messages.error(request, "您没有更改该位置的权限！")
-        return redirect('inventory:info')
-    item.location = location
-    item.save()
-    return redirect('inventory:location', location_pk)
+    if int(location_id) != 0:
+        print(location_id)
+        location = get_object_or_404(Location, pk=location_id)
+        if not user_id in [user.id for user in location.allowed_users.all()]:
+            messages.error(request, "您没有更改该位置的权限！")
+            return redirect('inventory:info')
+        item.location = location
+        item.save()
+        return redirect('inventory:location', location_id)
+    else:
+        item.location = None
+        item.save()
+        return redirect('inventory:item', item.id)
 
 
 class InfoView(generic.View):

@@ -17,7 +17,7 @@ urlpatterns = [
     url(r'^location/(?P<id>\d+)/add$',
         views.AddItem2LocView.as_view(),
         name='additem2loc'),
-    url(r'^put/(?P<item_pk>\d+)/(?P<location_pk>\d+)/$',
+    url(r'^put/(?P<item_pk>\d+)/(?P<location_id>\d+)/$',
         views.put_item_to_location,
         name='put'),
     url(r'^info/$', views.InfoView.as_view(), name='info'),
