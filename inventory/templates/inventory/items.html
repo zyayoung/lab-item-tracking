@@ -9,7 +9,7 @@
         <th>名称</th>
         <th>位置</th>
         <th>数量</th>
-        <th>单位</th>
+        <!-- <th>单位</th> -->
         <th>属性</th>
         <th>用户</th>
     </thead>
@@ -18,8 +18,8 @@
         <tr>
             <td><a href="{% url 'inventory:item' item.id %}">{{ item.name }}</a></td>
             <td>{{ item.location }}</td>
-            <td>{{ item.quantity }}</td>
-            <td>{{ item.unit }}</td>
+            <td>{{ item.quantity }} {% if item.unit %}{{ item.unit }}{% endif %}</td>
+            <!-- <td>{{ item.unit }}</td> -->
             <td>{{ item.attribute }}</td>
             <td>
                 {% for user in item.user.all %}

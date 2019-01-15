@@ -17,6 +17,10 @@
             <td>{{ item.quantity }} {% if item.unit %}{{ item.unit }}{% endif %}</td>
         </tr>
         <tr>
+            <td>位置</td>
+            <td><a href="{% url 'inventory:location' item.location.id %}">{{ item.location }}</a></td>
+        </tr>
+        <tr>
             <td>用户</td>
             <td>
                 {% for user in item.user.all %}
@@ -39,7 +43,7 @@
 </ul>
 
 {% else %}
-    <div>You have no permission to view this page.</div>
+<div>You have no permission to view this page.</div>
 {% endif %}
 
 {% endblock %}

@@ -3,25 +3,38 @@
 {% block title %}位置列表{% endblock %}
 {% block content %}
 <p class="lead">
-{% if location %}
-位置：{{ location }}
-{% elif location_list %}
-位置：Root
-{% endif %}
+    {% if location %}
+    位置：{{ location }}
+    {% elif location_list %}
+    位置：Root
+    {% endif %}
 </p>
 <table class="table table-striped table-condensed">
     <thead>
         <th>路径</th>
+        <th>可使用用户</th>
     </thead>
     <tbody>
         {% if location.parent %}
-        <td><a href="{% url 'inventory:location' location.parent.id %}{% if pending %}?pending={{ pending.pk }}{% endif %}">Back</a></td>
+        <tr>
+            <td><a href="{% url 'inventory:location' location.parent.id %}{% if pending %}?pending={{ pending.pk }}{% endif %}">Back</a></td>
+            <td>/</td>
+        </tr>
         {% elif my_ID %}
-        <td><a href="{% url 'inventory:location_root' %}{% if pending %}?pending={{ pending.pk }}{% endif %}">Back</a></td>
+        <tr>
+            <td><a href="{% url 'inventory:location_root' %}{% if pending %}?pending={{ pending.pk }}{% endif %}">Back</a></td>
+            <td>/</td>
+        </tr>
         {% endif %}
         {% for sublocation in location_list %}
         <tr>
-            <td><a href="{% url 'inventory:location' sublocation.id %}{% if pending %}?pending={{ pending.pk }}{% endif %}">{{ sublocation.path }}</a></td>
+            <td><a href="{% url 'inventory:location' sublocation.id %}{% if pending %}?pending={{ pending.pk }}{% endif %}">
+                    {{ sublocation.path }}</a></td>
+            <td>
+                {% for user in sublocation.allowed_users.all %}
+                {{ user.name }}
+                {% endfor %}
+            </td>
         </tr>
         {% endfor %}
     </tbody>
@@ -31,7 +44,7 @@
 <table class="table table-striped table-condensed">
     <thead>
         <th>名称</th>
-        <th>位置</th>
+        <!-- <th>位置</th> -->
         <th>数量</th>
         <th>单位</th>
         <th>属性</th>
@@ -40,7 +53,7 @@
         {% for item in item_list %}
         <tr>
             <td><a href="{% url 'inventory:item' item.id %}">{{ item.name }}</a></td>
-            <td>{{ item.location }}</td>
+            <!-- <td>{{ item.location }}</td> -->
             <td>{{ item.quantity }}</td>
             <td>{{ item.unit }}</td>
             <td>{{ item.attribute }}</td>
