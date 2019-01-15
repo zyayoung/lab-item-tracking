@@ -24,7 +24,7 @@
                 {% endfor %}
             </td>
             <td>
-                <a class="btn btn-primary" href="#" onClick="cfm('{% url 'inventory:put' item.id location_id %}', '{{ item.name }}', '{{ location }}')"
+                <a class="btn btn-outline-primary" href="#" onClick="cfm('{% url 'inventory:put' item.id location_id %}', '{{ item.name }}', '{{ location }}')"
                     role="button">
                     添加
                 </a>
@@ -60,7 +60,7 @@
 {% block script %}
 <script>
     function cfm(url, item, loc) {
-        $('#modalNotice').text('您确认要将' + item + '放入' + loc + '吗？');
+        $('#modalNotice').html('您确认要将<b>' + item + '</b>存入<b>' + loc + '</b>吗？');
         $('#url').val(url);
         $('#cfmModal').modal();
     }

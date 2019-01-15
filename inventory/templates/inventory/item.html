@@ -22,7 +22,7 @@
                 {% if item.location %}
                 <a href="{% url 'inventory:location' item.location.id %}">{{ item.location }}</a>
                 {% else %}
-                {{ item.location }}
+                未放入
                 {% endif %}
             </td>
         </tr>
@@ -47,11 +47,14 @@
     {#
 </dl>#} -->
 
-<ul>
-    <li><a href="{% url 'admin:inventory_item_change' item.id %}">编辑物品</a></li>
-    <li><a href="{% url 'inventory:location_root' %}?pending={{ item.pk }}">更改位置</a></li>
-</ul>
+<a class="btn btn-outline-primary" role="button" href="{% url 'admin:inventory_item_change' item.id %}">编辑物品</a>
 
+{% if item.location %}
+<a class="btn btn-outline-primary" role="button" href="{% url 'inventory:location_root' %}?pending={{ item.id }}">更改位置</a>
+<a class="btn btn-outline-primary" role="button" href="{% url 'inventory:put' item.id 0 %}">取出物品</a>
+{% else %}
+<a class="btn btn-outline-primary" role="button" href="{% url 'inventory:location_root' %}?pending={{ item.id }}">存入物品</a>
+{% endif %}
 {% else %}
 <p class="lead">您没有访问该物品的权限！</p>
 {% endif %}

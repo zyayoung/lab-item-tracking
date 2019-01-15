@@ -20,19 +20,30 @@
     <tbody>
         {% if location.parent %}
         <tr>
-            <td><a href="{% url 'inventory:location' location.parent.id %}{% if pending %}?pending={{ pending.pk }}{% endif %}">Back</a></td>
+            <td>
+                <a href="{% url 'inventory:location' location.parent.id %}{% if pending %}?pending={{ pending.pk }}{% endif %}">
+                    Back
+                </a>
+            </td>
             <td>/</td>
         </tr>
         {% elif my_ID %}
         <tr>
-            <td><a href="{% url 'inventory:location_root' %}{% if pending %}?pending={{ pending.pk }}{% endif %}">Back</a></td>
+            <td>
+                <a href="{% url 'inventory:location_root' %}{% if pending %}?pending={{ pending.pk }}{% endif %}">
+                    Back
+                </a>
+            </td>
             <td>/</td>
         </tr>
         {% endif %}
         {% for sublocation in location_list %}
         <tr>
-            <td><a href="{% url 'inventory:location' sublocation.id %}{% if pending %}?pending={{ pending.pk }}{% endif %}">
-                    {{ sublocation.path }}</a></td>
+            <td>
+                <a href="{% url 'inventory:location' sublocation.id %}{% if pending %}?pending={{ pending.pk }}{% endif %}">
+                    {{ sublocation.path }}
+                </a>
+            </td>
             <td>
                 {% for user in sublocation.allowed_users.all %}
                 {{ user.name }}
@@ -43,22 +54,18 @@
     </tbody>
 </table>
 {% if item_list %}
-<p class="lead">存放物品：</p>
+<p class="lead">已存放物品：</p>
 <table class="table table-striped table-condensed">
     <thead>
         <th>名称</th>
-        <!-- <th>位置</th> -->
         <th>数量</th>
-        <!-- <th>单位</th> -->
         <th>属性</th>
     </thead>
     <tbody>
         {% for item in item_list %}
         <tr>
             <td><a href="{% url 'inventory:item' item.id %}">{{ item.name }}</a></td>
-            <!-- <td>{{ item.location }}</td> -->
             <td>{{ item.quantity }} {% if item.unit %}{{ item.unit }}{% endif %}</td>
-            <!-- <td>{{ item.unit }}</td> -->
             <td>{{ item.attribute }}</td>
         </tr>
         {% endfor %}
@@ -68,10 +75,43 @@
 <p class="lead">没有存放物品</p>
 {% endif %}
 {% if pending and location %}
-<a href="{% url 'inventory:put' pending.pk location.pk %}">将{{ pending }}存入此位置</a>
+<a class="btn btn-outline-primary" href="#" onClick="cfm('{% url 'inventory:put' pending.pk location.pk %}', '{{ pending }}', '{{ location }}')" role="button">
+    将{{ pending }}存入此位置
+</a>
+<div class="modal fade" id="cfmModal" tabindex="-1" role="dialog" aria-labelledby="cfmModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="cfmModalTitle">提示信息</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p id="modalNotice"></p>
+            </div>
+            <div class="modal-footer">
+                <input type="hidden" id="url" />
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" onClick="urlSubmit()">确定</button>
+            </div>
+        </div>
+    </div>
+</div>
 {% elif location %}
-<ul>
-    <li><a href="{% url 'inventory:additem2loc' location.id %}">添加物品</a></li>
-</ul>
+<a class="btn btn-outline-primary" role="button" href="{% url 'inventory:additem2loc' location.id %}">添加物品</a>
 {% endif %}
+{% endblock %}
+{% block script %}
+<script>
+    function cfm(url, item, loc) {
+        $('#modalNotice').html('您确认要将<b>' + item + '</b>存入<b>' + loc + '</b>吗？');
+        $('#url').val(url);
+        $('#cfmModal').modal();
+    }
+    function urlSubmit() {
+        var url = $.trim($("#url").val());
+        window.location.href = url;
+    }
+</script>
 {% endblock %}
