@@ -9,10 +9,7 @@
 <p class="lead">
   您好,{{ request.session.user_name }}！欢迎回来！
 </p>
-<ul>
-  <li><a href="{% url 'inventory:items' %}">我的物品</a></li>
-  <li><a href="{% url 'inventory:add' %}">添加物品</a></li>
-</ul>
+<p class="text-info">网站施工中...</p>
 {% else %}
 <p class="lead">
   您尚未登录，只能访问公开内容！
