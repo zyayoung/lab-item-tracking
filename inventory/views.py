@@ -81,6 +81,8 @@ class ItemView(generic.DetailView):
         context['permission'] = self.user_id in [
             user.id for user in item.user.all()
         ]
+        if not context['permission']:
+            return redirect('inventory:index')
         return context
 
 
@@ -145,3 +147,21 @@ class InfoView(generic.View):
 
     def get(self, request):
         return render(request, 'inventory/info.html', locals())
+
+class AddItem2LocView(generic.View):
+    model = Item
+    template_name = 'inventory/additem2loc.html'
+    context_object_name = 'item_list'
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.session.get('is_login', None):
+            return redirect('inventory:index')
+        else:
+            self.user_id = request.session.get('user_id', None)
+            return super(AddItem2LocView, self).dispatch(request, *args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        item_list = Item.objects.filter(location=None, user=self.user_id)
+        location_id = kwargs.get('id')
+        location = get_object_or_404(Location, pk=location_id)
+        return render(request, 'inventory/additem2loc.html', locals())

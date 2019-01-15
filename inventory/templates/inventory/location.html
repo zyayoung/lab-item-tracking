@@ -69,5 +69,9 @@
 {% endif %}
 {% if pending and location %}
 <a href="{% url 'inventory:put' pending.pk location.pk %}">将{{ pending }}存入此位置</a>
+{% elif location %}
+<ul>
+    <li><a href="{% url 'inventory:additem2loc' location.id %}">添加物品</a></li>
+</ul>
 {% endif %}
 {% endblock %}
