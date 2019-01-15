@@ -34,6 +34,10 @@
                 {% endfor %}
             </td>
         </tr>
+        <tr>
+            <td>属性</td>
+            <td>{{ item.attribute }}</td>
+        </tr>
     </tbody>
 </table>
 
@@ -45,7 +49,7 @@
 
 <ul>
     <li><a href="{% url 'admin:inventory_item_change' item.id %}">编辑物品</a></li>
-    <li><a href="{% url 'inventory:location_root' %}?pending={{ item.pk }}">选择位置</a></li>
+    <li><a href="{% url 'inventory:location_root' %}?pending={{ item.pk }}">更改位置</a></li>
 </ul>
 
 {% else %}

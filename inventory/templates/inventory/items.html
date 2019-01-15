@@ -17,7 +17,13 @@
         {% for item in item_list %}
         <tr>
             <td><a href="{% url 'inventory:item' item.id %}">{{ item.name }}</a></td>
-            <td>{{ item.location }}</td>
+            <td>
+                {% if item.location %}
+                <a href="{% url 'inventory:location' item.location.id %}">{{ item.location }}</a>
+                {% else %}
+                {{ item.location }}
+                {% endif %}
+            </td>
             <td>{{ item.quantity }} {% if item.unit %}{{ item.unit }}{% endif %}</td>
             <!-- <td>{{ item.unit }}</td> -->
             <td>{{ item.attribute }}</td>

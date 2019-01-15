@@ -112,9 +112,9 @@ class LocationView(generic.View):
             else:
                 location = Location.objects.filter(id=my_ID)[0]
                 location_list = location.parentPath.all()
-                if len(location_list) == 0:
-                    item_list = Item.objects.filter(
-                        location=location, user=self.user_id)
+                # if len(location_list) == 0:
+                item_list = Item.objects.filter(
+                    location=location, user=self.user_id)
         except:
             messages.error(request, "访问位置出现错误！")
             return redirect('inventory:info')
@@ -134,6 +134,7 @@ def put_item_to_location(request, item_pk, location_pk):
     item.location = location
     item.save()
     return redirect('inventory:location', location_pk)
+
 
 class InfoView(generic.View):
     def dispatch(self, request, *args, **kwargs):
