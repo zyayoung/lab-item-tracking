@@ -109,8 +109,7 @@ class LocationView(generic.View):
                 location = Location.objects.filter(id=my_ID)[0]
                 location_list = location.parentPath.all()
                 if len(location_list) == 0:
-                    item_ID = Location.objects.filter(id=my_ID).values('item_id')[0]['item_id']
-                    item_list = Item.objects.filter(id=item_ID, user=self.user_id)
+                    item_list = Item.objects.filter(location=location, user=self.user_id)
         except:
             pass
         finally:
