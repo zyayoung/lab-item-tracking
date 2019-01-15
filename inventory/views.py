@@ -2,6 +2,7 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.http import HttpResponseRedirect, HttpResponse
 from django.urls import reverse
 from django.views import generic
+from django.contrib import messages
 from . import forms
 
 from inventory.models import Item, Location
@@ -20,7 +21,7 @@ class ItemsView(generic.ListView):
 
     def dispatch(self, request, *args, **kwargs):
         if not request.session.get('is_login', None):
-            return redirect("/")
+            return redirect('inventory:index')
         else:
             self.user_id = request.session.get('user_id', None)
             return super(ItemsView, self).dispatch(request, *args, **kwargs)
@@ -32,7 +33,7 @@ class ItemsView(generic.ListView):
 class AddView(generic.View):
     def dispatch(self, request, *args, **kwargs):
         if not request.session.get('is_login', None):
-            return redirect("/")
+            return redirect('inventory:index')
         else:
             return super(AddView, self).dispatch(request, *args, **kwargs)
 
@@ -57,7 +58,7 @@ class AddView(generic.View):
                 myUser.objects.get(id=request.session['user_id']))
             new_item.save()
             message = "添加成功！"
-            return redirect('/add/')
+            return redirect('inventory:add')
         else:
             return self.get(request)
 
@@ -69,7 +70,7 @@ class ItemView(generic.DetailView):
 
     def dispatch(self, request, *args, **kwargs):
         if not request.session.get('is_login', None):
-            return redirect("/")
+            return redirect('inventory:index')
         else:
             self.user_id = request.session.get('user_id', None)
             return super(ItemView, self).dispatch(request, *args, **kwargs)
@@ -91,7 +92,7 @@ class LocationView(generic.View):
 
     def dispatch(self, request, *args, **kwargs):
         if not request.session.get('is_login', None):
-            return redirect("/")
+            return redirect('inventory:index')
         else:
             # self.myPathList = kwargs['path'].split("/")
             self.user_id = request.session.get('user_id', None)
@@ -102,7 +103,9 @@ class LocationView(generic.View):
         location = None
         location_list = None
         item_list = None
-        pending = get_object_or_404(Item, pk=request.GET['pending']) if 'pending' in request.GET.keys() else None
+        pending = get_object_or_404(
+            Item, pk=request.
+            GET['pending']) if 'pending' in request.GET.keys() else None
         try:
             if my_ID == None:
                 location_list = Location.objects.filter(parent=None)
@@ -110,21 +113,34 @@ class LocationView(generic.View):
                 location = Location.objects.filter(id=my_ID)[0]
                 location_list = location.parentPath.all()
                 if len(location_list) == 0:
-                    item_list = Item.objects.filter(location=location, user=self.user_id)
+                    item_list = Item.objects.filter(
+                        location=location, user=self.user_id)
         except:
-            pass
-        finally:
-            return render(request, 'inventory/location.html', locals())
+            messages.error(request, "访问位置出现错误！")
+            return redirect('inventory:info')
+        return render(request, 'inventory/location.html', locals())
 
 
 def put_item_to_location(request, item_pk, location_pk):
     user_id = request.session.get('user_id', None)
     item = get_object_or_404(Item, pk=item_pk)
     if not user_id in [user.id for user in item.user.all()]:
-        return HttpResponse("You Have no access to this item!")
+        messages.error(request, "您没有更改该物品的权限！")
+        return redirect('inventory:info')
     location = get_object_or_404(Location, pk=location_pk)
     if not user_id in [user.id for user in location.allowed_users.all()]:
-        return HttpResponse("You Have no access to this location!")
+        messages.error(request, "您没有更改该位置的权限！")
+        return redirect('inventory:info')
     item.location = location
     item.save()
     return redirect('inventory:location', location_pk)
+
+class InfoView(generic.View):
+    def dispatch(self, request, *args, **kwargs):
+        if not request.session.get('is_login', None):
+            return redirect('inventory:index')
+        else:
+            return super(InfoView, self).dispatch(request, *args, **kwargs)
+
+    def get(self, request):
+        return render(request, 'inventory/info.html', locals())

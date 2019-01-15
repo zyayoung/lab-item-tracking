@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}消息{% endblock %}
+
+{% block content %}
+<p class="lead">
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        <li {% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    <span id="nuber">3</span>秒后返回...
+</p>
+{% endblock %}
+{% block script %}
+<script>
+    window.onload = function () {
+        setInterval("myTimer()", 1000);
+    };
+    var cd = 2;
+    function myTimer() {
+        document.getElementById("nuber").innerHTML = cd--;
+        if (cd < 0) window.history.go(-1);
+    }
+</script>
+{% endblock %}

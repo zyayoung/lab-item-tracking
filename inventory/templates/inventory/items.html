@@ -5,26 +5,32 @@
 {% if item_list %}
 <p class="lead">物品：</p>
 <table class="table table-striped table-condensed">
-  <thead>
-    <th>名称</th>
-    <th>位置</th>
-    <th>数量</th>
-    <th>单位</th>
-    <th>属性</th>
-  </thead>
-  <tbody>
-    {% for item in item_list %}
+    <thead>
+        <th>名称</th>
+        <th>位置</th>
+        <th>数量</th>
+        <th>单位</th>
+        <th>属性</th>
+        <th>用户</th>
+    </thead>
+    <tbody>
+        {% for item in item_list %}
         <tr>
-          <td><a href="{% url "inventory:item" item.id %}">{{ item.name }}</a></td>
-          <td>{{ item.location }}</td>
-          <td>{{ item.quantity }}</td>
-          <td>{{ item.unit }}</td>
-          <td>{{ item.attribute }}</td>
+            <td><a href="{% url 'inventory:item' item.id %}">{{ item.name }}</a></td>
+            <td>{{ item.location }}</td>
+            <td>{{ item.quantity }}</td>
+            <td>{{ item.unit }}</td>
+            <td>{{ item.attribute }}</td>
+            <td>
+                {% for user in item.user.all %}
+                {{ user.name }}
+                {% endfor %}
+            </td>
         </tr>
-    {% endfor %}
-  </tbody>
+        {% endfor %}
+    </tbody>
 </table>
 {% else %}
-    <p class="lead">没有可用的物品</p>
+<p class="lead">没有可用的物品</p>
 {% endif %}
 {% endblock %}
