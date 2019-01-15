@@ -18,7 +18,13 @@
         </tr>
         <tr>
             <td>位置</td>
-            <td><a href="{% url 'inventory:location' item.location.id %}">{{ item.location }}</a></td>
+            <td>
+                {% if item.location %}
+                <a href="{% url 'inventory:location' item.location.id %}">{{ item.location }}</a>
+                {% else %}
+                {{ item.location }}
+                {% endif %}
+            </td>
         </tr>
         <tr>
             <td>用户</td>
