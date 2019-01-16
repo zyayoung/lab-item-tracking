@@ -87,8 +87,8 @@ class LocationView(generic.View):
     def get(self, request, *args, **kwargs):
         user_id = request.session.get('user_id', None)
         location_id = kwargs.get('id')
-        item_list = None
         location_list = None
+        item_list = None
         QRCode = "http://qr.liantu.com/api.php?text={0}".format(
             quote(request.build_absolute_uri()))
         if 'pending' in request.GET.keys():
@@ -99,15 +99,16 @@ class LocationView(generic.View):
         try:
             # root directory
             if location_id == None:
-                location_list = Location.objects.filter(parent=None)
+                location_list = Location.objects.filter(
+                    parent=None, allowed_users=user_id)
             # other directory
             else:
                 location = Location.objects.filter(id=location_id)[0]
-                location_list = location.parentPath.all()
+                location_list = location.parentPath.filter(allowed_users=user_id)
                 all_users = location.allowed_users.all()
-                if user_id in [user.id for user in all_users]:
-                    item_list = Item.objects.filter(
-                        location=location, user=user_id)
+                if user_id not in [user.id for user in all_users]:
+                    raise
+                item_list = Item.objects.filter(location=location, user=user_id)
         except:
             messages.error(request, "访问位置出现错误！")
             return render(request, 'inventory/info.html', locals())
