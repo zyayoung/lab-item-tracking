@@ -28,7 +28,7 @@ class UseItemForm(forms.Form):
             attrs={
                 'class': 'form-control',
                 'type': 'number',
-                'step': '1',
+                'step': '0.01',
                 'min': '0',
                 'value': '0',
             }))
