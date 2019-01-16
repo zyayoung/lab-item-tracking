@@ -3,7 +3,7 @@
 {% block title %}位置列表{% endblock %}
 {% block content %}
 {% if pending %}
-<p class="lead">选择想存入的位置：</p>
+<p class="lead">当前物品：{{ pending }} 选择想存入的位置：</p>
 {% endif %}
 <p class="lead">
     {% if location %}
@@ -79,10 +79,39 @@
 <p class="lead">没有存放物品</p>
 {% endif %}
 {% if pending and location %}
-<a class="btn btn-outline-primary" href="#" onClick="cfm('{% url 'inventory:put' pending.pk location.pk %}', '{{ pending }}', '{{ location }}')"
+<a class="btn btn-outline-primary" href="#" onClick="cfm('您确认要将<b>{{ pending }}</b>存入<b>{{ location }}</b>吗？', '{% url 'inventory:put' pending.pk location.pk %}')"
     role="button">
     将{{ pending }}存入此位置
 </a>
+{% elif location %}
+<a class="btn btn-outline-primary" role="button" href="{% url 'inventory:additem2loc' location.id %}">
+    <i class="fa fa-plus" aria-hidden="true"></i> 添加物品
+</a>
+{% endif %}
+{% if pending %}
+<a class="btn btn-outline-primary" href="#" onClick="cfm('您确认要将<b>{{ pending }}</b>取出吗？', '{% url 'inventory:put' pending.pk 0 %}')"
+    role="button">
+    取出{{ pending }}
+</a>
+{% endif %}
+<div class="modal fade" id="qrcodeModal" tabindex="-1" role="dialog" aria-labelledby="qrcodeModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="qrcodeModalTitle">
+                    <i class="fa fa-qrcode" aria-hidden="true"></i> 二维码
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-center">
+                <img id="qrcodeId" class="img-responsive" src="#" alt="二维码">
+            </div>
+        </div>
+    </div>
+</div>
+{% if pending %}
 <div class="modal fade" id="cfmModal" tabindex="-1" role="dialog" aria-labelledby="cfmModalTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
@@ -105,33 +134,12 @@
         </div>
     </div>
 </div>
-{% elif location %}
-<a class="btn btn-outline-primary" role="button" href="{% url 'inventory:additem2loc' location.id %}">
-    <i class="fa fa-plus" aria-hidden="true"></i> 添加物品
-</a>
 {% endif %}
-<div class="modal fade" id="qrcodeModal" tabindex="-1" role="dialog" aria-labelledby="qrcodeModalTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="qrcodeModalTitle">
-                    <i class="fa fa-qrcode" aria-hidden="true"></i> 二维码
-                </h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body text-center">
-                <img id="qrcodeId" class="img-responsive" src="#" alt="二维码">
-            </div>
-        </div>
-    </div>
-</div>
 {% endblock %}
 {% block script %}
 <script>
-    function cfm(url, item, loc) {
-        $('#modalNotice').html('您确认要将<b>' + item + '</b>存入<b>' + loc + '</b>吗？');
+    function cfm(msg, url) {
+        $('#modalNotice').html(msg);
         $('#cfmUrl').val(url);
         $('#cfmModal').modal();
     }

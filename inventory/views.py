@@ -56,7 +56,7 @@ class AddItemView(generic.View):
                 myUser.objects.get(id=request.session['user_id']))
             new_item.save()
             message = "添加成功！"
-            return redirect('inventory:add')
+            return render(request, 'inventory/add.html', locals())
         else:
             return self.get(request)
 
@@ -74,7 +74,27 @@ class ItemView(generic.View):
         if not user_id in [user.id for user in item.user.all()]:
             messages.error(request, "您没有访问该物品的权限！")
             return render(request, 'inventory/info.html', locals())
+        use_item_form = forms.UseItemForm()
         return render(request, 'inventory/item.html', locals())
+
+    def post(self, request, *args, **kwargs):
+        user_id = request.session.get('user_id', None)
+        item = get_object_or_404(Item, pk=kwargs.get('pk'))
+        if not user_id in [user.id for user in item.user.all()]:
+            messages.error(request, "您没有访问该物品的权限！")
+            return render(request, 'inventory/info.html', locals())
+        use_item_form = forms.UseItemForm(request.POST)
+        if use_item_form.is_valid():
+            quantity = float(use_item_form.cleaned_data['quantity'])
+            if quantity > 0 and quantity <= item.quantity:
+                item.quantity = float(item.quantity) - quantity
+                item.save()
+                message = "使用成功！"
+            else:
+                message = "使用数量有误！"
+            return render(request, 'inventory/item.html', locals())
+        else:
+            return self.get(request)
 
 
 class LocationView(generic.View):
@@ -104,11 +124,13 @@ class LocationView(generic.View):
             # other directory
             else:
                 location = Location.objects.filter(id=location_id)[0]
-                location_list = location.parentPath.filter(allowed_users=user_id)
+                location_list = location.parentPath.filter(
+                    allowed_users=user_id)
                 all_users = location.allowed_users.all()
                 if user_id not in [user.id for user in all_users]:
                     raise
-                item_list = Item.objects.filter(location=location, user=user_id)
+                item_list = Item.objects.filter(
+                    location=location, user=user_id)
         except:
             messages.error(request, "访问位置出现错误！")
             return render(request, 'inventory/info.html', locals())
