@@ -81,8 +81,8 @@ class ItemView(generic.DetailView):
         context['permission'] = self.user_id in [
             user.id for user in item.user.all()
         ]
-        if not context['permission']:
-            return redirect('inventory:index')
+        # if not context['permission']:
+        #     return redirect('inventory:index')
         return context
 
 
