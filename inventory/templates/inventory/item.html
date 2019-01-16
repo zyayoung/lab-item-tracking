@@ -55,6 +55,7 @@
 {% else %}
 <a class="btn btn-outline-primary" role="button" href="{% url 'inventory:location_root' %}?pending={{ item.id }}">存入物品</a>
 {% endif %}
+<a class="btn btn-outline-primary" role="button" href="{% url 'inventory:delete' item.id %}">移出列表</a>
 {% else %}
 <p class="lead">您没有访问该物品的权限！</p>
 {% endif %}

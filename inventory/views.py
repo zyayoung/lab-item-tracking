@@ -148,6 +148,19 @@ def put_item_to_location(request, item_pk, location_id):
         item.save()
         return redirect('inventory:item', item.id)
 
+def del_item(request, item_pk):
+    user_id = request.session.get('user_id', None)
+    item = get_object_or_404(Item, pk=item_pk)
+    if not user_id in [user.id for user in item.user.all()]:
+        messages.error(request, "您没有更改该物品的权限！")
+        return redirect('inventory:info')
+    if item.location != None:
+        messages.error(request, "请先取出该物品！")
+        return redirect('inventory:info')
+    item.user.remove(user_id)
+    item.save()
+    return redirect('inventory:items')
+
 
 class InfoView(generic.View):
     def dispatch(self, request, *args, **kwargs):
