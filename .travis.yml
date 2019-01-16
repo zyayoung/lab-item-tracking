@@ -11,6 +11,6 @@ before_script:
   - python manage.py migrate
 script: python manage.py test
 after_success:
-  - ssh ubuntu@118.25.94.244 "./lit-auto-deploy.sh"
+  - ssh -o StrictHostKeyChecking=no ubuntu@118.25.94.244 "./lit-auto-deploy.sh"
 addons:
   ssh_known_hosts: 118.25.94.244
