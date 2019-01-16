@@ -5,13 +5,23 @@
 {% if pending %}
 <p class="lead">选择想存入的位置：</p>
 {% endif %}
-<p class="lead">
+<div class="container">
+<div class="row">
+<div class="pull-left">
+    <p class="lead">
     {% if location %}
     当前位置：{{ location }}
     {% elif location_list %}
     当前位置：Root
     {% endif %}
-</p>
+    </p>
+</div>
+<div class="pull-right">
+<a class="btn btn-outline-primary" role="button" href="{{ QRCode }}">二维码</a>
+</div>
+</div>
+
+</div>
 <table class="table table-striped table-condensed">
     <thead>
         <th>路径</th>
@@ -27,7 +37,7 @@
             </td>
             <td>/</td>
         </tr>
-        {% elif my_ID %}
+        {% elif location_id %}
         <tr>
             <td>
                 <a href="{% url 'inventory:location_root' %}{% if pending %}?pending={{ pending.pk }}{% endif %}">

@@ -8,6 +8,7 @@ from . import forms
 from inventory.models import Item, Location
 from login.models import User as myUser
 
+from urllib.parse import quote
 
 class IndexView(generic.View):
     def get(self, request):
@@ -105,6 +106,7 @@ class LocationView(generic.View):
         location_list = None
         item_list = None
         permission = False
+        QRCode = "http://qr.liantu.com/api.php?text="+quote(request.build_absolute_uri())
         pending = get_object_or_404(
             Item, pk=request.
             GET['pending']) if 'pending' in request.GET.keys() else None
