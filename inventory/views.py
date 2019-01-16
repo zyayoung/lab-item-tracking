@@ -10,33 +10,31 @@ from login.models import User as myUser
 
 from urllib.parse import quote
 
+
 class IndexView(generic.View):
     def get(self, request):
         return render(request, 'inventory/index.html')
 
 
-class ItemsView(generic.ListView):
-    template_name = 'inventory/items.html'
-    context_object_name = 'item_list'
-    user_id = 0
-
+class ItemsView(generic.View):
     def dispatch(self, request, *args, **kwargs):
         if not request.session.get('is_login', None):
-            return redirect('inventory:index')
+            return render(request, 'inventory/index.html')
         else:
-            self.user_id = request.session.get('user_id', None)
             return super(ItemsView, self).dispatch(request, *args, **kwargs)
 
-    def get_queryset(self):
-        return Item.objects.filter(user=self.user_id).order_by('-name')
+    def get(self, request, *args, **kwargs):
+        item_list = Item.objects.filter(
+            user=request.session.get('user_id', None))
+        return render(request, 'inventory/items.html', locals())
 
 
-class AddView(generic.View):
+class AddItemView(generic.View):
     def dispatch(self, request, *args, **kwargs):
         if not request.session.get('is_login', None):
-            return redirect('inventory:index')
+            return render(request, 'inventory/index.html')
         else:
-            return super(AddView, self).dispatch(request, *args, **kwargs)
+            return super(AddItemView, self).dispatch(request, *args, **kwargs)
 
     def get(self, request):
         add_form = forms.AddItemForm()
@@ -63,68 +61,56 @@ class AddView(generic.View):
             return self.get(request)
 
 
-class ItemView(generic.DetailView):
-    model = Item
-    template_name = 'inventory/item.html'
-    user_id = 0
-
+class ItemView(generic.View):
     def dispatch(self, request, *args, **kwargs):
         if not request.session.get('is_login', None):
-            return redirect('inventory:index')
+            return render(request, 'inventory/index.html')
         else:
-            self.user_id = request.session.get('user_id', None)
             return super(ItemView, self).dispatch(request, *args, **kwargs)
 
-    def get_context_data(self, **kwargs):
-        context = super(ItemView, self).get_context_data(**kwargs)
-        item = context['item']
-        context['permission'] = self.user_id in [
-            user.id for user in item.user.all()
-        ]
-        # if not context['permission']:
-        #     return redirect('inventory:index')
-        return context
+    def get(self, request, *args, **kwargs):
+        user_id = request.session.get('user_id', None)
+        item = get_object_or_404(Item, pk=kwargs.get('pk'))
+        if not user_id in [user.id for user in item.user.all()]:
+            messages.error(request, "您没有访问该物品的权限！")
+            return render(request, 'inventory/info.html', locals())
+        return render(request, 'inventory/item.html', locals())
 
 
 class LocationView(generic.View):
-    template_name = 'inventory/location.html'
-    context_object_name = 'location_list'
-    myPath = None
-    user_id = 0
-
     def dispatch(self, request, *args, **kwargs):
         if not request.session.get('is_login', None):
-            return redirect('inventory:index')
+            return render(request, 'inventory/index.html')
         else:
-            # self.myPathList = kwargs['path'].split("/")
-            self.user_id = request.session.get('user_id', None)
             return super(LocationView, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
+        user_id = request.session.get('user_id', None)
         location_id = kwargs.get('id')
-        location = None
-        location_list = None
         item_list = None
-        permission = False
-        QRCode = "http://qr.liantu.com/api.php?text="+quote(request.build_absolute_uri())
-        pending = get_object_or_404(
-            Item, pk=request.
-            GET['pending']) if 'pending' in request.GET.keys() else None
+        location_list = None
+        QRCode = "http://qr.liantu.com/api.php?text={0}".format(
+            quote(request.build_absolute_uri()))
+        if 'pending' in request.GET.keys():
+            pending = get_object_or_404(
+                Item, pk=request.GET['pending'], user=user_id)
+        else:
+            pending = None
         try:
+            # root directory
             if location_id == None:
                 location_list = Location.objects.filter(parent=None)
+            # other directory
             else:
                 location = Location.objects.filter(id=location_id)[0]
-                permission = request.session.get('user_id', None) in [
-                    user.id for user in location.allowed_users.all()
-                ]
                 location_list = location.parentPath.all()
-                # if len(location_list) == 0:
-                item_list = Item.objects.filter(
-                    location=location, user=self.user_id)
+                all_users = location.allowed_users.all()
+                if user_id in [user.id for user in all_users]:
+                    item_list = Item.objects.filter(
+                        location=location, user=user_id)
         except:
             messages.error(request, "访问位置出现错误！")
-            return redirect('inventory:info')
+            return render(request, 'inventory/info.html', locals())
         return render(request, 'inventory/location.html', locals())
 
 
@@ -132,31 +118,35 @@ def put_item_to_location(request, item_pk, location_id):
     user_id = request.session.get('user_id', None)
     item = get_object_or_404(Item, pk=item_pk)
     if not user_id in [user.id for user in item.user.all()]:
-        messages.error(request, "您没有更改该物品的权限！")
-        return redirect('inventory:info')
+        messages.error(request, "您没有访问该物品的权限！")
+        return render(request, 'inventory/info.html', locals())
+    # put item in
     if int(location_id) != 0:
-        print(location_id)
+        # print(location_id)
         location = get_object_or_404(Location, pk=location_id)
-        if not user_id in [user.id for user in location.allowed_users.all()]:
+        all_users = location.allowed_users.all()
+        if not user_id in [user.id for user in all_users]:
             messages.error(request, "您没有更改该位置的权限！")
-            return redirect('inventory:info')
+            return render(request, 'inventory/info.html', locals())
         item.location = location
         item.save()
         return redirect('inventory:location', location_id)
+    # take item out
     else:
         item.location = None
         item.save()
         return redirect('inventory:item', item.id)
+
 
 def del_item(request, item_pk):
     user_id = request.session.get('user_id', None)
     item = get_object_or_404(Item, pk=item_pk)
     if not user_id in [user.id for user in item.user.all()]:
         messages.error(request, "您没有更改该物品的权限！")
-        return redirect('inventory:info')
+        return render(request, 'inventory/info.html', locals())
     if item.location != None:
         messages.error(request, "请先取出该物品！")
-        return redirect('inventory:info')
+        return render(request, 'inventory/info.html', locals())
     item.user.remove(user_id)
     item.save()
     return redirect('inventory:items')
@@ -165,27 +155,25 @@ def del_item(request, item_pk):
 class InfoView(generic.View):
     def dispatch(self, request, *args, **kwargs):
         if not request.session.get('is_login', None):
-            return redirect('inventory:index')
+            return render(request, 'inventory/index.html')
         else:
             return super(InfoView, self).dispatch(request, *args, **kwargs)
 
     def get(self, request):
         return render(request, 'inventory/info.html', locals())
 
-class AddItem2LocView(generic.View):
-    model = Item
-    template_name = 'inventory/additem2loc.html'
-    context_object_name = 'item_list'
 
+class AddItem2LocView(generic.View):
     def dispatch(self, request, *args, **kwargs):
         if not request.session.get('is_login', None):
-            return redirect('inventory:index')
+            return render(request, 'inventory/index.html')
         else:
-            self.user_id = request.session.get('user_id', None)
-            return super(AddItem2LocView, self).dispatch(request, *args, **kwargs)
+            return super(AddItem2LocView, self).dispatch(
+                request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
-        item_list = Item.objects.filter(location=None, user=self.user_id)
+        user_id = request.session.get('user_id', None)
+        item_list = Item.objects.filter(location=None, user=user_id)
         location_id = kwargs.get('id')
         location = get_object_or_404(Location, pk=location_id)
         return render(request, 'inventory/additem2loc.html', locals())

@@ -78,7 +78,6 @@
 {% elif location %}
 <p class="lead">没有存放物品</p>
 {% endif %}
-{% if permission %}
 {% if pending and location %}
 <a class="btn btn-outline-primary" href="#" onClick="cfm('{% url 'inventory:put' pending.pk location.pk %}', '{{ pending }}', '{{ location }}')"
     role="button">
@@ -110,9 +109,6 @@
 <a class="btn btn-outline-primary" role="button" href="{% url 'inventory:additem2loc' location.id %}">
     <i class="fa fa-plus" aria-hidden="true"></i> 添加物品
 </a>
-{% endif %}
-{% else %}
-<p class="text-muted">*您没有在该位置存入物品的权限！</p>
 {% endif %}
 <div class="modal fade" id="qrcodeModal" tabindex="-1" role="dialog" aria-labelledby="qrcodeModalTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
