@@ -5,22 +5,19 @@
 {% if pending %}
 <p class="lead">选择想存入的位置：</p>
 {% endif %}
-<div class="container">
-<div class="row">
 <div class="pull-left">
     <p class="lead">
-    {% if location %}
-    当前位置：{{ location }}
-    {% elif location_list %}
-    当前位置：Root
-    {% endif %}
+        {% if location %}
+        当前位置：{{ location }}
+        {% elif location_list %}
+        当前位置：Root
+        {% endif %}
     </p>
 </div>
 <div class="pull-right">
-<a class="btn btn-outline-primary" role="button" href="{{ QRCode }}">二维码</a>
-</div>
-</div>
-
+    <a class="btn btn-outline-primary" role="button" href="{{ QRCode }}">
+        <i class="icon-qrcode icon-large"></i> 二维码
+    </a>
 </div>
 <table class="table table-striped table-condensed">
     <thead>
@@ -86,14 +83,17 @@
 {% endif %}
 {% if permission %}
 {% if pending and location %}
-<a class="btn btn-outline-primary" href="#" onClick="cfm('{% url 'inventory:put' pending.pk location.pk %}', '{{ pending }}', '{{ location }}')" role="button">
+<a class="btn btn-outline-primary" href="#" onClick="cfm('{% url 'inventory:put' pending.pk location.pk %}', '{{ pending }}', '{{ location }}')"
+    role="button">
     将{{ pending }}存入此位置
 </a>
 <div class="modal fade" id="cfmModal" tabindex="-1" role="dialog" aria-labelledby="cfmModalTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="cfmModalTitle">提示信息</h5>
+                <h5 class="modal-title" id="cfmModalTitle">
+                    <i class="icon-info-sign"></i> 提示信息
+                </h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -103,14 +103,16 @@
             </div>
             <div class="modal-footer">
                 <input type="hidden" id="url" />
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
-                <button type="button" class="btn btn-primary" onClick="urlSubmit()">确定</button>
+                <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-outline-primary" onClick="urlSubmit()">确定</button>
             </div>
         </div>
     </div>
 </div>
 {% elif location %}
-<a class="btn btn-outline-primary" role="button" href="{% url 'inventory:additem2loc' location.id %}">添加物品</a>
+<a class="btn btn-outline-primary" role="button" href="{% url 'inventory:additem2loc' location.id %}">
+    <i class="icon-plus"></i> 添加物品
+</a>
 {% endif %}
 {% else %}
 <p class="text-muted">*您没有在该位置存入物品的权限！</p>
