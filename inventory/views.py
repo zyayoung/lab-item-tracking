@@ -71,7 +71,7 @@ class ItemView(generic.View):
     def get(self, request, *args, **kwargs):
         user_id = request.session.get('user_id', None)
         item = get_object_or_404(Item, pk=kwargs.get('pk'))
-        if not user_id in [user.id for user in item.user.all()]:
+        if not item.user.filter(id=user_id):
             messages.error(request, "您没有访问该物品的权限！")
             return render(request, 'inventory/info.html', locals())
         use_item_form = forms.UseItemForm()
@@ -80,7 +80,7 @@ class ItemView(generic.View):
     def post(self, request, *args, **kwargs):
         user_id = request.session.get('user_id', None)
         item = get_object_or_404(Item, pk=kwargs.get('pk'))
-        if not user_id in [user.id for user in item.user.all()]:
+        if not item.user.filter(id=user_id):
             messages.error(request, "您没有访问该物品的权限！")
             return render(request, 'inventory/info.html', locals())
         use_item_form = forms.UseItemForm(request.POST)
@@ -126,8 +126,7 @@ class LocationView(generic.View):
                 location = Location.objects.filter(id=location_id)[0]
                 location_list = location.parentPath.filter(
                     allowed_users=user_id)
-                all_users = location.allowed_users.all()
-                if user_id not in [user.id for user in all_users]:
+                if not location.allowed_users.filter(id=user_id):
                     raise
                 item_list = Item.objects.filter(
                     location=location, user=user_id)
@@ -140,15 +139,14 @@ class LocationView(generic.View):
 def put_item_to_location(request, item_pk, location_id):
     user_id = request.session.get('user_id', None)
     item = get_object_or_404(Item, pk=item_pk)
-    if not user_id in [user.id for user in item.user.all()]:
+    if not item.user.filter(id=user_id):
         messages.error(request, "您没有访问该物品的权限！")
         return render(request, 'inventory/info.html', locals())
     # put item in
     if int(location_id) != 0:
         # print(location_id)
         location = get_object_or_404(Location, pk=location_id)
-        all_users = location.allowed_users.all()
-        if not user_id in [user.id for user in all_users]:
+        if not location.allowed_users.filter(id=user_id):
             messages.error(request, "您没有更改该位置的权限！")
             return render(request, 'inventory/info.html', locals())
         item.location = location
