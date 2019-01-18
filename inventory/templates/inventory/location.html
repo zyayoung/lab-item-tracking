@@ -6,10 +6,11 @@
 <p class="lead">当前物品：{{ pending }} 选择想存入的位置：</p>
 {% endif %}
 <p class="lead">
+    当前位置：
     {% if location %}
-    当前位置：{{ location }}
-    {% elif location_list %}
-    当前位置：Root
+    {{ location }}
+    {% elif loc_list %}
+    Root
     {% endif %}
     <a class="btn btn-outline-primary pull-right" role="button" href="#" onClick="qrcodeMdl('{{ QRCode }}')">
         <i class="fa fa-qrcode" aria-hidden="true"></i></i> 二维码
@@ -41,7 +42,7 @@
             <td>/</td>
         </tr>
         {% endif %}
-        {% for sublocation in location_list %}
+        {% for sublocation in loc_list %}
         <tr>
             <td>
                 <a href="{% url 'inventory:location' sublocation.id %}{% if pending %}?pending={{ pending.pk }}{% endif %}">
@@ -143,10 +144,12 @@
         $('#cfmUrl').val(url);
         $('#cfmModal').modal();
     }
+
     function urlSubmit() {
         var url = $.trim($("#cfmUrl").val());
         window.location.href = url;
     }
+
     function qrcodeMdl(url) {
         $('#qrcodeModal').modal();
         $("#qrcodeId").attr('src', url);

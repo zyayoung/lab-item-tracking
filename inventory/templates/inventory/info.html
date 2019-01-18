@@ -21,7 +21,7 @@
     };
     var cd = 2;
     function myTimer() {
-        document.getElementById("nuber").innerHTML = cd--;
+        document.getElementById("nuber").innerHTML = Math.max(cd--, 0);
         if (cd < 0) window.history.go(-1);
     }
 </script>
