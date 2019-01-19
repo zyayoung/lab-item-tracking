@@ -79,13 +79,13 @@
 {% elif location %}
 <p class="lead">没有存放物品</p>
 {% endif %}
-{% if pending %}
+{% if pending and location_id %}
 <a class="btn btn-outline-primary" href="#" onClick="cfm('您确认要将<b>{{ pending }}</b>存入<b>{{ location }}</b>吗？', '{% url 'inventory:put' pending.pk location.pk %}')"
     role="button">
     将{{ pending }}存入此位置
 </a>
-{% else %}
-<a class="btn btn-outline-primary" role="button" href="{% url 'inventory:additem2loc' location.id %}">
+{% elif location_id %}
+<a class="btn btn-outline-primary" role="button" href="{% url 'inventory:additem2loc' location_id %}">
     <i class="fa fa-plus" aria-hidden="true"></i> 添加物品
 </a>
 {% endif %}
