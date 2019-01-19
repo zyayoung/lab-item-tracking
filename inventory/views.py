@@ -29,11 +29,11 @@ class ItemsView(generic.View):
         tmp_user = myUser.objects.get(id=request.session.get('user_id'))
         all_item = Item.objects.all()
         item_list = all_item.filter(user=tmp_user)
-        if tmp_user.staff.exists():
-            ids = tmp_user.staff.all()
-            for _id in ids:
-                item_list = item_list | all_item.filter(user=_id)
-            item_list = item_list.distinct()
+        ids = tmp_user.staff.all()
+        for _id in ids:
+            item_list = item_list | all_item.filter(user=_id)
+        item_list = item_list.distinct()
+        item_list = item_list.distinct()
         paginator = Paginator(item_list, 20)
         page = request.GET.get('page')
         try:
@@ -150,12 +150,11 @@ class LocationView(generic.View):
             all_location = loc_now.parentPath.all()
             item_list = Item.objects.filter(location=loc_now, user=user_id)
         loc_list = all_location.filter(allowed_users=user_id)
-        if tmp_user.staff.exists():
-            ids = tmp_user.staff.all()
-            for _id in ids:
-                loc_list = loc_list | all_location.filter(allowed_users=_id)
-                print(all_location.filter(allowed_users=_id))
-            loc_list = loc_list.distinct()
+        ids = tmp_user.staff.all()
+        for _id in ids:
+            loc_list = loc_list | all_location.filter(allowed_users=_id)
+            print(all_location.filter(allowed_users=_id))
+        loc_list = loc_list.distinct()
         return render(request, 'inventory/location.html', locals())
 
 

@@ -11,13 +11,14 @@ class User(models.Model):
     c_time = models.DateTimeField(auto_now_add=True)
     staff = models.ManyToManyField(
         "self",
+        symmetrical=False,
         blank=True,
-        verbose_name="关联用户",
+        verbose_name="被管理员工",
         related_name="staffUser",
     )
 
     def __str__(self):
-        return "{0}{1}".format(self.name, "(管理员)" if self.staff.exists() else "")
+        return "{0} {1}".format(self.name, "(管理员)" if self.staff.exists() else "")
 
     class Meta:
         ordering = ["-c_time"]
