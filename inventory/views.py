@@ -3,6 +3,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.urls import reverse
 from django.views import generic
 from django.contrib import messages
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from itertools import chain
 from . import forms
 
@@ -33,6 +34,16 @@ class ItemsView(generic.View):
             for _id in ids:
                 item_list = item_list | all_item.filter(user=_id)
             item_list = item_list.distinct()
+        paginator = Paginator(item_list, 20)
+        page = request.GET.get('page')
+        try:
+            item_list = paginator.page(page)
+        except PageNotAnInteger:
+            # If page is not an integer, deliver first page.
+            item_list = paginator.page(1)
+        except EmptyPage:
+            # If page is out of range (e.g. 9999), deliver last page of results.
+            item_list = paginator.page(paginator.num_pages)
         return render(request, 'inventory/items.html', locals())
 
 
