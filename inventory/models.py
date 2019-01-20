@@ -19,7 +19,12 @@ class Location(models.Model):
         verbose_name="父位置",
         related_name="parentPath",
     )
-    allowed_users = models.ManyToManyField(myUser, blank=True, default='', verbose_name="允许用户")
+    allowed_users = models.ManyToManyField(
+        myUser,
+        blank=True,
+        default='',
+        verbose_name="允许用户",
+    )
 
     def __str__(self):
         path_list = [self.path]
@@ -27,7 +32,8 @@ class Location(models.Model):
         while p:
             path_list.insert(0, p.path)
             p = p.parent
-        return '-'.join(path_list) # + (":" + self.item.name if self.item else "")
+        return '-'.join(
+            path_list)  # + (":" + self.item.name if self.item else "")
 
     class Meta:
         verbose_name = "位置"

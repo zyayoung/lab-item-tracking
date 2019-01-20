@@ -4,6 +4,9 @@ from django.urls import reverse
 from django.views import generic
 from django.contrib import messages
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.http import (
+    Http404, HttpResponse, HttpResponsePermanentRedirect, HttpResponseRedirect,
+)
 from itertools import chain
 from . import forms
 
@@ -33,7 +36,6 @@ class ItemsView(generic.View):
         for _id in ids:
             item_list = item_list | all_item.filter(user=_id)
         item_list = item_list.distinct()
-        item_list = item_list.distinct()
         paginator = Paginator(item_list, 20)
         page = request.GET.get('page')
         try:
@@ -61,7 +63,7 @@ class AddItemView(generic.View):
     def post(self, request):
         add_form = forms.AddItemForm(request.POST)
         message = "请检查填写的内容！"
-        if add_form.is_valid():  # 获取数据
+        if add_form.is_valid():
             name = add_form.cleaned_data['name']
             quantity = add_form.cleaned_data['quantity']
             unit = add_form.cleaned_data['unit']
@@ -86,13 +88,9 @@ class ItemView(generic.View):
         if not request.session.get('is_login', None):
             return render(request, 'inventory/index.html')
         else:
-            self.item = get_object_or_404(Item, pk=kwargs.get('pk'))
-            tmp_user = myUser.objects.get(id=request.session.get('user_id'))
-            # two cases: (admin) and (not admin)
-            if not ((tmp_user.staff.all() & self.item.user.all()) or
-                    (self.item.user.filter(id=tmp_user.id))):
-                messages.error(request, "您没有访问该物品的权限！")
-                return render(request, 'inventory/info.html', locals())
+            user_id = request.session.get('user_id')
+            tmp_user = myUser.objects.get(id=user_id)
+            self.item = get_my_item(tmp_user, kwargs.get('id'))
             return super(ItemView, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
@@ -132,8 +130,7 @@ class LocationView(generic.View):
         QRCode = "http://qr.liantu.com/api.php?text={0}".format(
             quote(request.build_absolute_uri()))
         if 'pending' in request.GET.keys():
-            pending = get_object_or_404(
-                Item, pk=request.GET['pending'], user=user_id)
+            pending = get_my_item(tmp_user, request.GET['pending'])
         else:
             pending = None
         # root directory
@@ -141,36 +138,29 @@ class LocationView(generic.View):
             all_location = Location.objects.filter(parent=None)
         # other directory
         else:
-            loc_now = Location.objects.get(id=location_id)
-            # two cases: (admin) and (not admin)
-            if not ((tmp_user.staff.all() & loc_now.allowed_users.all()) or
-                    (loc_now.allowed_users.filter(id=tmp_user.id))):
-                messages.error(request, "访问位置出现错误！")
-                return render(request, 'inventory/info.html', locals())
+            loc_now = get_my_loc(tmp_user, location_id)
             all_location = loc_now.parentPath.all()
-            item_list = Item.objects.filter(location=loc_now, user=user_id)
+            # get item list
+            all_item = Item.objects.filter(location=loc_now)
+            item_list = all_item.filter(user=tmp_user)
+            ids = tmp_user.staff.all()
+            for _id in ids:
+                item_list = item_list | all_item.filter(user=_id)
+            item_list = item_list.distinct()
         loc_list = all_location.filter(allowed_users=user_id)
         ids = tmp_user.staff.all()
         for _id in ids:
             loc_list = loc_list | all_location.filter(allowed_users=_id)
-            print(all_location.filter(allowed_users=_id))
         loc_list = loc_list.distinct()
         return render(request, 'inventory/location.html', locals())
 
 
-def put_item_to_location(request, item_pk, location_id):
+def put_item_to_location(request, item_id, location_id):
     user_id = request.session.get('user_id')
-    item = get_object_or_404(Item, pk=item_pk)
-    if not item.user.filter(id=user_id):
-        messages.error(request, "您没有访问该物品的权限！")
-        return render(request, 'inventory/info.html', locals())
+    item = get_my_item(myUser.object.get(id=user_id), item_id)
     # put item in
     if int(location_id) != 0:
-        # print(location_id)
-        location = get_object_or_404(Location, pk=location_id)
-        if not location.allowed_users.filter(id=user_id):
-            messages.error(request, "您没有更改该位置的权限！")
-            return render(request, 'inventory/info.html', locals())
+        location = get_my_loc(myUser.object.get(id=user_id), location_id)
         item.location = location
         item.save()
         return redirect('inventory:location', location_id)
@@ -181,12 +171,9 @@ def put_item_to_location(request, item_pk, location_id):
         return redirect('inventory:item', item.id)
 
 
-def del_item(request, item_pk):
+def del_item(request, item_id):
     user_id = request.session.get('user_id')
-    item = get_object_or_404(Item, pk=item_pk)
-    if not user_id in [user.id for user in item.user.all()]:
-        messages.error(request, "您没有更改该物品的权限！")
-        return render(request, 'inventory/info.html', locals())
+    item = get_my_item(myUser.object.get(id=user_id), item_id)
     if item.location != None:
         messages.error(request, "请先取出该物品！")
         return render(request, 'inventory/info.html', locals())
@@ -220,3 +207,23 @@ class AddItem2LocView(generic.View):
         location_id = kwargs.get('id')
         location = get_object_or_404(Location, pk=location_id)
         return render(request, 'inventory/additem2loc.html', locals())
+
+def get_my_item(user_now, item_id):
+    if not hasattr(user_now, 'id'):
+        raise ValueError()
+    item = get_object_or_404(Item, pk=item_id)
+    # two cases: (admin) and (not admin)
+    if not ((user_now.staff.all() & item.user.all()) or
+            (item.user.filter(id=user_now.id))):
+        raise Http404()
+    return item
+
+def get_my_loc(user_now, loc_id):
+    if not hasattr(user_now, 'id'):
+        raise ValueError()
+    loc = Location.objects.get(id=loc_id)
+    # two cases: (admin) and (not admin)
+    if not ((user_now.staff.all() & loc.allowed_users.all()) or
+            (loc.allowed_users.filter(id=user_now.id))):
+        raise Http404()
+    return loc
