@@ -16,9 +16,13 @@ class User(models.Model):
         verbose_name="被管理员工",
         related_name="staffUser",
     )
+    is_superadmin = models.BooleanField(
+        default=False,
+        verbose_name='超级管理员',
+    )
 
     def __str__(self):
-        return "{0} {1}".format(self.name, "(管理员)" if self.staff.exists() else "")
+        return "{0} {1}".format(self.name, "(管理员)" if self.is_superadmin else "")
 
     class Meta:
         ordering = ["-c_time"]
