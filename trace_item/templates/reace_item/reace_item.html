@@ -10,9 +10,11 @@
     </thead>
     <tbody>
     {% for log in logs %}
+    <tr>
         <td>{{ log.operation }}</td>
         <td>{{ log.time }}</td>
         <td>{{ log.operator }}</td>
+    </tr>
     {% endfor %}
     </tbody>
 </table>
