@@ -50,7 +50,6 @@ class Item(models.Model):
         verbose_name="数量")
     unit = models.CharField(max_length=32, default='', verbose_name="单位")
     attribute = models.TextField(blank=True, verbose_name="属性")
-    user = models.ManyToManyField(myUser, default='', verbose_name="用户")
     location = models.ForeignKey(
         Location,
         null=True,
@@ -58,6 +57,18 @@ class Item(models.Model):
         on_delete=models.SET_NULL,
         verbose_name="位置",
         related_name="location",
+    )
+    owner = models.ForeignKey(
+        myUser,
+        blank=True,
+        on_delete=models.CASCADE,
+        verbose_name="所有者",
+        related_name="owner",
+    )
+    allowed_users = models.ManyToManyField(
+        myUser,
+        blank=True,
+        verbose_name="允许用户",
     )
 
     def __str__(self):
