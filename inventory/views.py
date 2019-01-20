@@ -90,13 +90,14 @@ class ItemView(generic.View):
             return render(request, 'inventory/index.html')
         else:
             user_id = request.session.get('user_id')
-            tmp_user = myUser.objects.get(id=user_id)
-            self.item = get_my_item(tmp_user, kwargs.get('id'))
+            self.tmp_user = myUser.objects.get(id=user_id)
+            self.item = get_my_item(self.tmp_user, kwargs.get('id'))
             return super(ItemView, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
         use_item_form = forms.UseItemForm()
         item = self.item
+        del_permission = item.owner == self.tmp_user or self.tmp_user.staff.filter(id=item.owner.id)
         return render(request, 'inventory/item.html', locals())
 
     def post(self, request, *args, **kwargs):
@@ -165,10 +166,11 @@ def del_item(request, item_id):
     user_id = request.session.get('user_id')
     tmp_user = myUser.objects.get(id=user_id)
     item = get_my_item(tmp_user, item_id)
-    if item.location != None:
-        messages.error(request, "请先取出该物品！")
+    if not (item.owner == tmp_user or tmp_user.staff.filter(id=item.owner.id)):
+        messages.error(request, "只有创建人（" + item.owner.name + "）及其管理员可以删除物品！")
         return render(request, 'inventory/info.html', locals())
-    item.allowed_users.remove(tmp_user)
+    set_location(item, None, tmp_user)
+    item.allowed_users.clear()
     item.save()
     return redirect('inventory:items')
 

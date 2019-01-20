@@ -49,11 +49,13 @@
 <!-- <a class="btn btn-outline-primary" role="button" href="{% url 'admin:inventory_item_change' item.id %}">编辑物品</a> -->
 {% if item.location %}
 <a class="btn btn-outline-primary" role="button" href="{% url 'inventory:location_root' %}?pending={{ item.id }}">更改位置</a>
-<!-- <a class="btn btn-outline-primary" role="button" href="{% url 'inventory:put' item.id 0 %}">取出物品</a> -->
+<a class="btn btn-outline-primary" role="button" href="{% url 'inventory:put' item.id 0 %}">取出物品</a>
 {% else %}
 <a class="btn btn-outline-primary" role="button" href="{% url 'inventory:location_root' %}?pending={{ item.id }}">存入物品</a>
 {% endif %}
-<a class="btn btn-outline-primary" role="button" href="#" onClick="cfm('{% url 'inventory:delete' item.id %}', '{{ item }}')">移出列表</a>
+{% if del_permission %}
+<a class="btn btn-outline-primary" role="button" href="#" onClick="cfm('{% url 'inventory:delete' item.id %}', '{{ item }}')">删除物品</a>
+{% endif %}
 <div class="modal fade" id="useItemModal" tabindex="-1" role="dialog" aria-labelledby="useItemModalTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
