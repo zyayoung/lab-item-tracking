@@ -5,7 +5,10 @@ from django.views import generic
 from django.contrib import messages
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import (
-    Http404, HttpResponse, HttpResponsePermanentRedirect, HttpResponseRedirect,
+    Http404,
+    HttpResponse,
+    HttpResponsePermanentRedirect,
+    HttpResponseRedirect,
 )
 from itertools import chain
 from . import forms
@@ -30,12 +33,7 @@ class ItemsView(generic.View):
 
     def get(self, request, *args, **kwargs):
         tmp_user = myUser.objects.get(id=request.session.get('user_id'))
-        all_item = Item.objects.all()
-        item_list = all_item.filter(user=tmp_user)
-        ids = tmp_user.staff.all()
-        for _id in ids:
-            item_list = item_list | all_item.filter(user=_id)
-        item_list = item_list.distinct()
+        item_list = get_my_list(tmp_user, Item.objects.all())
         paginator = Paginator(item_list, 20)
         page = request.GET.get('page')
         try:
@@ -125,8 +123,6 @@ class LocationView(generic.View):
         user_id = request.session.get('user_id')
         tmp_user = myUser.objects.get(id=user_id)
         location_id = kwargs.get('id')
-        loc_list = None
-        item_list = None
         QRCode = "http://qr.liantu.com/api.php?text={0}".format(
             quote(request.build_absolute_uri()))
         if 'pending' in request.GET.keys():
@@ -139,19 +135,10 @@ class LocationView(generic.View):
         # other directory
         else:
             loc_now = get_my_loc(tmp_user, location_id)
+            item_list = get_my_list(tmp_user,
+                                    Item.objects.filter(location=loc_now))
             all_location = loc_now.parentPath.all()
-            # get item list
-            all_item = Item.objects.filter(location=loc_now)
-            item_list = all_item.filter(user=tmp_user)
-            ids = tmp_user.staff.all()
-            for _id in ids:
-                item_list = item_list | all_item.filter(user=_id)
-            item_list = item_list.distinct()
-        loc_list = all_location.filter(allowed_users=user_id)
-        ids = tmp_user.staff.all()
-        for _id in ids:
-            loc_list = loc_list | all_location.filter(allowed_users=_id)
-        loc_list = loc_list.distinct()
+        loc_list = get_my_list(tmp_user, all_location)
         return render(request, 'inventory/location.html', locals())
 
 
@@ -203,10 +190,12 @@ class AddItem2LocView(generic.View):
 
     def get(self, request, *args, **kwargs):
         user_id = request.session.get('user_id')
-        item_list = Item.objects.filter(location=None, user=user_id)
         location_id = kwargs.get('id')
+        item_list = get_my_list(
+            myUser.object.get(id=user_id), Item.objects.filter(location=None))
         location = get_object_or_404(Location, pk=location_id)
         return render(request, 'inventory/additem2loc.html', locals())
+
 
 def get_my_item(user_now, item_id):
     if not hasattr(user_now, 'id'):
@@ -218,6 +207,7 @@ def get_my_item(user_now, item_id):
         raise Http404()
     return item
 
+
 def get_my_loc(user_now, loc_id):
     if not hasattr(user_now, 'id'):
         raise ValueError()
@@ -227,3 +217,10 @@ def get_my_loc(user_now, loc_id):
             (loc.allowed_users.filter(id=user_now.id))):
         raise Http404()
     return loc
+
+def get_my_list(user_now, all_obj):
+    obj_list = all_obj.filter(allowed_users=user_now)
+    users = user_now.staff.all()
+    for user in users:
+        obj_list = obj_list | all_obj.filter(allowed_users=user)
+    return obj_list.distinct()
