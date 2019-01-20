@@ -132,14 +132,14 @@ class LocationView(generic.View):
             pending = None
         # root directory
         if location_id == None:
-            all_location = Location.objects.filter(parent=None)
+            all_locs = Location.objects.filter(parent=None)
         # other directory
         else:
             loc_now = get_my_loc(tmp_user, location_id)
-            item_list = get_my_list(tmp_user,
-                                    Item.objects.filter(location=loc_now))
-            all_location = loc_now.parentPath.all()
-        loc_list = get_my_list(tmp_user, all_location)
+            all_items = Item.objects.filter(location=loc_now)
+            item_list = get_my_list(tmp_user, all_items)
+            all_locs = loc_now.parentPath.all()
+        loc_list = get_my_list(tmp_user, all_locs)
         return render(request, 'inventory/location.html', locals())
 
 
@@ -194,16 +194,15 @@ class AddItem2LocView(generic.View):
     def get(self, request, *args, **kwargs):
         user_id = request.session.get('user_id')
         tmp_user = myUser.objects.get(id=user_id)
-        location_id = kwargs.get('id')
         item_list = get_my_list(tmp_user, Item.objects.filter(location=None))
-        location = get_object_or_404(Location, pk=location_id)
+        location = get_my_loc(tmp_user, kwargs.get('id'))
         return render(request, 'inventory/additem2loc.html', locals())
 
 
 def get_my_item(user_now, item_id):
     if not hasattr(user_now, 'id'):
         raise ValueError()
-    item = get_object_or_404(Item, pk=item_id)
+    item = get_object_or_404(Item, id=item_id)
     # two cases: (admin) and (not admin)
     if not ((user_now.staff.all() & item.allowed_users.all()) or
             (item.allowed_users.filter(id=user_now.id))):
@@ -214,7 +213,7 @@ def get_my_item(user_now, item_id):
 def get_my_loc(user_now, loc_id):
     if not hasattr(user_now, 'id'):
         raise ValueError()
-    loc = Location.objects.get(id=loc_id)
+    loc = get_object_or_404(Location, id=loc_id)
     # two cases: (admin) and (not admin)
     if not ((user_now.staff.all() & loc.allowed_users.all()) or
             (loc.allowed_users.filter(id=user_now.id))):
@@ -223,6 +222,8 @@ def get_my_loc(user_now, loc_id):
 
 
 def get_my_list(user_now, all_obj):
+    if not hasattr(user_now, 'id') or not hasattr(all_obj, 'allowed_users'):
+        raise ValueError()
     obj_list = all_obj.filter(allowed_users=user_now)
     users = user_now.staff.all()
     for user in users:
