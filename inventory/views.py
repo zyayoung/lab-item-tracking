@@ -105,6 +105,7 @@ class ItemView(generic.View):
             quantity = float(use_item_form.cleaned_data['quantity'])
             if quantity > 0 and quantity <= self.item.quantity:
                 log = ItemLog.objects.create(
+                    item=self.item,
                     operator=self.tmp_user,
                     location_from=self.item.location,
                     location_to=self.item.location,
@@ -161,6 +162,7 @@ def put_item_to_location(request, item_id, location_id):
         # put item in
         location = get_my_loc(tmp_user, location_id)
         log = ItemLog.objects.create(
+            item=item,
             operator=tmp_user,
             location_from=item.location,
             location_to=location,
@@ -174,6 +176,7 @@ def put_item_to_location(request, item_id, location_id):
     else:
         # take item out
         log = ItemLog.objects.create(
+            item=item,
             operator=tmp_user,
             location_from=item.location,
             location_to=None,

@@ -3,7 +3,7 @@ from .models import *
 
 
 class ItemLogAdmin(admin.ModelAdmin):
-    list_display = ('time', 'operator', 'operation')
+    list_display = ('item', 'operation', 'operator', 'time')
 
 
 admin.site.register(ItemLog, ItemLogAdmin)

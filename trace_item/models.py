@@ -1,12 +1,13 @@
 from django.db import models
 from django.utils import timezone
 from login.models import User as myUser
-from inventory.models import Location
+from inventory.models import Location, Item
 
 
 class ItemLog(models.Model):
     operator = models.ForeignKey(myUser, verbose_name='操作人', null=True, blank=True, on_delete=models.SET_NULL)
     time = models.DateTimeField('操作时间', default=timezone.now)
+    item = models.ForeignKey(Item, verbose_name='物品', null=True, blank=True, on_delete=models.SET_NULL)
     location_from = models.ForeignKey(Location, verbose_name='从', related_name='location_from', blank=True, null=True, on_delete=models.SET_NULL)
     quantity_from = models.DecimalField(
         default=0,
