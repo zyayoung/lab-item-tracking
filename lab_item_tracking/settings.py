@@ -27,6 +27,7 @@ DEBUG = True
 ALLOWED_HOSTS = ["zyayoung.oicp.io", "127.0.0.1"]
 
 CAPTCHA_IMAGE_SIZE = (100, 30)
+CAPTCHA_TEST_MODE = DEBUG
 
 # Application definition
 

@@ -200,8 +200,6 @@ class AddItem2LocView(generic.View):
 
 
 def get_my_item(user_now, item_id):
-    if not hasattr(user_now, 'id'):
-        raise ValueError()
     item = get_object_or_404(Item, id=item_id)
     # two cases: (admin) and (not admin)
     if not ((user_now.staff.all() & item.allowed_users.all()) or
@@ -211,8 +209,6 @@ def get_my_item(user_now, item_id):
 
 
 def get_my_loc(user_now, loc_id):
-    if not hasattr(user_now, 'id'):
-        raise ValueError()
     loc = get_object_or_404(Location, id=loc_id)
     # two cases: (admin) and (not admin)
     if not ((user_now.staff.all() & loc.allowed_users.all()) or
@@ -222,8 +218,6 @@ def get_my_loc(user_now, loc_id):
 
 
 def get_my_list(user_now, all_obj):
-    if not hasattr(user_now, 'id') or not hasattr(all_obj, 'allowed_users'):
-        raise ValueError()
     obj_list = all_obj.filter(allowed_users=user_now)
     users = user_now.staff.all()
     for user in users:
