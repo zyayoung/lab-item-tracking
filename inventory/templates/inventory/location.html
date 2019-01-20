@@ -80,7 +80,7 @@
 <p class="lead">没有存放物品</p>
 {% endif %}
 {% if pending and location_id %}
-<a class="btn btn-outline-primary" href="#" onClick="cfm('您确认要将<b>{{ pending }}</b>存入<b>{{ location }}</b>吗？', '{% url 'inventory:put' pending.pk location.pk %}')"
+<a class="btn btn-outline-primary" href="#" onClick="cfm('您确认要将<b>{{ pending }}</b>存入吗？', '{% url 'inventory:put' pending.pk location_id %}')"
     role="button">
     将{{ pending }}存入此位置
 </a>
