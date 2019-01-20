@@ -68,6 +68,7 @@
 {% elif unlink_permission %}
 <a class="btn btn-outline-primary" role="button" href="#" onClick="cfm('{% url 'inventory:unlink' item.id %}', '{{ item }}')">取消关联</a>
 {% endif %}
+<a class="btn btn-outline-primary" href="{% url 'trace_item:trace' item.id %}">追踪物品</a>
 <div class="modal fade" id="useItemModal" tabindex="-1" role="dialog" aria-labelledby="useItemModalTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
