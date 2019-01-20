@@ -69,8 +69,9 @@ class AddItemView(generic.View):
                 name=name,
                 quantity=quantity,
                 unit=unit,
+                owner=myUser.objects.get(id=request.session.get('user_id')),
             )
-            new_item.user.add(
+            new_item.allowed_users.add(
                 myUser.objects.get(id=request.session.get('user_id')))
             new_item.save()
             message = "添加成功！"
@@ -217,6 +218,7 @@ def get_my_loc(user_now, loc_id):
             (loc.allowed_users.filter(id=user_now.id))):
         raise Http404()
     return loc
+
 
 def get_my_list(user_now, all_obj):
     obj_list = all_obj.filter(allowed_users=user_now)
