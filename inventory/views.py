@@ -62,6 +62,7 @@ class AddItemView(generic.View):
         add_form = forms.AddItemForm(request.POST)
         message = "请检查填写的内容！"
         if add_form.is_valid():
+            tmp_user = myUser.objects.get(id=request.session.get('user_id'))
             name = add_form.cleaned_data['name']
             quantity = add_form.cleaned_data['quantity']
             unit = add_form.cleaned_data['unit']
@@ -69,10 +70,9 @@ class AddItemView(generic.View):
                 name=name,
                 quantity=quantity,
                 unit=unit,
-                owner=myUser.objects.get(id=request.session.get('user_id')),
+                owner=tmp_user,
             )
-            new_item.allowed_users.add(
-                myUser.objects.get(id=request.session.get('user_id')))
+            new_item.allowed_users.add(tmp_user)
             new_item.save()
             message = "添加成功！"
             return render(request, 'inventory/add.html', locals())
@@ -145,10 +145,11 @@ class LocationView(generic.View):
 
 def put_item_to_location(request, item_id, location_id):
     user_id = request.session.get('user_id')
-    item = get_my_item(myUser.object.get(id=user_id), item_id)
+    tmp_user = myUser.objects.get(id=user_id)
+    item = get_my_item(tmp_user, item_id)
     # put item in
     if int(location_id) != 0:
-        location = get_my_loc(myUser.object.get(id=user_id), location_id)
+        location = get_my_loc(tmp_user, location_id)
         item.location = location
         item.save()
         return redirect('inventory:location', location_id)
@@ -161,11 +162,12 @@ def put_item_to_location(request, item_id, location_id):
 
 def del_item(request, item_id):
     user_id = request.session.get('user_id')
-    item = get_my_item(myUser.object.get(id=user_id), item_id)
+    tmp_user = myUser.objects.get(id=user_id)
+    item = get_my_item(tmp_user, item_id)
     if item.location != None:
         messages.error(request, "请先取出该物品！")
         return render(request, 'inventory/info.html', locals())
-    item.user.remove(user_id)
+    item.allowed_users.remove(tmp_user)
     item.save()
     return redirect('inventory:items')
 
@@ -191,9 +193,9 @@ class AddItem2LocView(generic.View):
 
     def get(self, request, *args, **kwargs):
         user_id = request.session.get('user_id')
+        tmp_user = myUser.objects.get(id=user_id)
         location_id = kwargs.get('id')
-        item_list = get_my_list(
-            myUser.object.get(id=user_id), Item.objects.filter(location=None))
+        item_list = get_my_list(tmp_user, Item.objects.filter(location=None))
         location = get_object_or_404(Location, pk=location_id)
         return render(request, 'inventory/additem2loc.html', locals())
 
@@ -203,8 +205,8 @@ def get_my_item(user_now, item_id):
         raise ValueError()
     item = get_object_or_404(Item, pk=item_id)
     # two cases: (admin) and (not admin)
-    if not ((user_now.staff.all() & item.user.all()) or
-            (item.user.filter(id=user_now.id))):
+    if not ((user_now.staff.all() & item.allowed_users.all()) or
+            (item.allowed_users.filter(id=user_now.id))):
         raise Http404()
     return item
 
