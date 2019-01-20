@@ -69,16 +69,16 @@ class AddItemView(generic.View):
             unit = add_form.cleaned_data['unit']
             new_item = Item.objects.create(
                 name=name,
-                quantity=quantity,
+                quantity=0,
                 unit=unit,
                 owner=tmp_user,
             )
             new_item.allowed_users.add(tmp_user)
-            new_item.save()
+            set_quantity(new_item, quantity, tmp_user)
             message = "添加成功！"
             return render(request, 'inventory/add.html', locals())
         else:
-            return self.get(request)
+            return render(request, 'inventory/add.html', locals())
 
 
 class ItemView(generic.View):
@@ -171,9 +171,9 @@ def del_item(request, item_id):
     if not (item.owner == tmp_user or tmp_user.staff.filter(id=item.owner.id).exists()):
         messages.error(request, "只有创建人（" + item.owner.name + "）及其管理员可以删除物品！")
         return render(request, 'inventory/info.html', locals())
-    set_location(item, None, tmp_user)
     item.allowed_users.clear()
-    item.save()
+    set_location(item, None, tmp_user)
+    set_quantity(item, 0, tmp_user)
     return redirect('inventory:items')
 
 

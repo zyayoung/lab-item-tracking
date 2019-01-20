@@ -12,8 +12,11 @@ class AddItemForm(forms.Form):
             'class': 'form-control',
             'type': 'number',
             'step': '1',
-            'value': '0',
-        }))
+            'value': '1',
+            'min': '1',
+        }),
+        min_value=1,
+    )
     unit = forms.CharField(
         label="单位",
         max_length=32,
