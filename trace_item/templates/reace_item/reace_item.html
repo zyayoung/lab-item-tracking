@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block title %}物品详情：{{ item.name }} {% endblock %}
+{% block content %}
+<table class="table table-striped table-condensed">
+    <thead>
+        <th>操作</th>
+        <th>时间</th>
+        <th>操作人</th>
+    </thead>
+    <tbody>
+    {% for log in logs %}
+    <tr>
+        <td>{{ log.operation }}</td>
+        <td>{{ log.time }}</td>
+        <td>{{ log.operator }}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

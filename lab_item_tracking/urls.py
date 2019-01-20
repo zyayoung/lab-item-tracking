@@ -23,4 +23,5 @@ urlpatterns = [
     url(r'^captcha/', include('captcha.urls')),
     url(r'^', include('inventory.urls')),
     url(r'^', include('login.urls')),
+    url(r'^', include('trace_item.urls')),
 ]
