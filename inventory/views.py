@@ -103,18 +103,8 @@ class ItemView(generic.View):
         use_item_form = forms.UseItemForm(request.POST)
         if use_item_form.is_valid():
             quantity = float(use_item_form.cleaned_data['quantity'])
-            if quantity > 0 and quantity <= self.item.quantity:
-                log = ItemLog.objects.create(
-                    item=self.item,
-                    operator=self.tmp_user,
-                    location_from=self.item.location,
-                    location_to=self.item.location,
-                    quantity_from=self.item.quantity,
-                    quantity_to=float(self.item.quantity) - quantity,
-                )
-                log.save()
-                self.item.quantity = log.quantity_to
-                self.item.save()
+            if 0 < quantity <= self.item.quantity:
+                set_quantity(self.item, float(self.item.quantity) - quantity, self.tmp_user)
                 message = "使用成功！"
             else:
                 message = "使用数量有误！"
@@ -162,31 +152,11 @@ def put_item_to_location(request, item_id, location_id):
     if int(location_id) != 0:
         # put item in
         location = get_my_loc(tmp_user, location_id)
-        log = ItemLog.objects.create(
-            item=item,
-            operator=tmp_user,
-            location_from=item.location,
-            location_to=location,
-            quantity_from=item.quantity,
-            quantity_to=item.quantity,
-        )
-        log.save()
-        item.location = log.location_to
-        item.save()
+        set_location(item, location, tmp_user)
         return redirect('inventory:location', location_id)
     else:
         # take item out
-        log = ItemLog.objects.create(
-            item=item,
-            operator=tmp_user,
-            location_from=item.location,
-            location_to=None,
-            quantity_from=item.quantity,
-            quantity_to=item.quantity,
-        )
-        log.save()
-        item.location = log.location_to
-        item.save()
+        set_location(item, None, tmp_user)
         return redirect('inventory:item', item.id)
 
 
@@ -253,3 +223,33 @@ def get_my_list(user_now, all_obj):
     for user in users:
         obj_list = obj_list | all_obj.filter(allowed_users=user)
     return obj_list.distinct()
+
+
+def set_location(item, location, user):
+    if location != item.location:
+        log = ItemLog.objects.create(
+            item=item,
+            operator=user,
+            location_from=item.location,
+            location_to=location,
+            quantity_from=item.quantity,
+            quantity_to=item.quantity,
+        )
+        log.save()
+        item.location = location
+        item.save()
+
+
+def set_quantity(item, quantity, user):
+    if quantity != item.quantity:
+        log = ItemLog.objects.create(
+            item=item,
+            operator=user,
+            location_from=item.location,
+            location_to=item.location,
+            quantity_from=item.quantity,
+            quantity_to=quantity,
+        )
+        log.save()
+        item.quantity = quantity
+        item.save()
