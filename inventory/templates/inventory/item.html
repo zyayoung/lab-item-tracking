@@ -55,20 +55,20 @@
     <dd>{{ item.comments }}</dd>#}
     {#
 </dl>#} -->
-<a class="btn btn-outline-primary" role="button" href="#" onClick="useItem()">使用物品</a>
+<a class="btn btn-outline-primary" role="button" href="#" onClick="useItem()">使用</a>
 <!-- <a class="btn btn-outline-primary" role="button" href="{% url 'admin:inventory_item_change' item.id %}">编辑物品</a> -->
 {% if item.location %}
-<a class="btn btn-outline-primary" role="button" href="{% url 'inventory:location_root' %}?pending={{ item.id }}">更改位置</a>
-<a class="btn btn-outline-primary" role="button" href="{% url 'inventory:put' item.id 0 %}">取出物品</a>
+<a class="btn btn-outline-primary" role="button" href="{% url 'inventory:location_root' %}?pending={{ item.id }}">换位</a>
+<a class="btn btn-outline-primary" role="button" href="{% url 'inventory:put' item.id 0 %}">取出</a>
 {% else %}
-<a class="btn btn-outline-primary" role="button" href="{% url 'inventory:location_root' %}?pending={{ item.id }}">存入物品</a>
+<a class="btn btn-outline-primary" role="button" href="{% url 'inventory:location_root' %}?pending={{ item.id }}">存入</a>
 {% endif %}
 {% if del_permission %}
-<a class="btn btn-outline-primary" role="button" href="#" onClick="cfm('{% url 'inventory:delete' item.id %}', '{{ item }}')">删除物品</a>
+<a class="btn btn-outline-primary" role="button" href="#" onClick="cfm('{% url 'inventory:delete' item.id %}', '{{ item }}')">删除</a>
 {% elif unlink_permission %}
-<a class="btn btn-outline-primary" role="button" href="#" onClick="cfm('{% url 'inventory:unlink' item.id %}', '{{ item }}')">取消关联</a>
+<a class="btn btn-outline-primary" role="button" href="#" onClick="cfm('{% url 'inventory:unlink' item.id %}', '{{ item }}')">取关</a>
 {% endif %}
-<a class="btn btn-outline-primary" href="{% url 'trace_item:trace' item.id %}">追踪物品</a>
+<a class="btn btn-outline-primary" href="{% url 'trace_item:trace' item.id %}">追踪</a>
 <div class="modal fade" id="useItemModal" tabindex="-1" role="dialog" aria-labelledby="useItemModalTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
