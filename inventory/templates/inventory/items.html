@@ -11,7 +11,7 @@
         <th>数量</th>
         <!-- <th>单位</th> -->
         <th>属性</th>
-        <th>用户</th>
+        <th>所有者</th>
     </thead>
     <tbody>
         {% for item in item_list %}
@@ -25,12 +25,9 @@
                 {% endif %}
             </td>
             <td>{{ item.quantity }} {% if item.unit %}{{ item.unit }}{% endif %}</td>
-            <!-- <td>{{ item.unit }}</td> -->
             <td>{{ item.attribute }}</td>
             <td>
-                {% for user in item.user.all %}
-                {{ user.name }}
-                {% endfor %}
+                {{ item.owner }}
             </td>
         </tr>
         {% endfor %}
