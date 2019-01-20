@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'inventory',
     'captcha',
     'login',
+    'trace_item',
 ]
 
 MIDDLEWARE = [

@@ -15,6 +15,7 @@ from . import forms
 
 from inventory.models import Item, Location
 from login.models import User as myUser
+from trace_item.models import ItemLog
 
 from urllib.parse import quote
 
@@ -82,6 +83,7 @@ class AddItemView(generic.View):
 
 class ItemView(generic.View):
     item = None
+    tmp_user = None
 
     def dispatch(self, request, *args, **kwargs):
         if not request.session.get('is_login', None):
@@ -102,7 +104,15 @@ class ItemView(generic.View):
         if use_item_form.is_valid():
             quantity = float(use_item_form.cleaned_data['quantity'])
             if quantity > 0 and quantity <= self.item.quantity:
-                self.item.quantity = float(self.item.quantity) - quantity
+                log = ItemLog.objects.create(
+                    operator=self.tmp_user,
+                    location_from=self.item.location,
+                    location_to=self.item.location,
+                    quantity_from=self.item.quantity,
+                    quantity_to=float(self.item.quantity) - quantity,
+                )
+                log.save()
+                self.item.quantity = log.quantity_to
                 self.item.save()
                 message = "使用成功！"
             else:
@@ -147,15 +157,31 @@ def put_item_to_location(request, item_id, location_id):
     user_id = request.session.get('user_id')
     tmp_user = myUser.objects.get(id=user_id)
     item = get_my_item(tmp_user, item_id)
-    # put item in
     if int(location_id) != 0:
+        # put item in
         location = get_my_loc(tmp_user, location_id)
-        item.location = location
+        log = ItemLog.objects.create(
+            operator=tmp_user,
+            location_from=item.location,
+            location_to=location,
+            quantity_from=item.quantity,
+            quantity_to=item.quantity,
+        )
+        log.save()
+        item.location = log.location_to
         item.save()
         return redirect('inventory:location', location_id)
-    # take item out
     else:
-        item.location = None
+        # take item out
+        log = ItemLog.objects.create(
+            operator=tmp_user,
+            location_from=item.location,
+            location_to=None,
+            quantity_from=item.quantity,
+            quantity_to=item.quantity,
+        )
+        log.save()
+        item.location = log.location_to
         item.save()
         return redirect('inventory:item', item.id)
 
