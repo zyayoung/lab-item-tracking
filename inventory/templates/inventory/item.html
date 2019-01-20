@@ -35,9 +35,13 @@
         <tr>
             <td>关联用户</td>
             <td>
+            {% if item.is_public %}
+                All
+            {% else %}
                 {% for user in item.allowed_users.all %}
                 {{ user.name }}
                 {% endfor %}
+            {% endif %}
             </td>
         </tr>
         <tr>

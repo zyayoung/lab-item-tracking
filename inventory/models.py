@@ -19,11 +19,12 @@ class Location(models.Model):
         verbose_name="父位置",
         related_name="parentPath",
     )
+    is_public = models.BooleanField(default=False, verbose_name='公开')
     allowed_users = models.ManyToManyField(
         myUser,
         blank=True,
         default='',
-        verbose_name="允许用户",
+        verbose_name="白名单",
     )
 
     def __str__(self):
@@ -65,10 +66,11 @@ class Item(models.Model):
         verbose_name="所有者",
         related_name="owner",
     )
+    is_public = models.BooleanField(default=False, verbose_name='公开')
     allowed_users = models.ManyToManyField(
         myUser,
         blank=True,
-        verbose_name="允许用户",
+        verbose_name="白名单",
     )
     update_time = models.DateTimeField("update_time", auto_now=True)
 
