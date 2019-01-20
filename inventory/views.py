@@ -99,7 +99,7 @@ class ItemView(generic.View):
         item = self.item
         tmp_user = self.tmp_user
         del_permission = item.owner == tmp_user or tmp_user.staff.filter(id=item.owner.id)
-        unlink_permission = item.allowed_users.filter(id=tmp_user.id).exists()
+        unlink_permission = not del_permission and item.allowed_users.filter(id=tmp_user.id).exists()
         return render(request, 'inventory/item.html', locals())
 
     def post(self, request, *args, **kwargs):
@@ -176,6 +176,7 @@ def del_item(request, item_id):
     item.save()
     return redirect('inventory:items')
 
+
 def unlink_item(request, item_id):
     user_id = request.session.get('user_id')
     tmp_user = myUser.objects.get(id=user_id)
@@ -183,6 +184,10 @@ def unlink_item(request, item_id):
     if not item.allowed_users.filter(id=tmp_user.id).exists():
         messages.error(request, "您没有关联该物品！")
         return render(request, 'inventory/info.html', locals())
+    elif item.owner == tmp_user or tmp_user.staff.filter(id=item.owner.id):
+        messages.error(request, "您不能取消关联该物品！")
+        return render(request, 'inventory/info.html', locals())
+
     item.allowed_users.remove(tmp_user)
     item.save()
     return redirect('inventory:items')
