@@ -5,6 +5,8 @@
 <table class="table table-striped">
     <thead>
         <th>操作</th>
+        <th>自</th>
+        <th>至</th>
         <th>时间</th>
         <th>操作人</th>
     </thead>
@@ -12,6 +14,8 @@
     {% for log in logs %}
     <tr>
         <td>{{ log.operation }}</td>
+        <td>{{ log.fr }}</td>
+        <td>{{ log.to }}</td>
         <td>{{ log.time }}</td>
         <td>{{ log.operator }}</td>
     </tr>

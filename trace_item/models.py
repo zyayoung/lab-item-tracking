@@ -25,29 +25,36 @@ class ItemLog(models.Model):
         verbose_name="操作后数量"
     )
 
-    def operation(self):
+    def __str__(self):
         ret = ''
         if self.location_to != self.location_from:
-            ret += 'Position: {0} -> {1}'.format(self.location_from, self.location_to)
+            ret += '位置: {0} -> {1}'.format(
+                self.location_from if self.location_from else '空',
+                self.location_to if self.location_to else '空',
+            )
         if self.quantity_to != self.quantity_from:
             if ret:
                 ret += ' | '
-            ret += 'Quantity: {0} -> {1}'.format(self.quantity_from, self.quantity_to)
-
+            ret += '数量: {0} -> {1}'.format(self.quantity_from, self.quantity_to)
         return ret
 
-    def __str__(self):
-        ret = '{0}'.format(self.operator)
+    def operation(self):
         if self.location_to != self.location_from:
-            if ret:
-                ret += ' | '
-            ret += 'Pos: {0} -> {1}'.format(self.location_from, self.location_to)
-        if self.quantity_to != self.quantity_from:
-            if ret:
-                ret += ' | '
-            ret += 'Qua: {0} -> {1}'.format(self.quantity_from, self.quantity_to)
+            return "位置"
+        else:
+            return "数量"
 
-        return ret
+    def fr(self):
+        if self.location_to != self.location_from:
+            return self.location_from if self.location_from else '空'
+        else:
+            return self.quantity_from
+
+    def to(self):
+        if self.location_to != self.location_from:
+            return self.location_to if self.location_to else '空'
+        else:
+            return self.quantity_to
 
     class Meta:
         ordering = ['-time']
