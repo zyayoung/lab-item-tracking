@@ -3,15 +3,10 @@
 {% block title %}位置列表{% endblock %}
 {% block content %}
 {% if pending %}
-<p class="lead">当前物品：{{ pending }} 选择想存入的位置：</p>
+<p class="lead">选择想存入{{ pending }}的位置：</p>
 {% endif %}
 <p class="lead">
-    当前位置：
-    {% if location %}
-    {{ location }}
-    {% elif loc_list %}
-    Root
-    {% endif %}
+    当前位置：{{ current_location }}
     <a class="btn btn-outline-primary pull-right" role="button" href="#" onClick="qrcodeMdl('{{ QRCode }}')">
         <i class="fa fa-qrcode" aria-hidden="true"></i></i> 二维码
     </a>
@@ -79,15 +74,17 @@
 {% elif location %}
 <p class="lead">没有存放物品</p>
 {% endif %}
-{% if pending and location_id %}
-<a class="btn btn-outline-primary" href="#" onClick="cfm('您确认要将<b>{{ pending }}</b>存入吗？', '{% url 'inventory:put' pending.pk location_id %}')"
-    role="button">
-    将{{ pending }}存入此位置
-</a>
-{% elif location_id %}
-<a class="btn btn-outline-primary" role="button" href="{% url 'inventory:additem2loc' location_id %}">
-    <i class="fa fa-plus" aria-hidden="true"></i> 添加物品
-</a>
+{% if current_location != 'root' %}
+    {% if pending%}
+    <a class="btn btn-outline-primary" href="#" onClick="cfm('您确认要将<b>{{ pending }}</b>存入<b>{{ current_location }}</b>吗？', '{% url 'inventory:put' pending.pk location_id %}')"
+        role="button">
+        将{{ pending }}存入此位置
+    </a>
+    {% else %}
+    <a class="btn btn-outline-primary" role="button" href="{% url 'inventory:additem2loc' location_id %}">
+        <i class="fa fa-plus" aria-hidden="true"></i> 添加物品
+    </a>
+    {% endif %}
 {% endif %}
 {% if pending %}
 <a class="btn btn-outline-primary" href="#" onClick="cfm('您确认要将<b>{{ pending }}</b>取出吗？', '{% url 'inventory:put' pending.pk 0 %}')"

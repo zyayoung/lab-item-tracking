@@ -135,6 +135,7 @@ class LocationView(generic.View):
         user_id = request.session.get('user_id')
         tmp_user = myUser.objects.get(id=user_id)
         location_id = kwargs.get('id')
+        current_location = Location.objects.get(id=location_id).__str__() if location_id else "root"
         QRCode = "http://qr.liantu.com/api.php?text={0}".format(
             quote(request.build_absolute_uri()))
         if 'pending' in request.GET.keys():
