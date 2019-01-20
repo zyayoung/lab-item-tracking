@@ -27,9 +27,15 @@
             </td>
         </tr>
         <tr>
-            <td>用户</td>
+            <td>所有者</td>
             <td>
-                {% for user in item.user.all %}
+                {{ item.owner }}
+            </td>
+        </tr>
+        <tr>
+            <td>关联用户</td>
+            <td>
+                {% for user in item.allowed_users.all %}
                 {{ user.name }}
                 {% endfor %}
             </td>
@@ -114,7 +120,7 @@
         $('#useItemModal').modal();
     }
     function cfm(url, item) {
-        $('#modalNotice').html('您确认要将<b>' + item + '</b>移出列表吗？');
+        $('#modalNotice').html('您确认要删除<b>' + item + '</b>吗？');
         $('#cfmUrl').val(url);
         $('#cfmModal').modal();
     }

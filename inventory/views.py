@@ -97,7 +97,8 @@ class ItemView(generic.View):
     def get(self, request, *args, **kwargs):
         use_item_form = forms.UseItemForm()
         item = self.item
-        del_permission = item.owner == self.tmp_user or self.tmp_user.staff.filter(id=item.owner.id)
+        tmp_user = self.tmp_user
+        del_permission = item.owner == tmp_user or tmp_user.staff.filter(id=item.owner.id)
         return render(request, 'inventory/item.html', locals())
 
     def post(self, request, *args, **kwargs):
