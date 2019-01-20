@@ -24,7 +24,7 @@
                 {% endfor %}
             </td>
             <td>
-                <a class="btn btn-outline-primary" href="#" onClick="cfm('{% url 'inventory:put' item.id location_id %}', '{{ item.name }}', '{{ location }}')"
+                <a class="btn btn-outline-primary" href="#" onClick="cfm('{% url 'inventory:put' item.id location.id %}', '{{ item.name }}', '{{ location }}')"
                     role="button">
                     <i class="fa fa-plus" aria-hidden="true"></i> 添加
                 </a>
