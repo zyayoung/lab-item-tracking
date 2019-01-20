@@ -3,7 +3,7 @@
 from __future__ import unicode_literals
 
 from django.contrib.auth.models import User
-from django.urls import reverse
+from django.utils import timezone
 from django.db import models
 from login.models import User as myUser
 import datetime
@@ -70,12 +70,13 @@ class Item(models.Model):
         blank=True,
         verbose_name="允许用户",
     )
+    update_time = models.DateTimeField("update_time", auto_now=True)
 
     def __str__(self):
         return "{0}".format(self.name)
 
     class Meta:
-        ordering = ['id']
+        ordering = ['-update_time']
         verbose_name = "物品"
         verbose_name_plural = verbose_name
 
@@ -89,6 +90,6 @@ class LocationPermissionApplication(models.Model):
     time = models.DateTimeField(auto_now=True, verbose_name='申请时间')
 
     class Meta:
-        ordering = ['time']
+        ordering = ['-time']
         verbose_name = "位置申请"
         verbose_name_plural = verbose_name

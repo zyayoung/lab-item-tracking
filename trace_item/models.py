@@ -6,7 +6,7 @@ from inventory.models import Location, Item
 
 class ItemLog(models.Model):
     operator = models.ForeignKey(myUser, verbose_name='操作人', null=True, blank=True, on_delete=models.SET_NULL)
-    time = models.DateTimeField('操作时间', default=timezone.now)
+    time = models.DateTimeField('操作时间', auto_now_add=True)
     item = models.ForeignKey(Item, verbose_name='物品', null=True, blank=True, on_delete=models.SET_NULL)
     location_from = models.ForeignKey(Location, verbose_name='从', related_name='location_from', blank=True, null=True, on_delete=models.SET_NULL)
     quantity_from = models.DecimalField(
@@ -50,6 +50,6 @@ class ItemLog(models.Model):
         return ret
 
     class Meta:
-        ordering = ['time']
+        ordering = ['-time']
         verbose_name = "物品操作记录"
         verbose_name_plural = verbose_name
