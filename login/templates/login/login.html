@@ -24,7 +24,7 @@
                 {{ login_form.captcha.label_tag }}
                 <div class="form-row">
                     <div class="col">
-                        <input type="text" id="id_captcha_1" name="captcha_1" class="form-control">
+                        <input type="text" id="id_captcha_1" name="captcha_1" class="form-control" autocomplete="off">
                         <input id="id_captcha_0" name="captcha_0" type="hidden" value="{{ hashkey }}">
                     </div>
                     <img src="{{ image_url }}" class="captcha" alt="captcha" style="cursor:pointer;">
