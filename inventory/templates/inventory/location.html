@@ -44,9 +44,7 @@
                 {% if sublocation.is_public %}
                 All
                 {% else %}
-                {% for user in sublocation.allowed_users.all %}
-                {{ user.name }}
-                {% endfor %}
+                {{ sublocation.allowed_users_summary }}
                 {% endif %}
             </td>
         </tr>

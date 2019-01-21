@@ -27,6 +27,10 @@ class Location(models.Model):
         verbose_name="白名单",
     )
 
+    def allowed_users_summary(self):
+        return ' '.join([user.name for user in self.allowed_users.all()[:5]]) + \
+               ('' if self.allowed_users.count() <= 5 else ' 等%d人' % self.allowed_users.count())
+
     def __str__(self):
         path_list = [self.path]
         p = self.parent
