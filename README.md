@@ -11,34 +11,45 @@ python manage.py createsuperuser
 python manage.py runserver
 ```
 
-## Modules
+## Features
 
-- Login
+- Users
+    - [ ]Admin
+    - [x]Manager
+    - [x]Normal User
 - Location
-    - tree structure
+    - [x]Tree structure
+    - [x]QR Code
 - Items
-    - attr
-    - Location
-    - owner
-    - share
-- Permission
-    - public
-    - private item
-    - secret location
+    - [ ]Add
+    - [ ]Attr
+    - [x]Location
+    - [x]Owner
+    - [ ]Share (link & unlink)
+    - [ ]Edit
+    - [x]Delete
 - Trace
-    - Item location & quantity changes
+    - [x]Item location & quantity
+    - [x]Operater
+    - [x]Time
+    - [ ]Attr changes
+- Permission
+    - [x]Public
+    - [x]Private item
+    - [x]Secret location
+    - [ ]Apply for permission
 
 ## Modular item managing system
 
 ```json
 {
-    name: "",
-    category: "",
-    attr:
+    "name": "",
+    "category": "",
+    "attr":
         [{
-        name: "",
-        category: "",
-        item: ""
+        "name": "",
+        "category": "",
+        "item": ""
         }]
     }
 }
