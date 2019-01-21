@@ -4,12 +4,12 @@
 
 {% block content %}
 
-
+<div class="container">
 {% if request.session.is_login %}
 <p class="lead">
   您好，{{ request.session.user_name }}！欢迎回来！
 </p>
-<p class="text-muted">网站施工中...</p>
+<p class="text-muted inline">网站施工中...</p>
 <a href="https://github.com/zyayoung/lab-item-tracking/issues">
 <p class="text-info pull-left">联系我们/反馈问题</p>
 </a>
@@ -18,6 +18,7 @@
   您尚未登录，只能访问公开内容！
 </p>
 {% endif %}
+</div>
 
 
 {% endblock %}
