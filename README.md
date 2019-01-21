@@ -34,12 +34,12 @@ python manage.py runserver
 {
     name: "",
     category: "",
-    attr: {
+    attr:
         [{
         name: "",
         category: "",
         item: ""
-        ]}
+        }]
     }
 }
 """
