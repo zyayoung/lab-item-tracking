@@ -37,8 +37,7 @@ class Location(models.Model):
         while p:
             path_list.insert(0, p.path)
             p = p.parent
-        return '-'.join(
-            path_list)  # + (":" + self.item.name if self.item else "")
+        return '-'.join(path_list)
 
     class Meta:
         verbose_name = "位置"
@@ -52,7 +51,8 @@ class Item(models.Model):
         max_digits=10,
         decimal_places=2,
         blank=True,
-        verbose_name="数量")
+        verbose_name="数量",
+    )
     unit = models.CharField(max_length=32, default='', verbose_name="单位")
     attribute = models.TextField(blank=True, verbose_name="属性")
     location = models.ForeignKey(
@@ -88,9 +88,25 @@ class Item(models.Model):
 
 
 class LocationPermissionApplication(models.Model):
-    applicant = models.ForeignKey(myUser, verbose_name='申请人', null=True, blank=True, on_delete=models.SET_NULL)
-    location = models.ForeignKey(Location, verbose_name='申请位置', null=True, blank=True, on_delete=models.SET_NULL)
-    explanation = models.CharField(max_length=256, default='', verbose_name='申请理由')
+    applicant = models.ForeignKey(
+        myUser,
+        verbose_name='申请人',
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+    )
+    location = models.ForeignKey(
+        Location,
+        verbose_name='申请位置',
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+    )
+    explanation = models.CharField(
+        max_length=256,
+        default='',
+        verbose_name='申请理由',
+    )
     approved = models.BooleanField(default=False, verbose_name='是否同意')
     rejected = models.BooleanField(default=False, verbose_name='是否拒绝')
     time = models.DateTimeField(auto_now=True, verbose_name='申请时间')

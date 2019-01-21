@@ -24,7 +24,7 @@ def get_my_loc(user_now, loc_id):
     return loc
 
 
-def get_my_list(user_now, all_obj):
+def get_item_list(user_now, all_obj):
     obj_list = all_obj.filter(allowed_users=user_now) | all_obj.filter(is_public=True)
     users = user_now.staff.all()
     for user in users:

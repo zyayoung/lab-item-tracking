@@ -27,7 +27,7 @@ class ItemsView(generic.View):
 
     def get(self, request, *args, **kwargs):
         tmp_user = myUser.objects.get(id=request.session.get('user_id'))
-        item_list = get_my_list(tmp_user, Item.objects.all())
+        item_list = get_item_list(tmp_user, Item.objects.all())
         paginator = Paginator(item_list, 20)
         page = request.GET.get('page')
         try:
@@ -136,9 +136,9 @@ class LocationView(generic.View):
         else:
             loc_now = get_my_loc(tmp_user, location_id)
             all_items = Item.objects.filter(location=loc_now)
-            item_list = get_my_list(tmp_user, all_items)
+            item_list = get_item_list(tmp_user, all_items)
             all_locs = loc_now.parentPath.all()
-        loc_list = get_my_list(tmp_user, all_locs)
+        loc_list = all_locs
         return render(request, 'inventory/location.html', locals())
 
 
@@ -208,6 +208,6 @@ class AddItem2LocView(generic.View):
     def get(self, request, *args, **kwargs):
         user_id = request.session.get('user_id')
         tmp_user = myUser.objects.get(id=user_id)
-        item_list = get_my_list(tmp_user, Item.objects.filter(location=None))
+        item_list = get_item_list(tmp_user, Item.objects.filter(location=None))
         location = get_my_loc(tmp_user, kwargs.get('id'))
         return render(request, 'inventory/additem2loc.html', locals())
