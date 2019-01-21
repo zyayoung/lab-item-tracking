@@ -14,30 +14,30 @@ python manage.py runserver
 ## Features
 
 - Users
-    - [ ]Admin
-    - [x]Manager
-    - [x]Normal User
+    - [ ] Admin
+    - [x] Manager
+    - [x] Normal User
 - Location
-    - [x]Tree structure
-    - [x]QR Code
+    - [x] Tree structure
+    - [x] QR Code
 - Items
-    - [ ]Add
-    - [ ]Attr
-    - [x]Location
-    - [x]Owner
-    - [ ]Share (link & unlink)
-    - [ ]Edit
-    - [x]Delete
+    - [ ] Add
+    - [ ] Attr
+    - [x] Location
+    - [x] Owner
+    - [ ] Share (link & unlink)
+    - [ ] Edit
+    - [x] Delete
 - Trace
-    - [x]Item location & quantity
-    - [x]Operater
-    - [x]Time
-    - [ ]Attr changes
+    - [x] Item location & quantity
+    - [x] Operater
+    - [x] Time
+    - [ ] Attr changes
 - Permission
-    - [x]Public
-    - [x]Private item
-    - [x]Secret location
-    - [ ]Apply for permission
+    - [x] Public
+    - [x] Private item
+    - [x] Secret location
+    - [ ] Apply for permission
 
 ## Modular item managing system
 
