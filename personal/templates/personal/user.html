@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block title %}用户信息{% endblock %}
+{% block css %}{% endblock %}
+{% block content %}
+<p class="lead">个人信息：</p>
+<table class="table table-striped row mx-0">
+    <tbody class="w-100">
+        <tr class="row mx-0">
+            <th class="col-3">用户名</th>
+            <td class="col-9">{{ user.name }}</td>
+        </tr>
+        <tr class="row mx-0">
+            <th class="col-3">权限</th>
+            <td class="col-9">{{ permission }}</td>
+        </tr>
+        {% if manager_list %}
+        <tr class="row mx-0">
+            <th class="col-3">所属主管</th>
+            <td class="col-9">
+                {% for user in manager_list %}
+                <a href="{% url 'personal:user' user.id %}">
+                    {{ user.name }}
+                </a>
+                {% endfor %}
+            </td>
+        </tr>
+        {% endif %}
+        {% if staff_list %}
+        <tr class="row mx-0">
+            <th class="col-3">下属员工</th>
+            <td class="col-9">
+                {% for user in staff_list %}
+                <a href="{% url 'personal:user' user.id %}">
+                    {{ user.name }}
+                </a>
+                {% endfor %}
+            </td>
+        </tr>
+        {% endif %}
+        <tr class="row mx-0">
+            <th class="col-3">注册时间</th>
+            <td class="col-9">{{ user.c_time }}</td>
+        </tr>
+    </tbody>
+</table>
+{% endblock %}
+{% block script %}{% endblock %}

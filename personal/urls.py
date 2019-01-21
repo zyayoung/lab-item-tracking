@@ -6,4 +6,5 @@ app_name = 'personal'
 
 urlpatterns = [
     url(r'^personal/$', views.IndexView.as_view(), name='index'),
+    url(r'^personal/(?P<id>\d+)/$', views.UserView.as_view(), name='user'),
 ]

@@ -24,3 +24,16 @@ class IndexView(generic.View):
         else:
             permission = "员工"
         return render(request, 'personal/index.html', locals())
+
+class UserView(generic.View):
+    def get(self, request, *args, **kwargs):
+        user = myUser.objects.get(id=kwargs.get('id'))
+        staff_list = user.staff.all() if user.staff.exists() else None
+        manager_list = user.staffUser.all() if user.staffUser.exists() else None
+        if user.is_superadmin:
+            permission = "超级管理员"
+        elif staff_list:
+            permission = "主管"
+        else:
+            permission = "员工"
+        return render(request, 'personal/user.html', locals())
