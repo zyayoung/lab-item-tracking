@@ -1,3 +1,22 @@
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, render, redirect
+from django.http import HttpResponseRedirect, HttpResponse
+from django.urls import reverse
+from django.views import generic
+from django.contrib import messages
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
-# Create your views here.
+from login.models import User as myUser
+
+
+class IndexView(generic.View):
+    def dispatch(self, request, *args, **kwargs):
+        if not request.session.get('is_login', None):
+            return render(request, 'personal/index.html')
+        else:
+            return super(IndexView, self).dispatch(request, *args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        user = myUser.objects.get(id=request.session.get('user_id'))
+        staff_list = user.staff.all() if user.staff.exists() else None
+        manager_list = user.staffUser.all() if user.staffUser.exists() else None
+        return render(request, 'personal/index.html', locals())

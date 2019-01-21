@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block title %}个人中心{% endblock %}
+{% block css %}{% endblock %}
+{% block content %}
+<p class="lead">个人信息：</p>
+<table class="table table-striped row mx-0">
+    <tbody class="w-100">
+        <tr class="row mx-0">
+            <th class="col-3">用户名</th>
+            <td class="col-9">{{ user.name }}</td>
+        </tr>
+        <tr class="row mx-0">
+            <th class="col-3">邮箱</th>
+            <td class="col-9">{{ user.email }}</td>
+        </tr>
+        {% if manager_list %}
+        <tr class="row mx-0">
+            <th class="col-3">主管</th>
+            <td class="col-9">
+                {% for user in manager_list %}
+                {{ user.name }}
+                {% endfor %}
+            </td>
+        </tr>
+        {% endif %}
+        {% if staff_list %}
+        <tr class="row mx-0">
+            <th class="col-3">下属</th>
+            <td class="col-9">
+                {% for user in staff_list %}
+                {{ user.name }}
+                {% endfor %}
+            </td>
+        </tr>
+        {% endif %}
+        <tr class="row mx-0">
+            <th class="col-3">注册时间</th>
+            <td class="col-9">{{ user.c_time }}</td>
+        </tr>
+        {% if user.is_superadmin %}
+        <tr class="row mx-0">
+            <th class="col-3">是否超级管理员</th>
+            <td class="col-9">{{ user.is_superadmin }}</td>
+        </tr>
+        {% endif %}
+    </tbody>
+</table>
+{% endblock %}
+{% block script %}{% endblock %}
