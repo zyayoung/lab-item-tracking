@@ -106,6 +106,7 @@ class LocationPermissionApplication(models.Model):
     explanation = models.CharField(
         max_length=256,
         default='',
+        blank=True,
         verbose_name='申请理由',
     )
     approved = models.BooleanField(default=False, verbose_name='是否同意')
