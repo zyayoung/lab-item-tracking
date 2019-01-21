@@ -27,7 +27,8 @@ class AddItemForm(forms.Form):
     )
     public = forms.BooleanField(
         label="公开",
-        widget=forms.TextInput(attrs={'class': 'form-control'}),
+        required=False,
+        widget=forms.CheckboxInput(attrs={'class': 'form-check-input'}),
     )
 
 
