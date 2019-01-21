@@ -19,12 +19,6 @@ class IndexView(generic.View):
 
 
 class ItemsView(generic.View):
-    def dispatch(self, request, *args, **kwargs):
-        if not request.session.get('is_login', None):
-            return render(request, 'inventory/index.html')
-        else:
-            return super(ItemsView, self).dispatch(request, *args, **kwargs)
-
     def get(self, request, *args, **kwargs):
         tmp_user = myUser.objects.get(id=request.session.get('user_id'))
         item_list = get_my_list(tmp_user, Item.objects.all())
@@ -42,12 +36,6 @@ class ItemsView(generic.View):
 
 
 class AddItemView(generic.View):
-    def dispatch(self, request, *args, **kwargs):
-        if not request.session.get('is_login', None):
-            return render(request, 'inventory/index.html')
-        else:
-            return super(AddItemView, self).dispatch(request, *args, **kwargs)
-
     def get(self, request):
         add_form = forms.AddItemForm()
         return render(request, 'inventory/add.html', locals())
@@ -81,13 +69,10 @@ class ItemView(generic.View):
     tmp_user = None
 
     def dispatch(self, request, *args, **kwargs):
-        if not request.session.get('is_login', None):
-            return render(request, 'inventory/index.html')
-        else:
-            user_id = request.session.get('user_id')
-            self.tmp_user = myUser.objects.get(id=user_id)
-            self.item = get_my_item(self.tmp_user, kwargs.get('id'))
-            return super(ItemView, self).dispatch(request, *args, **kwargs)
+        user_id = request.session.get('user_id')
+        self.tmp_user = myUser.objects.get(id=user_id)
+        self.item = get_my_item(self.tmp_user, kwargs.get('id'))
+        return super(ItemView, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
         use_item_form = forms.UseItemForm()
@@ -113,12 +98,6 @@ class ItemView(generic.View):
 
 
 class LocationView(generic.View):
-    def dispatch(self, request, *args, **kwargs):
-        if not request.session.get('is_login', None):
-            return render(request, 'inventory/index.html')
-        else:
-            return super(LocationView, self).dispatch(request, *args, **kwargs)
-
     def get(self, request, *args, **kwargs):
         user_id = request.session.get('user_id')
         tmp_user = myUser.objects.get(id=user_id)
@@ -193,24 +172,11 @@ def unlink_item(request, item_id):
 
 
 class InfoView(generic.View):
-    def dispatch(self, request, *args, **kwargs):
-        if not request.session.get('is_login', None):
-            return render(request, 'inventory/index.html')
-        else:
-            return super(InfoView, self).dispatch(request, *args, **kwargs)
-
     def get(self, request):
         return render(request, 'inventory/info.html', locals())
 
 
 class AddItem2LocView(generic.View):
-    def dispatch(self, request, *args, **kwargs):
-        if not request.session.get('is_login', None):
-            return render(request, 'inventory/index.html')
-        else:
-            return super(AddItem2LocView, self).dispatch(
-                request, *args, **kwargs)
-
     def get(self, request, *args, **kwargs):
         user_id = request.session.get('user_id')
         tmp_user = myUser.objects.get(id=user_id)
@@ -220,13 +186,6 @@ class AddItem2LocView(generic.View):
 
 
 class Apply4Loc(generic.View):
-    def dispatch(self, request, *args, **kwargs):
-        if not request.session.get('is_login', None):
-            return render(request, 'inventory/index.html')
-        else:
-            return super(Apply4Loc, self).dispatch(
-                request, *args, **kwargs)
-
     def get(self, request, *args, **kwargs):
         user_id = request.session.get('user_id')
         tmp_user = myUser.objects.get(id=user_id)
