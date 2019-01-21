@@ -19,4 +19,10 @@ class IndexView(generic.View):
         user = myUser.objects.get(id=request.session.get('user_id'))
         staff_list = user.staff.all() if user.staff.exists() else None
         manager_list = user.staffUser.all() if user.staffUser.exists() else None
+        if user.is_superadmin:
+            permission = "超级管理员"
+        elif staff_list:
+            permission = "主管"
+        else:
+            permission = "员工"
         return render(request, 'personal/index.html', locals())
