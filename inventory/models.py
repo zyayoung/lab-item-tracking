@@ -121,6 +121,9 @@ class LocationPermissionApplication(models.Model):
         related_name='auditor',
     )
 
+    def __str__(self):
+        return "{1} | {0}".format(self.applicant, self.location)
+
     class Meta:
         ordering = ['-time']
         verbose_name = "位置申请"
