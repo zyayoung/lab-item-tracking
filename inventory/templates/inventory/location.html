@@ -19,12 +19,13 @@
         </tr>
     </thead>
     <tbody class="w-100">
+        {% if location_id %}
         <tr class="row mx-0">
             <td class="col-3">
                 <a href="
                     {% if current_location.parent %}
                     {% url 'inventory:location' current_location.parent.id %}{% if pending %}?pending={{ pending.pk }}{% endif %}
-                    {% elif location_id %}
+                    {% else %}
                     {% url 'inventory:location_root' %}{% if pending %}?pending={{ pending.pk }}{% endif %}
                     {% endif %}
                 ">
@@ -33,6 +34,7 @@
             </td>
             <td class="col-9">/</td>
         </tr>
+        {% endif %}
         {% for sublocation in loc_list %}
         <tr class="row mx-0">
             <td class="col-3">
