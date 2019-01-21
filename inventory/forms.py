@@ -11,9 +11,9 @@ class AddItemForm(forms.Form):
         widget=forms.TextInput(attrs={
             'class': 'form-control',
             'type': 'number',
-            'step': '1',
+            'step': '0.01',
             'value': '1',
-            'min': '1',
+            'min': '0.01',
         }),
         min_value=1,
     )
@@ -32,6 +32,6 @@ class UseItemForm(forms.Form):
                 'class': 'form-control',
                 'type': 'number',
                 'step': '0.01',
-                'min': '0',
-                'value': '0',
+                'min': '0.01',
+                'value': '1',
             }))
