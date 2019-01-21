@@ -60,11 +60,13 @@ class AddItemView(generic.View):
             name = add_form.cleaned_data['name']
             quantity = add_form.cleaned_data['quantity']
             unit = add_form.cleaned_data['unit']
+            public = add_form.cleaned_data['public']
             new_item = Item.objects.create(
                 name=name,
                 quantity=0,
                 unit=unit,
                 owner=tmp_user,
+                is_public=public,
             )
             new_item.allowed_users.add(tmp_user)
             set_quantity(new_item, quantity, tmp_user)
@@ -215,3 +217,24 @@ class AddItem2LocView(generic.View):
         item_list = get_my_list(tmp_user, Item.objects.filter(location=None))
         location = get_my_loc(tmp_user, kwargs.get('id'))
         return render(request, 'inventory/additem2loc.html', locals())
+
+
+class Apply4Loc(generic.View):
+    def dispatch(self, request, *args, **kwargs):
+        if not request.session.get('is_login', None):
+            return render(request, 'inventory/index.html')
+        else:
+            return super(Apply4Loc, self).dispatch(
+                request, *args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        user_id = request.session.get('user_id')
+        tmp_user = myUser.objects.get(id=user_id)
+        loc_id = kwargs.get('item_id')
+        loc = get_object_or_404(Location, id=loc_id)
+        try:
+            get_my_loc(tmp_user, loc_id)
+        except Http404:
+
+            return render(request, 'inventory/location_apply.html', locals())
+        return redirect('inventory:location', loc_id)

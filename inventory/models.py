@@ -94,6 +94,7 @@ class LocationPermissionApplication(models.Model):
         null=True,
         blank=True,
         on_delete=models.SET_NULL,
+        related_name='applicant',
     )
     location = models.ForeignKey(
         Location,
@@ -110,6 +111,14 @@ class LocationPermissionApplication(models.Model):
     approved = models.BooleanField(default=False, verbose_name='是否同意')
     rejected = models.BooleanField(default=False, verbose_name='是否拒绝')
     time = models.DateTimeField(auto_now=True, verbose_name='申请时间')
+    auditor = models.ForeignKey(
+        myUser,
+        verbose_name='批准人',
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name='auditor',
+    )
 
     class Meta:
         ordering = ['-time']

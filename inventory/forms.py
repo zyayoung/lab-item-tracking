@@ -25,6 +25,10 @@ class AddItemForm(forms.Form):
         required=False,
         widget=forms.TextInput(attrs={'class': 'form-control'}),
     )
+    public = forms.BooleanField(
+        label="公开",
+        widget=forms.TextInput(attrs={'class': 'form-control'}),
+    )
 
 
 class UseItemForm(forms.Form):
