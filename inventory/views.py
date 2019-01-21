@@ -76,7 +76,7 @@ class AddItemView(generic.View):
             new_item.allowed_users.add(tmp_user)
             set_quantity(new_item, quantity, tmp_user)
             message = "添加成功！"
-            return render(request, 'inventory/add.html', locals())
+            return redirect('inventory:item', new_item.id)
         else:
             return render(request, 'inventory/add.html', locals())
 

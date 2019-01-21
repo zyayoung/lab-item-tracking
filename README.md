@@ -29,10 +29,11 @@ python manage.py runserver
     - [ ] Edit
     - [x] Delete
 - Trace
-    - [x] Item location & quantity
+    - [x] Location
+    - [x] Quantity
     - [x] Operater
     - [x] Time
-    - [ ] Attr changes
+    - [ ] Attr
 - Permission
     - [x] Public
     - [x] Private item
