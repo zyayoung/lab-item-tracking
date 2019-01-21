@@ -11,12 +11,6 @@ from inventory.models import LocationPermissionApplication as LocPmsnApp
 
 
 class IndexView(generic.View):
-    def dispatch(self, request, *args, **kwargs):
-        if not request.session.get('is_login', None):
-            return render(request, 'inventory/index.html')
-        else:
-            return super(IndexView, self).dispatch(request, *args, **kwargs)
-
     def get(self, request, *args, **kwargs):
         user = myUser.objects.get(id=request.session.get('user_id'))
         staff_list = user.staff.all() if user.staff.exists() else None
