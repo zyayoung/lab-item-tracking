@@ -25,7 +25,7 @@ urlpatterns = [
         name='additem2loc'),
     url(r'^location/(?P<item_id>\d+)/apply/$',
         views.Apply4Loc.as_view(),
-        name='unlink'),
+        name='applyloc'),
     url(r'^put/(?P<item_id>\d+)/(?P<location_id>\d+)/$',
         views.put_item_to_location,
         name='put'),
