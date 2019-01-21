@@ -121,6 +121,9 @@ class LocationPermissionApplication(models.Model):
         related_name='auditor',
     )
 
+    def closed(self):
+        return self.approved or self.rejected
+
     def __str__(self):
         return "{1} | {0}".format(self.applicant, self.location)
 

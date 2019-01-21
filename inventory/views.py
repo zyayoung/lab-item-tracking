@@ -248,14 +248,24 @@ class Apply4Loc(generic.View):
             get_my_loc(tmp_user, loc_id)
         except Http404:
             apply_form = forms.ApplyLocationForm(request.POST)
+            message = "请检查填写的内容！"
             if apply_form.is_valid():
-                new_form = LocationPermissionApplication.objects.create(
+                if LocationPermissionApplication.objects.filter(
                     applicant=tmp_user,
                     location=loc,
-                    explanation=apply_form.cleaned_data['note'],
-                )
-                new_form.save()
-                return redirect('inventory:location_root')
+                    approved=False,
+                    rejected=False,
+                ).exists():
+                    message = "请勿重复提交"
+                else:
+                    new_form = LocationPermissionApplication.objects.create(
+                        applicant=tmp_user,
+                        location=loc,
+                        explanation=apply_form.cleaned_data['note'],
+                    )
+                    new_form.save()
+                    message = "提交成功"
+                return render(request, 'inventory/location_apply.html', locals())
             else:
                 return self.get(request)
         return redirect('inventory:location', loc_id)
