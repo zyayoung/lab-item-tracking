@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'captcha',
     'login',
     'trace_item',
+    'personal',
 ]
 
 MIDDLEWARE = [
