@@ -5,24 +5,48 @@
 ## Deploy
 
 ```bash
-python manage.py makemigrations inventory login
+python manage.py makemigrations
 python manage.py migrate
 python manage.py createsuperuser
 python manage.py runserver
 ```
 
+## Modules
+
+- Login
+- Location
+    - tree structure
+- Items
+    - attr
+    - Location
+    - owner
+    - share
+- Permission
+    - public
+    - private item
+    - secret location
+- Trace
+    - Item location & quantity changes
+
 ## Modular item managing system
 
-```python
-class Object:
-    name = ""
-    category = ""  # Options: item, client, contacts, etc.
-    attr = "json string"  # main
-    """
-    Attr Description:
-        Contain a list of tuples (name, category, item):
-            name:     name of the item
-            category: type(category) of the item. Including number, string, other categories, etc.
-            item:     related information
-    """
+```json
+{
+    name: "",
+    category: "",
+    attr: {
+        [{
+        name: "",
+        category: "",
+        item: ""
+        ]}
+    }
+}
+"""
+Attr Description:
+    Contain a list of tuples (name, category, item):
+        name:     name of the item
+        category: type(category) of the item. Including number, string, other categories, etc.
+        item:     related information (ForeighKey)
+"""
 ```
