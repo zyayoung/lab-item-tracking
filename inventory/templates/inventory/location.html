@@ -35,10 +35,26 @@
             <td class="col-9">/</td>
         </tr>
         {% endif %}
-        {% for sublocation in loc_list %}
+        {% for sublocation in allow_locs %}
         <tr class="row mx-0">
             <td class="col-3">
                 <a href="{% url 'inventory:location' sublocation.id %}{% if pending %}?pending={{ pending.pk }}{% endif %}">
+                    {{ sublocation.path }}
+                </a>
+            </td>
+            <td class="col-9">
+                {% if sublocation.is_public %}
+                All
+                {% else %}
+                {{ sublocation.allowed_users_summary }}
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+        {% for sublocation in unallow_locs %}
+        <tr class="row mx-0">
+            <td class="col-3">
+                <a href="#" style="color: #6c757d; pointer-events: none;">
                     {{ sublocation.path }}
                 </a>
             </td>
