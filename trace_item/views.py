@@ -2,9 +2,9 @@ from django.shortcuts import render
 from django.views import generic
 
 from trace_item.models import ItemLog
-from inventory.models import Item
-from inventory.views import get_my_item
+from inventory.utils import get_my_item
 from login.models import User as myUser
+
 
 class TraceItemView(generic.View):
     item = None
