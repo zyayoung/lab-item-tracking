@@ -44,3 +44,12 @@ class UseItemForm(forms.Form):
                 'value': '1',
             }),
     )
+
+
+class ApplyLocationForm(forms.Form):
+    note = forms.CharField(
+        label="备注",
+        max_length=256,
+        required=False,
+        widget=forms.TextInput(attrs={'class': 'form-control'}),
+    )

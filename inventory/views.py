@@ -7,7 +7,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from inventory.utils import *
 from inventory import forms
 
-from inventory.models import Item, Location
+from inventory.models import Item, Location, LocationPermissionApplication
 from login.models import User as myUser
 
 from urllib.parse import quote
@@ -235,6 +235,27 @@ class Apply4Loc(generic.View):
         try:
             get_my_loc(tmp_user, loc_id)
         except Http404:
-
+            apply_form = forms.ApplyLocationForm()
             return render(request, 'inventory/location_apply.html', locals())
+        return redirect('inventory:location', loc_id)
+
+    def post(self, request, *args, **kwargs):
+        user_id = request.session.get('user_id')
+        tmp_user = myUser.objects.get(id=user_id)
+        loc_id = kwargs.get('item_id')
+        loc = get_object_or_404(Location, id=loc_id)
+        try:
+            get_my_loc(tmp_user, loc_id)
+        except Http404:
+            apply_form = forms.ApplyLocationForm(request.POST)
+            if apply_form.is_valid():
+                new_form = LocationPermissionApplication.objects.create(
+                    applicant=tmp_user,
+                    location=loc,
+                    explanation=apply_form.cleaned_data['note'],
+                )
+                new_form.save()
+                return redirect('inventory:location_root')
+            else:
+                return self.get(request)
         return redirect('inventory:location', loc_id)
