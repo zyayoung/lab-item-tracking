@@ -11,7 +11,7 @@ from login.models import User as myUser
 class IndexView(generic.View):
     def dispatch(self, request, *args, **kwargs):
         if not request.session.get('is_login', None):
-            return render(request, 'personal/index.html')
+            return render(request, 'inventory/index.html')
         else:
             return super(IndexView, self).dispatch(request, *args, **kwargs)
 
