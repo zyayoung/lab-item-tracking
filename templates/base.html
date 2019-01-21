@@ -40,16 +40,17 @@
         <ul class="navbar-nav mr-auto">
           {% block navbar %}
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'inventory:location_root' %}">位置目录</a>
+            <a class="nav-link" href="{% url 'inventory:location_root' %}">位置</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'inventory:items' %}">物品目录</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'inventory:add' %}">添加物品</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="https://github.com/zyayoung/lab-item-tracking/wiki">帮助</a>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="itemDropdown" role="button" data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="false">
+              物品
+            </a>
+            <div class="dropdown-menu" style="min-width: 0px;" aria-labelledby="itemDropdown">
+              <a class="dropdown-item" href="{% url 'inventory:items' %}">清单</a>
+              <a class="dropdown-item" href="{% url 'inventory:add' %}">添加</a>
+            </div>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="{% url 'admin:index' %}">数据库管理</a>
