@@ -37,6 +37,7 @@ def login(request):
                 # 哈希值和数据库内的值进行比对
                 if user.password == password_hash(password):
                     request.session['is_login'] = True
+                    request.session['is_superadmin'] = user.is_superadmin
                     request.session['user_id'] = user.id
                     request.session['user_name'] = user.__str__()
                     return redirect('/index/')
