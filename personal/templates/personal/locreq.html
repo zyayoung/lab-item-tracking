@@ -55,7 +55,14 @@
                         {% elif request.rejected %}
                         <span class="badge badge-danger">已拒绝</span>
                         {% else %}
-                        <span class="badge badge-secondary">等待中</span>
+                        <div class="btn-group btn-group-sm" role="group">
+                            <button type="button" class="btn btn-outline-success" onClick="cfm('', '通过')">
+                                <i class="fa fa-check" aria-hidden="true"></i>
+                            </button>
+                            <button type="button" class="btn btn-outline-danger" onClick="cfm('', '拒绝')">
+                                <i class="fa fa-times" aria-hidden="true"></i>
+                            </button>
+                        </div>
                         {% endif %}
                     </td>
                 </tr>
@@ -114,5 +121,40 @@
         </table>
     </div>
 </div>
+<div class="modal fade" id="cfmModal" tabindex="-1" role="dialog" aria-labelledby="cfmModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="cfmModalTitle">
+                    <i class="fa fa-info" aria-hidden="true"></i> 提示信息
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p id="modalNotice"></p>
+            </div>
+            <div class="modal-footer">
+                <input type="hidden" id="url" />
+                <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-outline-primary" onClick="urlSubmit()">确定</button>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
-{% block script %}{% endblock %}
+{% block script %}
+<script>
+    function cfm(url, result) {
+        $('#modalNotice').html('您确认要<b>' + result + '</b>该申请吗？');
+        $('#url').val(url);
+        $('#cfmModal').modal();
+    }
+
+    function urlSubmit() {
+        var url = $.trim($("#url").val());
+        window.location.href = url;
+    }
+</script>
+{% endblock %}
