@@ -35,7 +35,7 @@
         <tr class="row mx-0">
             <th class="col-3">关联用户</th>
             <td class="col-9">
-                <form method="post">
+                <form method="post" action="./?action=user">
                     {% csrf_token %}
                     <select name="share" id="share_id" class="selectpicker" data-live-search="true" multiple>
                         {% for user in all_users %}
@@ -72,7 +72,7 @@
 <div class="modal fade" id="useItemModal" tabindex="-1" role="dialog" aria-labelledby="useItemModalTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
-            <form class="form-change" action="" method="post">
+            <form class="form-change" action="./?action=item" method="post">
                 {% csrf_token %}
                 <div class="modal-header">
                     <h5 class="modal-title" id="useItemModal">

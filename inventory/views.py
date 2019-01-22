@@ -87,25 +87,24 @@ class ItemView(generic.View):
 
     def post(self, request, *args, **kwargs):
         item = self.item
-        tmp_user = self.tmp_user
-        all_users = self.all_users
-        use_item_form = forms.UseItemForm(request.POST)
-        if use_item_form.is_valid():
+        action = request.GET['action']
+        if action == 'item' and use_item_form.is_valid():
+            tmp_user = self.tmp_user
+            use_item_form = forms.UseItemForm(request.POST)
             quantity = float(use_item_form.cleaned_data['quantity'])
             if 0 < quantity <= self.item.quantity:
                 set_quantity(self.item, float(self.item.quantity) - quantity, self.tmp_user)
                 message = "使用成功！"
             else:
                 message = "使用数量有误！"
-            return render(request, 'inventory/item.html', locals())
-        else:  # TODO: need improvement
+        elif action == 'user':
             item.allowed_users.clear()
             item.allowed_users.add(item.owner)
-            for user_id in request.POST.getlist('share', ""):
+            for user_id in request.POST.getlist('share'):
                 item.allowed_users.add(myUser.objects.get(id=user_id))
             item.save()
             message = "保存成功！"
-            return render(request, 'inventory/item.html', locals())
+        return render(request, 'inventory/item.html', locals())
 
 
 class LocationView(generic.View):
