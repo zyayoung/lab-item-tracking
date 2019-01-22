@@ -67,22 +67,28 @@ class AddItemView(generic.View):
 class ItemView(generic.View):
     item = None
     tmp_user = None
+    all_users = None
 
     def dispatch(self, request, *args, **kwargs):
         user_id = request.session.get('user_id')
         self.tmp_user = myUser.objects.get(id=user_id)
         self.item = get_my_item(self.tmp_user, kwargs.get('id'))
+        self.all_users = myUser.objects.all()
         return super(ItemView, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
         use_item_form = forms.UseItemForm()
         item = self.item
         tmp_user = self.tmp_user
+        all_users = self.all_users
         del_permission = item.del_permission(tmp_user)
         unlink_permission = item.unlink_permission(tmp_user)
         return render(request, 'inventory/item.html', locals())
 
     def post(self, request, *args, **kwargs):
+        item = self.item
+        tmp_user = self.tmp_user
+        all_users = self.all_users
         use_item_form = forms.UseItemForm(request.POST)
         if use_item_form.is_valid():
             quantity = float(use_item_form.cleaned_data['quantity'])
@@ -91,8 +97,15 @@ class ItemView(generic.View):
                 message = "使用成功！"
             else:
                 message = "使用数量有误！"
-            item = self.item
-            tmp_user = self.tmp_user
+            return render(request, 'inventory/item.html', locals())
+        select_form = forms.SelectUserForm(request.POST)
+        if select_form.is_valid():
+            item.allowed_users.clear()
+            item.allowed_users.add(item.owner)
+            for user_id in request.POST.getlist('share', ""):
+                item.allowed_users.add(myUser.objects.get(id=user_id))
+            item.save()
+            message = "保存成功！"
             return render(request, 'inventory/item.html', locals())
         else:
             return self.get(request)

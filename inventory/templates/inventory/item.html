@@ -35,13 +35,17 @@
         <tr class="row mx-0">
             <th class="col-3">关联用户</th>
             <td class="col-9">
-                {% if item.is_public %}
-                All
-                {% else %}
-                {% for user in item.allowed_users.all %}
-                {{ user.name }}
-                {% endfor %}
-                {% endif %}
+                <form method="post">
+                    {% csrf_token %}
+                    <select name="share" id="share_id" class="selectpicker" data-live-search="true" multiple>
+                        {% for user in all_users %}
+                            {% if user != item.owner %}
+                            <option value="{{ user.id }}" {% if user in item.allowed_users.all %}selected{% endif %}>{{ user.name }}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                    <input class="btn" type="submit">
+                </form>
             </td>
         </tr>
         <tr class="row mx-0">
@@ -50,6 +54,7 @@
         </tr>
     </tbody>
 </table>
+
 <a class="btn btn-outline-primary" role="button" href="#" onClick="useItem()">使用</a>
 <!-- <a class="btn btn-outline-primary" role="button" href="{% url 'admin:inventory_item_change' item.id %}">编辑物品</a> -->
 {% if item.location %}
@@ -118,6 +123,8 @@
 
 {% block script %}
 <script>
+    $('select').selectpicker();
+
     function useItem() {
         $('#useItemModal').modal();
     }

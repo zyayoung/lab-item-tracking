@@ -1,4 +1,5 @@
 from django import forms
+from login.models import User as myUser
 
 
 class AddItemForm(forms.Form):
@@ -53,3 +54,8 @@ class ApplyLocationForm(forms.Form):
         required=False,
         widget=forms.TextInput(attrs={'class': 'form-control'}),
     )
+
+class SelectUserForm(forms.Form):
+    values = [(user.id, user.name) for user in myUser.objects.all()]
+    share = forms.CharField(widget=forms.widgets.Select(choices=values))
+
