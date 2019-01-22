@@ -94,6 +94,10 @@
 </table>
 {% elif location %}
 <p class="lead">没有存放物品</p>
+{% if not pending %}
+<a class="btn btn-outline-primary pull-right" role="button" href="{% url 'inventory:additem2loc' location_id %}">
+    <i class="fa fa-plus" aria-hidden="true"></i> 添加
+</a>
 {% endif %}
 {% if current_location_str != 'root' %}
 {% if pending %}
