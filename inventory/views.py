@@ -22,15 +22,13 @@ class ItemsView(generic.View):
     def get(self, request, *args, **kwargs):
         tmp_user = myUser.objects.get(id=request.session.get('user_id'))
         item_list = get_my_list(tmp_user, Item.objects.all())
-        paginator = Paginator(item_list, 20)
+        paginator = Paginator(item_list, 30)
         page = request.GET.get('page')
         try:
             item_list = paginator.page(page)
         except PageNotAnInteger:
-            # If page is not an integer, deliver first page.
             item_list = paginator.page(1)
         except EmptyPage:
-            # If page is out of range (e.g. 9999), deliver last page of results.
             item_list = paginator.page(paginator.num_pages)
         return render(request, 'inventory/items.html', locals())
 
