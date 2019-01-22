@@ -15,5 +15,5 @@ def get_others_request_list(user_now):
         return all_obj
     loc_list = get_my_list(user_now, Location.objects.all())
     users = user_now.staff.all()
-    obj_list = all_obj.filter(location_in=loc_list, applicant_in=users)
+    obj_list = all_obj.filter(location__in=loc_list, applicant__in=users)
     return obj_list.distinct()

@@ -32,7 +32,7 @@ def get_my_list(user_now, all_obj):
     users = user_now.staff.all()
     obj_list = all_obj.filter(allowed_users=user_now) | \
         all_obj.filter(is_public=True) | \
-        all_obj.filter(allowed_users_in=users)
+        all_obj.filter(allowed_users__in=users)
     return obj_list.distinct()
 
 
