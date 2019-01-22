@@ -101,7 +101,7 @@
 {% endif %}
 </p>
 {% endif %}
-{% if loc_now_str != 'root' %}
+{% if location_id %}
 {% if pending %}
 <a class="btn btn-outline-primary" href="#" onClick="cfm('您确认要将<b>{{ pending }}</b>存入<b>{{ loc_now_str }}</b>吗？', '{% url 'inventory:put' pending.pk location_id %}')"
     role="button">

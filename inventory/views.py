@@ -129,7 +129,7 @@ class LocationView(generic.View):
             item_list = get_my_list(tmp_user, all_items)
             all_locs = loc_now.parentPath.all()
         else:
-            current_location_str = 'root'
+            loc_now_str = 'root'
             all_locs = Location.objects.filter(parent=None)
         allow_locs = get_my_list(tmp_user, all_locs)
         unallow_locs = all_locs.difference(allow_locs)
