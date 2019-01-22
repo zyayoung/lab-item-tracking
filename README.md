@@ -14,14 +14,14 @@ python manage.py runserver
 ## Features
 
 - Users
-    - [ ] Admin
+    - [x] Admin
     - [x] Manager
     - [x] Normal User
 - Location
     - [x] Tree structure
     - [x] QR Code
 - Items
-    - [ ] Add
+    - [x] Add
     - [ ] Attr
     - [x] Location
     - [x] Owner
@@ -38,7 +38,7 @@ python manage.py runserver
     - [x] Public
     - [x] Private item
     - [x] Secret location
-    - [ ] Apply for permission
+    - [x] Apply for permission
 
 ## Modular item managing system
 
