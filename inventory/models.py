@@ -123,7 +123,7 @@ class LocationPermissionApplication(models.Model):
     time = models.DateTimeField(auto_now=True, verbose_name='申请时间')
     auditor = models.ForeignKey(
         myUser,
-        verbose_name='批准人',
+        verbose_name='处理人',
         null=True,
         blank=True,
         on_delete=models.SET_NULL,
