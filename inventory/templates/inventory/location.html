@@ -93,12 +93,13 @@
     </tbody>
 </table>
 {% elif current_location %}
-<p class="lead">没有存放物品</p>
+<p class="lead">没有存放物品
 {% if not pending %}
 <a class="btn btn-outline-primary pull-right" role="button" href="{% url 'inventory:additem2loc' location_id %}">
     <i class="fa fa-plus" aria-hidden="true"></i> 添加
 </a>
 {% endif %}
+</p>
 {% endif %}
 {% if current_location_str != 'root' %}
 {% if pending %}
@@ -107,12 +108,6 @@
     将{{ pending }}存入此位置
 </a>
 {% endif %}
-{% endif %}
-{% if pending %}
-<a class="btn btn-outline-primary" href="#" onClick="cfm('您确认要将<b>{{ pending }}</b>取出吗？', '{% url 'inventory:put' pending.pk 0 %}')"
-    role="button">
-    取出{{ pending }}
-</a>
 {% endif %}
 <!-- modal start -->
 {% if pending %}
