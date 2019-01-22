@@ -37,9 +37,15 @@ class UserView(generic.View):
 class LocReqView(generic.View):
     def get(self, request, *args, **kwargs):
         user = myUser.objects.get(id=request.session.get('user_id'))
-        my_request_list = get_my_request_list(user)
         others_request_list = get_others_request_list(user)
         return render(request, 'personal/locreq.html', locals())
+
+
+class MyLocReqView(generic.View):
+    def get(self, request, *args, **kwargs):
+        user = myUser.objects.get(id=request.session.get('user_id'))
+        my_request_list = get_my_request_list(user)
+        return render(request, 'personal/mylocreq.html', locals())
 
 
 def ajax_submit(request):

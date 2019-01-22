@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block title %}位置申请{% endblock %}
+{% block css %}{% endblock %}
+{% block content %}
+<p class="lead">相关申请：</p>
+<nav>
+    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+        <a class="nav-item nav-link" href="{% url 'personal:locreq' %}"
+            aria-selected="true">收到申请</a>
+        <a class="nav-item nav-link active" id="others-req-tab" data-toggle="tab" href="#" role="tab"
+            aria-controls="others-req" aria-selected="false">我的申请</a>
+    </div>
+</nav>
+<div class="tab-content" id="nav-tabContent">
+    <div class="tab-pane show active" id="my-req" role="tabpanel" aria-labelledby="my-req-tab">
+        <table class="table table-striped">
+            <thead>
+                <th>#</th>
+                <th>申请人</th>
+                <th>申请位置</th>
+                <th>申请理由</th>
+                <th>申请时间</th>
+                <th>处理人</th>
+                <th>状态</th>
+            </thead>
+            <tbody>
+                {% for loc_req in my_request_list %}
+                <tr>
+                    <td>{{ loc_req.id }}</td>
+                    <td>
+                        <a href="{% url 'personal:user' loc_req.applicant.id %}">
+                            {{ loc_req.applicant }}
+                        </a>
+                    </td>
+                    <td>
+                        <a href="{% url 'inventory:location' loc_req.location.id %}">
+                            {{ loc_req.location }}
+                        </a>
+                    </td>
+                    <td>{{ loc_req.explanation }}</td>
+                    <td>{{ loc_req.time }}</td>
+                    <td>
+                        {% if loc_req.auditor %}
+                        <a href="{% url 'personal:user' loc_req.auditor.id %}">
+                            {{ loc_req.auditor }}
+                        </a>
+                        {% else %}
+                        暂无
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if loc_req.approved %}
+                        <span class="badge badge-success">已通过</span>
+                        {% elif loc_req.rejected %}
+                        <span class="badge badge-danger">已拒绝</span>
+                        {% else %}
+                        <span class="badge badge-secondary">等待中</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
