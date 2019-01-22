@@ -6,8 +6,8 @@
 <p class="lead">相关申请：</p>
 <nav>
     <div class="nav nav-tabs" id="nav-tab" role="tablist">
-        <a class="nav-item nav-link active" id="others-req-tab" data-toggle="tab" href="#others-req" role="tab" aria-controls="others-req"
-            aria-selected="false">待审申请</a>
+        <a class="nav-item nav-link active" id="others-req-tab" data-toggle="tab" href="#others-req" role="tab"
+            aria-controls="others-req" aria-selected="false">待审申请</a>
         <a class="nav-item nav-link" id="my-req-tab" data-toggle="tab" href="#my-req" role="tab" aria-controls="my-req"
             aria-selected="true">我的申请</a>
     </div>
@@ -51,11 +51,11 @@
                     </td>
                     <td>
                         {% if request.approved %}
-                        已通过
+                        <span class="badge badge-success">已通过</span>
                         {% elif request.rejected %}
-                        已拒绝
+                        <span class="badge badge-danger">已拒绝</span>
                         {% else %}
-                        未定
+                        <span class="badge badge-secondary">等待中</span>
                         {% endif %}
                     </td>
                 </tr>
@@ -101,11 +101,11 @@
                     </td>
                     <td>
                         {% if request.approved %}
-                        已通过
+                        <span class="badge badge-success">已通过</span>
                         {% elif request.rejected %}
-                        已拒绝
+                        <span class="badge badge-danger">已拒绝</span>
                         {% else %}
-                        未定
+                        <span class="badge badge-secondary">等待中</span>
                         {% endif %}
                     </td>
                 </tr>
