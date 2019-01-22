@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load staticfiles %}
-{% block title %}物品详情：{{ item.name }} {% endblock %}
+{% block title %}物品详情：{{ item }} {% endblock %}
 {% block content %}
 {% if message %}
 <div class="alert alert-warning">{{ message }}</div>
@@ -10,7 +10,7 @@
     <tbody class="w-100">
         <tr class="row mx-0">
             <th class="col-3">名称</th>
-            <td class="col-9">{{ item.name }}</td>
+            <td class="col-9">{{ item }}</td>
         </tr>
         <tr class="row mx-0">
             <th class="col-3">数量</th>

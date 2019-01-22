@@ -53,7 +53,7 @@ class Item(models.Model):
         blank=True,
         verbose_name="数量",
     )
-    unit = models.CharField(max_length=32, default='', verbose_name="单位")
+    unit = models.CharField(max_length=32, default='', blank=True, verbose_name="单位")
     attribute = models.TextField(blank=True, verbose_name="属性")
     location = models.ForeignKey(
         Location,
@@ -79,7 +79,16 @@ class Item(models.Model):
     update_time = models.DateTimeField("update_time", auto_now=True)
 
     def __str__(self):
-        return "{0}".format(self.name)
+        return "{0}".format(self.name) + ("（已删除）" if not self.allowed_users.exists() else "")
+
+    def del_permission(self, tmp_user):
+        return self.owner == tmp_user or \
+               tmp_user.staff.filter(id=self.owner.id).exists() or \
+               tmp_user.is_superadmin  # User can delete item iff. he/she is super admin / owner / owner's manager
+
+    def unlink_permission(self, tmp_user):
+        return not self.del_permission(tmp_user) and \
+               self.allowed_users.filter(id=tmp_user.id).exists()  # Otherwise, only directly linked user can unlink
 
     class Meta:
         ordering = ['-update_time']

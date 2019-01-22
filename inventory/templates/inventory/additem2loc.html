@@ -15,12 +15,12 @@
     <tbody>
         {% for item in item_list %}
         <tr>
-            <td><a href="{% url 'inventory:item' item.id %}">{{ item.name }}</a></td>
+            <td><a href="{% url 'inventory:item' item.id %}">{{ item }}</a></td>
             <td>{{ item.quantity }} {% if item.unit %}{{ item.unit }}{% endif %}</td>
             <td>{{ item.attribute }}</td>
             <td>{{ item.owner }}</td>
             <td>
-                <a class="btn btn-outline-primary" href="#" onClick="cfm('{% url 'inventory:put' item.id location.id %}', '{{ item.name }}', '{{ location }}')"
+                <a class="btn btn-outline-primary" href="#" onClick="cfm('{% url 'inventory:put' item.id location.id %}', '{{ item }}', '{{ location }}')"
                     role="button">
                     <i class="fa fa-plus" aria-hidden="true"></i> 添加
                 </a>

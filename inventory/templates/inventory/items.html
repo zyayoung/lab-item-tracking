@@ -15,7 +15,7 @@
     <tbody>
         {% for item in item_list %}
         <tr>
-            <td><a href="{% url 'inventory:item' item.id %}">{{ item.name }}</a></td>
+            <td><a href="{% url 'inventory:item' item.id %}">{{ item }}</a></td>
             <td>
                 {% if item.location %}
                 <a href="{% url 'inventory:location' item.location.id %}">{{ item.location }}</a>
