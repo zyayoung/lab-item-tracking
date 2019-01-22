@@ -111,18 +111,15 @@ class LocationView(generic.View):
         else:
             pending = None
         # root directory
-        if location_id == None:
-            all_locs = Location.objects.filter(parent=None)
-            allow_locs = get_my_list(tmp_user,all_locs)
-            unallow_locs = all_locs.difference(allow_locs)
-        # other directory
-        else:
+        if location_id:
             loc_now = get_my_loc(tmp_user, location_id)
             all_items = Item.objects.filter(location=loc_now)
             item_list = get_my_list(tmp_user, all_items)
             all_locs = loc_now.parentPath.all()
-            allow_locs = get_my_list(tmp_user,all_locs)
-            unallow_locs = all_locs.difference(allow_locs)
+        else:
+            all_locs = Location.objects.filter(parent=None)
+        allow_locs = get_my_list(tmp_user, all_locs)
+        unallow_locs = all_locs.difference(allow_locs)
         # loc_list = all_locs
         return render(request, 'inventory/location.html', locals())
 
