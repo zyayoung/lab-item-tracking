@@ -98,7 +98,7 @@ class ItemView(generic.View):
             else:
                 message = "使用数量有误！"
             return render(request, 'inventory/item.html', locals())
-        if 'share' in request.POST.keys():
+        else:  # TODO: need improvement
             item.allowed_users.clear()
             item.allowed_users.add(item.owner)
             for user_id in request.POST.getlist('share', ""):
@@ -106,8 +106,6 @@ class ItemView(generic.View):
             item.save()
             message = "保存成功！"
             return render(request, 'inventory/item.html', locals())
-        else:
-            return self.get(request)
 
 
 class LocationView(generic.View):
