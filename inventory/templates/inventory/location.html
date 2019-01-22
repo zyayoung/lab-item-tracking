@@ -99,13 +99,13 @@
     <i class="fa fa-plus" aria-hidden="true"></i> 添加
 </a>
 {% endif %}
+{% endif %}
 {% if current_location_str != 'root' %}
 {% if pending %}
 <a class="btn btn-outline-primary" href="#" onClick="cfm('您确认要将<b>{{ pending }}</b>存入<b>{{ current_location_str }}</b>吗？', '{% url 'inventory:put' pending.pk location_id %}')"
     role="button">
     将{{ pending }}存入此位置
 </a>
-{% endif %}
 {% endif %}
 {% endif %}
 {% if pending %}
