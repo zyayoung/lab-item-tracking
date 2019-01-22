@@ -98,8 +98,7 @@ class ItemView(generic.View):
             else:
                 message = "使用数量有误！"
             return render(request, 'inventory/item.html', locals())
-        select_form = forms.SelectUserForm(request.POST)
-        if select_form.is_valid():
+        if 'share' in request.POST.keys():
             item.allowed_users.clear()
             item.allowed_users.add(item.owner)
             for user_id in request.POST.getlist('share', ""):
