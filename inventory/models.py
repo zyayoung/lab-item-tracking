@@ -32,11 +32,11 @@ class Location(models.Model):
                ('' if self.allowed_users.count() <= 5 else ' 等%d人' % self.allowed_users.count())
 
     def __str__(self):
-        path_list = [self.path]
-        p = self.parent
-        while p:
-            path_list.insert(0, p.path)
-            p = p.parent
+        path_list = []
+        loc = self
+        while loc:
+            path_list.insert(0, loc.path)
+            loc = loc.parent
         return '-'.join(path_list)
 
     class Meta:
