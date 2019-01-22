@@ -37,7 +37,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="cfmModalTitle">
-                        <i class="fa fa-info" aria-hidden="true"></i> 提示信息
+                    <i class="fa fa-info" aria-hidden="true"></i> 提示信息
                 </h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
@@ -62,6 +62,7 @@
         $('#url').val(url);
         $('#cfmModal').modal();
     }
+
     function urlSubmit() {
         var url = $.trim($("#url").val());
         window.location.href = url;
