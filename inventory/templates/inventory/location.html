@@ -7,9 +7,11 @@
 {% endif %}
 <p class="lead">
     当前位置：{{ current_location_str }}
+    {% if not pending %}
     <a class="btn btn-outline-primary pull-right" role="button" href="#" onClick="qrcodeMdl('{{ QRCode }}')">
         <i class="fa fa-qrcode" aria-hidden="true"></i></i> 二维码
     </a>
+    {% endif %}
 </p>
 <table class="table table-striped row mx-0">
     <thead class="w-100">
