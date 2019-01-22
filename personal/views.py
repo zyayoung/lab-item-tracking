@@ -8,6 +8,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 
 from personal.utils import *
+from inventory.utils import get_my_loc
 
 from login.models import User as myUser
 from inventory.models import LocationPermissionApplication as LocPmsnApp
@@ -43,24 +44,21 @@ class LocReqView(generic.View):
 
 def ajax_submit(request):
     re_dict = {'status': 1}
-    user = myUser.objects.get(id=request.session.get('user_id'))
+    tmp_user = myUser.objects.get(id=request.session.get('user_id'))
     req_id = int(request.POST.get('id'))
     result = int(request.POST.get('result'))
     req = get_object_or_404(LocPmsnApp, id=req_id)
-    try:
-        if not req.applicant in user.staff.all():
-            raise
-        # if not user in req.location.allowed_users.all():
-        #     raise
-        if result == 1:
-            req.approved = True
-        elif result == 0:
-            req.rejected = True
-        req.auditor = user
-        req.save()
-        req.location.allowed_users.add(req.applicant)
-        req.location.save()
-        re_dict = {'status': 0}
-    except:
+    if not (tmp_user.is_superadmin() or req.applicant in tmp_user.staff.all()):
         return JsonResponse(re_dict)
+    if not get_my_loc(tmp_user, req.location.id):
+        return JsonResponse(re_dict)  # 404
+    if result == 1:
+        req.approved = True
+    elif result == 0:
+        req.rejected = True
+    req.auditor = tmp_user
+    req.save()
+    req.location.allowed_users.add(req.applicant)
+    req.location.save()
+    re_dict = {'status': 0}
     return JsonResponse(re_dict)
