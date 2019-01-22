@@ -78,8 +78,13 @@ class ItemView(generic.View):
         use_item_form = forms.UseItemForm()
         item = self.item
         tmp_user = self.tmp_user
-        del_permission = item.owner == tmp_user or tmp_user.staff.filter(id=item.owner.id).exists()
-        unlink_permission = not del_permission and item.allowed_users.filter(id=tmp_user.id).exists()
+        del_permission = \
+            item.owner == tmp_user or \
+            tmp_user.staff.filter(id=item.owner.id).exists() or \
+            tmp_user.is_superadmin  # User can delete item iff. he/she is super admin / owner / owner's manager
+        unlink_permission = \
+            not del_permission and \
+            item.allowed_users.filter(id=tmp_user.id).exists()  # Otherwise, only directly linked user can unlink
         return render(request, 'inventory/item.html', locals())
 
     def post(self, request, *args, **kwargs):
@@ -92,6 +97,7 @@ class ItemView(generic.View):
             else:
                 message = "使用数量有误！"
             item = self.item
+            tmp_user = self.tmp_user
             return render(request, 'inventory/item.html', locals())
         else:
             return self.get(request)
