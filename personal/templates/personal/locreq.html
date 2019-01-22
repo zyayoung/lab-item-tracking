@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block title %}位置申请{% endblock %}
+{% block css %}{% endblock %}
+{% block content %}
+<p class="lead">相关申请：</p>
+<nav>
+    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+        <a class="nav-item nav-link active" id="others-req-tab" data-toggle="tab" href="#others-req" role="tab" aria-controls="others-req"
+            aria-selected="false">待审申请</a>
+        <a class="nav-item nav-link" id="my-req-tab" data-toggle="tab" href="#my-req" role="tab" aria-controls="my-req"
+            aria-selected="true">我的申请</a>
+    </div>
+</nav>
+<div class="tab-content" id="nav-tabContent">
+    <div class="tab-pane show active" id="others-req" role="tabpanel" aria-labelledby="others-req-tab">
+        <table class="table table-striped">
+            <thead>
+                <th>#</th>
+                <th>申请人</th>
+                <th>申请位置</th>
+                <th>申请理由</th>
+                <th>申请时间</th>
+                <th>批准人</th>
+                <th>状态</th>
+            </thead>
+            <tbody>
+                {% for request in my_request_list %}
+                <tr>
+                    <td>{{ request.id }}</td>
+                    <td>
+                        <a href="{% url 'personal:user' request.applicant.id %}">
+                            {{ request.applicant }}
+                        </a>
+                    </td>
+                    <td>
+                        <a href="{% url 'inventory:location' request.location.id %}">
+                            {{ request.location }}
+                        </a>
+                    </td>
+                    <td>{{ request.explanation }}</td>
+                    <td>{{ request.time }}</td>
+                    <td>
+                        {% if request.auditor %}
+                        <a href="{% url 'personal:user' request.auditor.id %}">
+                            {{ request.auditor }}
+                        </a>
+                        {% else %}
+                        暂无
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if request.approved %}
+                        已通过
+                        {% elif request.rejected %}
+                        已拒绝
+                        {% else %}
+                        未定
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="tab-pane" id="my-req" role="tabpanel" aria-labelledby="my-req-tab">
+        <table class="table table-striped">
+            <thead>
+                <th>#</th>
+                <th>申请人</th>
+                <th>申请位置</th>
+                <th>申请理由</th>
+                <th>申请时间</th>
+                <th>批准人</th>
+                <th>状态</th>
+            </thead>
+            <tbody>
+                {% for request in others_request_list %}
+                <tr>
+                    <td>{{ request.id }}</td>
+                    <td>
+                        <a href="{% url 'personal:user' request.applicant.id %}">
+                            {{ request.applicant }}
+                        </a>
+                    </td>
+                    <td>
+                        <a href="{% url 'inventory:location' request.location.id %}">
+                            {{ request.location }}
+                        </a>
+                    </td>
+                    <td>{{ request.explanation }}</td>
+                    <td>{{ request.time }}</td>
+                    <td>
+                        {% if request.auditor %}
+                        <a href="{% url 'personal:user' request.auditor.id %}">
+                            {{ request.auditor }}
+                        </a>
+                        {% else %}
+                        暂无
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if request.approved %}
+                        已通过
+                        {% elif request.rejected %}
+                        已拒绝
+                        {% else %}
+                        未定
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+{% block script %}{% endblock %}

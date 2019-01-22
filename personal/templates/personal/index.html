@@ -48,56 +48,5 @@
         </tr>
     </tbody>
 </table>
-{% if request_list %}
-<p class="lead">相关申请：</p>
-<table class="table table-striped">
-    <thead>
-        <th>#</th>
-        <th>申请人</th>
-        <th>申请位置</th>
-        <th>申请理由</th>
-        <th>申请时间</th>
-        <th>批准人</th>
-        <th>状态</th>
-    </thead>
-    <tbody>
-        {% for request in request_list %}
-        <tr>
-            <td>{{ request.id }}</td>
-            <td>
-                <a href="{% url 'personal:user' request.applicant.id %}">
-                    {{ request.applicant }}
-                </a>
-            </td>
-            <td>
-                <a href="{% url 'inventory:location' request.location.id %}">
-                    {{ request.location }}
-                </a>
-            </td>
-            <td>{{ request.explanation }}</td>
-            <td>{{ request.time }}</td>
-            <td>
-                {% if request.auditor %}
-                <a href="{% url 'personal:user' request.auditor.id %}">
-                    {{ request.auditor }}
-                </a>
-                {% else %}
-                暂无
-                {% endif %}
-            </td>
-            <td>
-                {% if request.approved %}
-                已通过
-                {% elif request.rejected %}
-                已拒绝
-                {% else %}
-                未定
-                {% endif %}
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-{% endif %}
 {% endblock %}
 {% block script %}{% endblock %}
