@@ -1,5 +1,5 @@
 from django.shortcuts import get_object_or_404, render, redirect
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect, HttpResponse, Http404
 from django.urls import reverse
 from django.views import generic
 from django.contrib import messages
@@ -48,10 +48,12 @@ def ajax_submit(request):
     req_id = int(request.POST.get('id'))
     result = int(request.POST.get('result'))
     req = get_object_or_404(LocPmsnApp, id=req_id)
-    if not (tmp_user.is_superadmin() or req.applicant in tmp_user.staff.all()):
+    if req not in get_others_request_list(tmp_user):
         return JsonResponse(re_dict)
-    if not get_my_loc(tmp_user, req.location.id):
-        return JsonResponse(re_dict)  # 404
+    try:
+        get_my_loc(tmp_user, req.location.id)
+    except Http404:
+        return JsonResponse(re_dict)
     if result == 1:
         req.approved = True
     elif result == 0:
