@@ -28,6 +28,8 @@ class IndexView(generic.View):
 
 class UserView(generic.View):
     def get(self, request, *args, **kwargs):
+        if int(kwargs.get('id')) == request.session.get('user_id'):
+            return redirect('personal:index')
         user = get_object_or_404(myUser, id=kwargs.get('id'))
         staff_list = user.staff.all() if user.staff.exists() else None
         manager_list = user.staffUser.all() if user.staffUser.exists() else None
