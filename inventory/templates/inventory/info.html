@@ -11,7 +11,7 @@
         {% endfor %}
     </ul>
     {% endif %}
-    <span id="nuber">3</span>秒后返回...
+    <span id="number">3</span>秒后返回...
 </p>
 {% endblock %}
 {% block script %}
@@ -21,7 +21,7 @@
     };
     var cd = 2;
     function myTimer() {
-        document.getElementById("nuber").innerHTML = Math.max(cd--, 0);
+        document.getElementById("number").innerHTML = Math.max(cd--, 0);
         if (cd < 0) window.history.go(-1);
     }
 </script>
