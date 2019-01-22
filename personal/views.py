@@ -56,11 +56,11 @@ def ajax_submit(request):
         return JsonResponse(re_dict)
     if result == 1:
         req.approved = True
+        req.location.allowed_users.add(req.applicant)
+        req.location.save()
     elif result == 0:
         req.rejected = True
     req.auditor = tmp_user
     req.save()
-    req.location.allowed_users.add(req.applicant)
-    req.location.save()
     re_dict = {'status': 0}
     return JsonResponse(re_dict)
