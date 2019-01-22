@@ -56,8 +56,12 @@ def ajax_submit(request):
         return JsonResponse(re_dict)
     if result == 1:
         req.approved = True
-        req.location.allowed_users.add(req.applicant)
-        req.location.save()
+        # recursively permit
+        loc = req.location
+        while loc:
+            loc.allowed_users.add(req.applicant)
+            loc.save()
+            loc = loc.parent
     elif result == 0:
         req.rejected = True
     req.auditor = tmp_user
