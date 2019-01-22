@@ -4,6 +4,9 @@ from django.urls import reverse
 from django.views import generic
 from django.contrib import messages
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
+
 from personal.utils import *
 
 from login.models import User as myUser
@@ -32,7 +35,32 @@ class UserView(generic.View):
 
 class LocReqView(generic.View):
     def get(self, request, *args, **kwargs):
-        user = get_object_or_404(myUser, id=request.session.get('user_id'))
+        user = myUser.objects.get(id=request.session.get('user_id'))
         my_request_list = get_my_request_list(user)
         others_request_list = get_others_request_list(user)
         return render(request, 'personal/locreq.html', locals())
+
+
+def ajax_submit(request):
+    re_dict = {'status': 1}
+    user = myUser.objects.get(id=request.session.get('user_id'))
+    req_id = int(request.POST.get('id'))
+    result = int(request.POST.get('result'))
+    req = get_object_or_404(LocPmsnApp, id=req_id)
+    try:
+        if not req.applicant in user.staff.all():
+            raise
+        # if not user in req.location.allowed_users.all():
+        #     raise
+        if result == 1:
+            req.approved = True
+        elif result == 0:
+            req.rejected = True
+        req.auditor = user
+        req.save()
+        req.location.allowed_users.add(req.applicant)
+        req.location.save()
+        re_dict = {'status': 0}
+    except:
+        return JsonResponse(re_dict)
+    return JsonResponse(re_dict)

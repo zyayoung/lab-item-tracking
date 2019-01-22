@@ -7,7 +7,7 @@
 <nav>
     <div class="nav nav-tabs" id="nav-tab" role="tablist">
         <a class="nav-item nav-link active" id="others-req-tab" data-toggle="tab" href="#others-req" role="tab"
-            aria-controls="others-req" aria-selected="false">待审申请</a>
+            aria-controls="others-req" aria-selected="false">收到申请</a>
         <a class="nav-item nav-link" id="my-req-tab" data-toggle="tab" href="#my-req" role="tab" aria-controls="my-req"
             aria-selected="true">我的申请</a>
     </div>
@@ -25,41 +25,41 @@
                 <th>状态</th>
             </thead>
             <tbody>
-                {% for request in my_request_list %}
+                {% for loc_req in others_request_list %}
                 <tr>
-                    <td>{{ request.id }}</td>
+                    <td>{{ loc_req.id }}</td>
                     <td>
-                        <a href="{% url 'personal:user' request.applicant.id %}">
-                            {{ request.applicant }}
+                        <a href="{% url 'personal:user' loc_req.applicant.id %}">
+                            {{ loc_req.applicant }}
                         </a>
                     </td>
                     <td>
-                        <a href="{% url 'inventory:location' request.location.id %}">
-                            {{ request.location }}
+                        <a href="{% url 'inventory:location' loc_req.location.id %}">
+                            {{ loc_req.location }}
                         </a>
                     </td>
-                    <td>{{ request.explanation }}</td>
-                    <td>{{ request.time }}</td>
-                    <td>
-                        {% if request.auditor %}
-                        <a href="{% url 'personal:user' request.auditor.id %}">
-                            {{ request.auditor }}
+                    <td>{{ loc_req.explanation }}</td>
+                    <td>{{ loc_req.time }}</td>
+                    <td id="auditor_{{ loc_req.id }}">
+                        {% if loc_req.auditor %}
+                        <a href="{% url 'personal:user' loc_req.auditor.id %}">
+                            {{ loc_req.auditor }}
                         </a>
                         {% else %}
                         暂无
                         {% endif %}
                     </td>
-                    <td>
-                        {% if request.approved %}
+                    <td id="status_{{ loc_req.id }}">
+                        {% if loc_req.approved %}
                         <span class="badge badge-success">已通过</span>
-                        {% elif request.rejected %}
+                        {% elif loc_req.rejected %}
                         <span class="badge badge-danger">已拒绝</span>
                         {% else %}
                         <div class="btn-group btn-group-sm" role="group">
-                            <button type="button" class="btn btn-outline-success" onClick="cfm('', '通过')">
+                            <button type="button" class="btn btn-outline-success" onClick="cfm('{{ loc_req.id }}', 1)">
                                 <i class="fa fa-check" aria-hidden="true"></i>
                             </button>
-                            <button type="button" class="btn btn-outline-danger" onClick="cfm('', '拒绝')">
+                            <button type="button" class="btn btn-outline-danger" onClick="cfm('{{ loc_req.id }}', 0)">
                                 <i class="fa fa-times" aria-hidden="true"></i>
                             </button>
                         </div>
@@ -82,34 +82,34 @@
                 <th>状态</th>
             </thead>
             <tbody>
-                {% for request in others_request_list %}
+                {% for loc_req in my_request_list %}
                 <tr>
-                    <td>{{ request.id }}</td>
+                    <td>{{ loc_req.id }}</td>
                     <td>
-                        <a href="{% url 'personal:user' request.applicant.id %}">
-                            {{ request.applicant }}
+                        <a href="{% url 'personal:user' loc_req.applicant.id %}">
+                            {{ loc_req.applicant }}
                         </a>
                     </td>
                     <td>
-                        <a href="{% url 'inventory:location' request.location.id %}">
-                            {{ request.location }}
+                        <a href="{% url 'inventory:location' loc_req.location.id %}">
+                            {{ loc_req.location }}
                         </a>
                     </td>
-                    <td>{{ request.explanation }}</td>
-                    <td>{{ request.time }}</td>
+                    <td>{{ loc_req.explanation }}</td>
+                    <td>{{ loc_req.time }}</td>
                     <td>
-                        {% if request.auditor %}
-                        <a href="{% url 'personal:user' request.auditor.id %}">
-                            {{ request.auditor }}
+                        {% if loc_req.auditor %}
+                        <a href="{% url 'personal:user' loc_req.auditor.id %}">
+                            {{ loc_req.auditor }}
                         </a>
                         {% else %}
                         暂无
                         {% endif %}
                     </td>
                     <td>
-                        {% if request.approved %}
+                        {% if loc_req.approved %}
                         <span class="badge badge-success">已通过</span>
-                        {% elif request.rejected %}
+                        {% elif loc_req.rejected %}
                         <span class="badge badge-danger">已拒绝</span>
                         {% else %}
                         <span class="badge badge-secondary">等待中</span>
@@ -136,9 +136,10 @@
                 <p id="modalNotice"></p>
             </div>
             <div class="modal-footer">
-                <input type="hidden" id="url" />
+                <input type="hidden" id="cfmId" />
+                <input type="hidden" id="cfmResult" />
                 <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">取消</button>
-                <button type="button" class="btn btn-outline-primary" onClick="urlSubmit()">确定</button>
+                <button type="button" class="btn btn-outline-primary" onClick="ajaxSubmit()">确定</button>
             </div>
         </div>
     </div>
@@ -146,15 +147,38 @@
 {% endblock %}
 {% block script %}
 <script>
-    function cfm(url, result) {
-        $('#modalNotice').html('您确认要<b>' + result + '</b>该申请吗？');
-        $('#url').val(url);
+    function cfm(id, result) {
+        re_str = result ? '同意' : '拒绝';
+        $('#modalNotice').html('您确认要<b>' + re_str + '</b>该申请吗？');
+        $('#cfmId').val(id);
+        $('#cfmResult').val(result);
         $('#cfmModal').modal();
     }
 
-    function urlSubmit() {
-        var url = $.trim($("#url").val());
-        window.location.href = url;
+    function ajaxSubmit() {
+        var id = $.trim($("#cfmId").val());
+        var result = $.trim($("#cfmResult").val());
+        var auditor_html = "<a href=\"{% url 'personal:user' request.session.user_id %}\">{{ request.session.user_name }}</a>";
+        var status_html = new Array('<span class="badge badge-danger">已拒绝</span>',
+            '<span class="badge badge-success">已通过</span>');
+        $.ajax({
+            url: '/personal/locreq/ajax/',
+            type: 'POST',
+            data: {
+                'csrfmiddlewaretoken': '{{ csrf_token }}',
+                'id': id,
+                'result': result,
+            },
+            success: function (arg) {
+                if (arg.status == 0) {
+                    $('#cfmModal').modal('hide');
+                    $('#auditor_' + id).html(auditor_html);
+                    $('#status_' + id).html(status_html[result]);
+                } else {
+                    $('#modalNotice').html('发生错误！');
+                }
+            }
+        });
     }
 </script>
 {% endblock %}
