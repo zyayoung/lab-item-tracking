@@ -107,6 +107,7 @@
 </a>
 {% endif %}
 {% endif %}
+{% endif %}
 {% if pending %}
 <a class="btn btn-outline-primary" href="#" onClick="cfm('您确认要将<b>{{ pending }}</b>取出吗？', '{% url 'inventory:put' pending.pk 0 %}')"
     role="button">
