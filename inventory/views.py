@@ -103,8 +103,6 @@ class LocationView(generic.View):
         user_id = request.session.get('user_id')
         tmp_user = myUser.objects.get(id=user_id)
         location_id = kwargs.get('id')
-        current_location = Location.objects.get(id=location_id) if location_id else None
-        current_location_str = current_location.__str__() if location_id else "root"
         QRCode = "http://qr.liantu.com/api.php?text={0}".format(
             quote(request.build_absolute_uri()))
         if 'pending' in request.GET.keys():
@@ -113,11 +111,16 @@ class LocationView(generic.View):
             pending = None
         # root directory
         if location_id:
-            loc_now = get_my_loc(tmp_user, location_id)
+            try:
+                loc_now = get_my_loc(tmp_user, location_id)
+                loc_now_str = loc_now.__str__()
+            except Http404:
+                return redirect('inventory:applyloc', location_id)
             all_items = Item.objects.filter(location=loc_now)
             item_list = get_my_list(tmp_user, all_items)
             all_locs = loc_now.parentPath.all()
         else:
+            current_location_str = 'root'
             all_locs = Location.objects.filter(parent=None)
         allow_locs = get_my_list(tmp_user, all_locs)
         unallow_locs = all_locs.difference(allow_locs)

@@ -6,7 +6,7 @@
 <p class="lead">选择想存入{{ pending }}的位置：</p>
 {% endif %}
 <p class="lead">
-    当前位置：{{ current_location_str }}
+    当前位置：{{ loc_now_str }}
     {% if not pending %}
     <a class="btn btn-outline-primary pull-right" role="button" href="#" onClick="qrcodeMdl('{{ QRCode }}')">
         <i class="fa fa-qrcode" aria-hidden="true"></i></i> 二维码
@@ -25,8 +25,8 @@
         <tr class="row mx-0">
             <td class="col-3">
                 <a href="
-                    {% if current_location.parent %}
-                    {% url 'inventory:location' current_location.parent.id %}{% if pending %}?pending={{ pending.pk }}{% endif %}
+                    {% if loc_now.parent %}
+                    {% url 'inventory:location' loc_now.parent.id %}{% if pending %}?pending={{ pending.pk }}{% endif %}
                     {% else %}
                     {% url 'inventory:location_root' %}{% if pending %}?pending={{ pending.pk }}{% endif %}
                     {% endif %}
@@ -92,7 +92,7 @@
         {% endfor %}
     </tbody>
 </table>
-{% elif current_location %}
+{% elif loc_now %}
 <p class="lead">没有存放物品
 {% if not pending %}
 <a class="btn btn-outline-primary pull-right" role="button" href="{% url 'inventory:additem2loc' location_id %}">
@@ -101,9 +101,9 @@
 {% endif %}
 </p>
 {% endif %}
-{% if current_location_str != 'root' %}
+{% if loc_now_str != 'root' %}
 {% if pending %}
-<a class="btn btn-outline-primary" href="#" onClick="cfm('您确认要将<b>{{ pending }}</b>存入<b>{{ current_location_str }}</b>吗？', '{% url 'inventory:put' pending.pk location_id %}')"
+<a class="btn btn-outline-primary" href="#" onClick="cfm('您确认要将<b>{{ pending }}</b>存入<b>{{ loc_now_str }}</b>吗？', '{% url 'inventory:put' pending.pk location_id %}')"
     role="button">
     将{{ pending }}存入此位置
 </a>
