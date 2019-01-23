@@ -88,6 +88,7 @@ class ItemView(generic.View):
     def post(self, request, *args, **kwargs):
         item = self.item
         action = request.GET['action']
+        use_item_form = forms.UseItemForm()
         if action == 'item' and use_item_form.is_valid():
             tmp_user = self.tmp_user
             use_item_form = forms.UseItemForm(request.POST)

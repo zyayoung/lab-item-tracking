@@ -40,6 +40,7 @@ def get_my_list(user_now, all_obj):
     return obj_list.distinct()
 
 
+@silk_profile(name='set_location')
 def set_location(item, location, user):
     if location != item.location:
         log = ItemLog.objects.create(
@@ -55,6 +56,7 @@ def set_location(item, location, user):
         item.save()
 
 
+@silk_profile(name='set_quantity')
 def set_quantity(item, quantity, user):
     if quantity != item.quantity:
         log = ItemLog.objects.create(
