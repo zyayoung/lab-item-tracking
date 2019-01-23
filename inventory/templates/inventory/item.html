@@ -35,6 +35,9 @@
         <tr class="row mx-0">
             <th class="col-3">关联用户</th>
             <td class="col-9">
+                {% if item.is_public %}
+                All
+                {% else %}
                 <form method="post" action="./?action=user">
                     {% csrf_token %}
                     <select name="share" id="share_id" class="selectpicker" data-live-search="true" multiple>
@@ -46,6 +49,7 @@
                     </select>
                     <input class="btn" type="submit">
                 </form>
+                {% endif %}
             </td>
         </tr>
         <tr class="row mx-0">

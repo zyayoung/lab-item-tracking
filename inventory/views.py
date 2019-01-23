@@ -160,6 +160,7 @@ def del_item(request, item_id):
         messages.error(request, "只有创建人（" + item.owner.name + "）及其管理员可以删除物品！")
         return render(request, 'inventory/info.html', locals())
     item.allowed_users.clear()
+    item.is_pulic = False
     set_location(item, None, tmp_user)
     set_quantity(item, 0, tmp_user)
     return redirect('inventory:items')
