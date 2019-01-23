@@ -29,7 +29,7 @@ def get_my_loc(user_now, loc_id):
 
 def get_my_list(user_now, all_obj):
     if user_now.is_superadmin:
-        return all_obj.filter(allowed_users__isnull=False)
+        return all_obj.filter()
     users = user_now.staff.all()
     obj_list = all_obj.filter(allowed_users=user_now) | \
         all_obj.filter(is_public=True) | \
