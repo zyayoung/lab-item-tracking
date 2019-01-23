@@ -25,7 +25,7 @@ python manage.py runserver
     - [ ] Attr
     - [x] Location
     - [x] Owner
-    - [ ] Share (link & unlink)
+    - [x] Share (link & unlink)
     - [ ] Edit
     - [x] Delete
 - Trace

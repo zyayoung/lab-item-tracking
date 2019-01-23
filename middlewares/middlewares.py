@@ -3,6 +3,7 @@ import re
 from django.utils.deprecation import MiddlewareMixin
 from django.shortcuts import redirect, HttpResponse, render
 
+
 class AuthMD(MiddlewareMixin):
     reg_ex = r"(^/login/$)|(^/register/$)|(^/captcha/.*)|(^/admin/.*)"
 

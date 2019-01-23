@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'trace_item',
     'personal',
     'silk',
+    'traffic',
 ]
 
 MIDDLEWARE = [
@@ -56,6 +57,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'silk.middleware.SilkyMiddleware',
+    'traffic.middlewares.Profiler',
     'middlewares.middlewares.AuthMD',
 ]
 
@@ -131,7 +133,7 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
 # Profiling
-SILKY_INTERCEPT_PERCENT = 100
+SILKY_INTERCEPT_PERCENT = 0
 SILKY_AUTHORISATION = True
 SILKY_META = True
 SILKY_PYTHON_PROFILER = True
