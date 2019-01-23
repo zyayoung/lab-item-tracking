@@ -88,10 +88,9 @@ class ItemView(generic.View):
     def post(self, request, *args, **kwargs):
         item = self.item
         action = request.GET['action']
-        use_item_form = forms.UseItemForm()
+        use_item_form = forms.UseItemForm(request.POST)
         if action == 'item' and use_item_form.is_valid():
             tmp_user = self.tmp_user
-            use_item_form = forms.UseItemForm(request.POST)
             quantity = float(use_item_form.cleaned_data['quantity'])
             if 0 < quantity <= self.item.quantity:
                 set_quantity(self.item, float(self.item.quantity) - quantity, self.tmp_user)
