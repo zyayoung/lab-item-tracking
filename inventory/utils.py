@@ -2,8 +2,10 @@ from django.shortcuts import get_object_or_404
 from django.http import Http404
 from inventory.models import Item, Location
 from trace_item.models import ItemLog
+from silk.profiling.profiler import silk_profile
 
 
+@silk_profile(name='get_my_item')
 def get_my_item(user_now, item_id):
     item = get_object_or_404(Item, id=item_id)
     # two cases: (admin) and (not admin)
@@ -15,6 +17,7 @@ def get_my_item(user_now, item_id):
     return item
 
 
+@silk_profile(name='get_my_loc')
 def get_my_loc(user_now, loc_id):
     loc = get_object_or_404(Location, id=loc_id)
     # two cases: (admin) and (not admin)
@@ -26,6 +29,7 @@ def get_my_loc(user_now, loc_id):
     return loc
 
 
+@silk_profile(name='get_my_list')
 def get_my_list(user_now, all_obj):
     if user_now.is_superadmin:
         return all_obj
