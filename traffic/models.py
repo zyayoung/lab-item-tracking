@@ -3,7 +3,7 @@ from login.models import User
 
 
 class Traffic(models.Model):
-    url = models.CharField(max_length=64, verbose_name="URL")
+    url = models.CharField(max_length=128, verbose_name="URL")
     response_time = models.DecimalField(
         default=0,
         max_digits=8,

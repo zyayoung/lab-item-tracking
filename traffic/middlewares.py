@@ -10,7 +10,10 @@ class Profiler(MiddlewareMixin):
         t_start = time.clock() * 1000
         response = self.get_response(request)
         duration = time.clock() * 1000 - t_start
-        tmp_user = User.objects.get(id=request.session.get('user_id'))
+        if 'user_id' in request.session.keys():
+            tmp_user = User.objects.get(id=request.session.get('user_id'))
+        else:
+            tmp_user = None
         if 'HTTP_X_FORWARDED_FOR' in request.META.keys():
             ip = request.META['HTTP_X_FORWARDED_FOR']
         else:
