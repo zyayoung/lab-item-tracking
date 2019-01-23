@@ -34,9 +34,11 @@
         </tr>
         <tr class="row mx-0">
             <th class="col-3">关联用户
+                {% if not item.is_public %}
                 <span style="font-weight:normal;">
-                    (<a href="#" onClick="toggleSelect()">更改</a>)
+                    (<a href="#" onClick="toggleSelect()">编辑</a>)
                 </span>
+                {% endif %}
             </th>
             <td class="col-9">
                 {% if item.is_public %}
