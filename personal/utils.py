@@ -4,14 +4,12 @@ from inventory.utils import get_my_list
 from silk.profiling.profiler import silk_profile
 
 
-@silk_profile(name='get_my_request_list')
 def get_my_request_list(user_now):
     all_obj = LocPmsnApp.objects.all()
     obj_list = all_obj.filter(applicant=user_now)
     return obj_list.distinct()
 
 
-@silk_profile(name='get_others_request_list')
 def get_others_request_list(user_now):
     all_obj = LocPmsnApp.objects.all()
     if user_now.is_superadmin:

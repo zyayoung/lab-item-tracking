@@ -5,7 +5,6 @@ from trace_item.models import ItemLog
 from silk.profiling.profiler import silk_profile
 
 
-@silk_profile(name='get_my_item')
 def get_my_item(user_now, item_id):
     item = get_object_or_404(Item, id=item_id)
     # two cases: (admin) and (not admin)
@@ -17,7 +16,6 @@ def get_my_item(user_now, item_id):
     return item
 
 
-@silk_profile(name='get_my_loc')
 def get_my_loc(user_now, loc_id):
     loc = get_object_or_404(Location, id=loc_id)
     # two cases: (admin) and (not admin)
@@ -29,10 +27,9 @@ def get_my_loc(user_now, loc_id):
     return loc
 
 
-@silk_profile(name='get_my_list')
 def get_my_list(user_now, all_obj):
     if user_now.is_superadmin:
-        return all_obj
+        return all_obj.filter(allowed_users__isnull=False)
     users = user_now.staff.all()
     obj_list = all_obj.filter(allowed_users=user_now) | \
         all_obj.filter(is_public=True) | \
@@ -40,7 +37,6 @@ def get_my_list(user_now, all_obj):
     return obj_list.distinct()
 
 
-@silk_profile(name='set_location')
 def set_location(item, location, user):
     if location != item.location:
         log = ItemLog.objects.create(
@@ -56,7 +52,6 @@ def set_location(item, location, user):
         item.save()
 
 
-@silk_profile(name='set_quantity')
 def set_quantity(item, quantity, user):
     if quantity != item.quantity:
         log = ItemLog.objects.create(
