@@ -33,21 +33,30 @@
             <td class="col-9">{{ item.owner }}</td>
         </tr>
         <tr class="row mx-0">
-            <th class="col-3">关联用户</th>
+            <th class="col-3">关联用户
+                <span style="font-weight:normal;">
+                    (<a href="#" onClick="toggleSelect()">更改</a>)
+                </span>
+            </th>
             <td class="col-9">
                 {% if item.is_public %}
                 All
                 {% else %}
-                <form method="post" action="./?action=user">
+                <div id="userArea">
+                    {% for user in item.allowed_users.all %}
+                    {{ user.name }}
+                    {% endfor %}
+                </div>
+                <form id="selectForm" method="post" action="./?action=user" style="display: none;">
                     {% csrf_token %}
                     <select name="share" id="share_id" class="selectpicker" data-live-search="true" multiple>
                         {% for user in all_users %}
-                            {% if user != item.owner %}
-                            <option value="{{ user.id }}" {% if user in item.allowed_users.all %}selected{% endif %}>{{ user.name }}</option>
-                            {% endif %}
+                        <option value="{{ user.id }}" {% if user in item.allowed_users.all %} selected {% endif %} {% if user == item.owner %}disabled{% endif %}>
+                            {{user.name }}
+                        </option>
                         {% endfor %}
                     </select>
-                    <input class="btn" type="submit">
+                    <button type="submit" class="btn btn-outline-primary">确认</button>
                 </form>
                 {% endif %}
             </td>
@@ -128,6 +137,11 @@
 {% block script %}
 <script>
     $('select').selectpicker();
+
+    function toggleSelect() {
+        $('#userArea').toggle();
+        $('#selectForm').toggle();
+    }
 
     function useItem() {
         $('#useItemModal').modal();
