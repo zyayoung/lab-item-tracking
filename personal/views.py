@@ -13,6 +13,7 @@ from inventory.utils import get_my_loc
 from login.models import User as myUser
 from inventory.models import LocationPermissionApplication as LocPmsnApp
 
+OBJ_PER_PAGE = 30
 
 class IndexView(generic.View):
     def get(self, request, *args, **kwargs):
@@ -38,6 +39,14 @@ class LocReqView(generic.View):
     def get(self, request, *args, **kwargs):
         user = myUser.objects.get(id=request.session.get('user_id'))
         others_request_list = get_others_request_list(user)
+        paginator = Paginator(others_request_list, OBJ_PER_PAGE)
+        page = request.GET.get('page')
+        try:
+            others_request_list = paginator.page(page)
+        except PageNotAnInteger:
+            others_request_list = paginator.page(1)
+        except EmptyPage:
+            others_request_list = paginator.page(paginator.num_pages)
         return render(request, 'personal/locreq.html', locals())
 
 
@@ -45,6 +54,14 @@ class MyLocReqView(generic.View):
     def get(self, request, *args, **kwargs):
         user = myUser.objects.get(id=request.session.get('user_id'))
         my_request_list = get_my_request_list(user)
+        paginator = Paginator(my_request_list, OBJ_PER_PAGE)
+        page = request.GET.get('page')
+        try:
+            my_request_list = paginator.page(page)
+        except PageNotAnInteger:
+            my_request_list = paginator.page(1)
+        except EmptyPage:
+            my_request_list = paginator.page(paginator.num_pages)
         return render(request, 'personal/mylocreq.html', locals())
 
 

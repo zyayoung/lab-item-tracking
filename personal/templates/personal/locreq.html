@@ -6,10 +6,9 @@
 <p class="lead">相关申请：</p>
 <nav>
     <div class="nav nav-tabs" id="nav-tab" role="tablist">
-        <a class="nav-item nav-link active" id="others-req-tab" data-toggle="tab" href="#" role="tab"
-            aria-controls="others-req" aria-selected="false">收到申请</a>
-        <a class="nav-item nav-link" href="{% url 'personal:mylocreq' %}"
-            aria-selected="true">我的申请</a>
+        <a class="nav-item nav-link active" id="others-req-tab" data-toggle="tab" href="#" role="tab" aria-controls="others-req"
+            aria-selected="false">收到申请</a>
+        <a class="nav-item nav-link" href="{% url 'personal:mylocreq' %}" aria-selected="true">我的申请</a>
     </div>
 </nav>
 <div class="tab-content" id="nav-tabContent">
@@ -69,6 +68,51 @@
                 {% endfor %}
             </tbody>
         </table>
+        <nav aria-label="page navigation">
+            <ul class="pagination justify-content-center">
+                <li class="page-item">
+                    <a class="page-link" href="?page=1">
+                        首页
+                    </a>
+                </li>
+                {% if others_request_list.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ others_request_list.previous_page_number }}">
+                        上一页
+                    </a>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
+                    <a class="page-link" href="#">
+                        上一页
+                    </a>
+                </li>
+                {% endif %}
+                <li class="page-item active">
+                    <a class="page-link" href="#">
+                        {{ others_request_list.number }}/{{ others_request_list.paginator.num_pages }}
+                    </a>
+                </li>
+                {% if others_request_list.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ others_request_list.next_page_number }}">
+                        下一页
+                    </a>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
+                    <a class="page-link" href="#">
+                        下一页
+                    </a>
+                </li>
+                {% endif %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ others_request_list.paginator.num_pages }}">
+                        尾页
+                    </a>
+                </li>
+            </ul>
+        </nav>
     </div>
 </div>
 <div class="modal fade" id="cfmModal" tabindex="-1" role="dialog" aria-labelledby="cfmModalTitle" aria-hidden="true">
@@ -108,7 +152,8 @@
     function ajaxSubmit() {
         var id = $.trim($("#cfmId").val());
         var result = $.trim($("#cfmResult").val());
-        var auditor_html = "<a href=\"{% url 'personal:user' request.session.user_id %}\">{{ request.session.user_name }}</a>";
+        var auditor_html =
+            "<a href=\"{% url 'personal:user' request.session.user_id %}\">{{ request.session.user_name }}</a>";
         var status_html = new Array('<span class="badge badge-danger">已拒绝</span>',
             '<span class="badge badge-success">已通过</span>');
         $.ajax({
