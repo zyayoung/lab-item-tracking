@@ -6,8 +6,11 @@ import django.urls.resolvers
 from django.db.models import Count, Min, Max, Sum, Avg
 import re
 import json
+import datetime
 
 from traffic.models import Traffic
+from inventory.models import LocationPermissionApplication
+from trace_item.models import ItemLog
 
 
 def show_urls(url_list, depth=0):
@@ -57,3 +60,33 @@ class Pages(generic.View):
                     'max_time': 0
                 })
         return HttpResponse(json.dumps(page_traffic))
+
+
+class Calender(generic.View):
+    def get(self, request):
+        traffic_data = []
+        locreq_data = []
+        itemlog_data = []
+        traffic_max = 0
+        locreq_max = 0
+        itemlog_max = 0
+        for i in range(365):
+            start = datetime.datetime.today() - datetime.timedelta(days=i)
+            end = start + datetime.timedelta(days=1)
+            traffic_data.append([
+                start.strftime("%Y-%m-%d"),
+                Traffic.objects.filter(datetime__range=(start, end)).count()
+            ])
+            locreq_data.append([
+                start.strftime("%Y-%m-%d"),
+                LocationPermissionApplication.objects.filter(time__range=(start, end)).count()
+            ])
+            itemlog_data.append([
+                start.strftime("%Y-%m-%d"),
+                ItemLog.objects.filter(time__range=(start, end)).count()
+            ])
+            traffic_max = max(traffic_max, traffic_data[-1][1])
+            locreq_max = max(locreq_max, locreq_data[-1][1])
+            itemlog_max = max(itemlog_max, itemlog_data[-1][1])
+        date_range = [traffic_data[0][0], traffic_data[-1][0]]
+        return render(request, 'traffic/calendar.html', locals())

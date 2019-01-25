@@ -4,28 +4,134 @@
 
 {% block content %}
 
-<div class="container">
-  {% if request.session.is_login %}
-  <p class="lead">
-    您好，{{ request.session.user_name }}！欢迎回来！
-  </p>
-  {% else %}
-  <p class="lead">
-    您尚未登录，只能访问公开内容！
-  </p>
-  {% endif %}
-  <p class="text-muted inline">网站施工中...</p>
-  <a href="https://github.com/zyayoung/lab-item-tracking/wiki">
-    <p class="text-info">
-      帮助
-    </p>
-  </a>
-  <a href="https://github.com/zyayoung/lab-item-tracking/issues">
-    <p class="text-info">
-      联系我们/反馈问题
-    </p>
-  </a>
-</div>
+<div id="main1" class="col-sm-12" style="height: 300px;"></div>
+<div id="main2" class="col-sm-12" style="height: 300px;"></div>
+<div id="main3" class="col-sm-12" style="height: 300px;"></div>
 
 
+
+{% endblock %}
+
+{% block script %}
+<script src="https://cdn.bootcss.com/echarts/4.2.0-rc.2/echarts.min.js"></script>
+<script>
+var option = {
+    title: {
+        top: 30,
+        left: 'center',
+        text: '网站访问次数'
+    },
+    tooltip : {},
+    visualMap: {
+        min: 0,
+        max: {{ traffic_max }},
+        type: 'piecewise',
+        orient: 'horizontal',
+        left: 'center',
+        top: 65,
+        textStyle: {
+            color: '#000'
+        }
+    },
+    calendar: {
+        range: {{ date_range|safe }},
+        top: 120,
+        left: 30,
+        right: 30,
+        cellSize: ['auto', 13],
+        itemStyle: {
+            normal: {borderWidth: 0.5}
+        },
+        yearLabel: {show: false}
+
+    },
+    series: {
+        type: 'heatmap',
+        coordinateSystem: 'calendar',
+        data: {{ traffic_data|safe }}
+    }
+};
+var myChart = echarts.init(document.getElementById('main1'));
+myChart.setOption(option);
+</script>
+<script>
+var option = {
+    title: {
+        top: 30,
+        left: 'center',
+        text: '物品操作次数'
+    },
+    tooltip : {},
+    visualMap: {
+        min: 0,
+        max: {{ itemlog_max }},
+        type: 'piecewise',
+        orient: 'horizontal',
+        left: 'center',
+        top: 65,
+        textStyle: {
+            color: '#000'
+        }
+    },
+    calendar: {
+        range: {{ date_range|safe }},
+        top: 120,
+        left: 30,
+        right: 30,
+        cellSize: ['auto', 13],
+        itemStyle: {
+            normal: {borderWidth: 0.5}
+        },
+        yearLabel: {show: false}
+
+    },
+    series: {
+        type: 'heatmap',
+        coordinateSystem: 'calendar',
+        data: {{ itemlog_data|safe }}
+    }
+};
+var myChart = echarts.init(document.getElementById('main2'));
+myChart.setOption(option);
+</script>
+<script>
+var option = {
+    title: {
+        top: 30,
+        left: 'center',
+        text: '权限申请次数'
+    },
+    tooltip : {},
+    visualMap: {
+        min: 0,
+        max: {{ locreq_max }},
+        type: 'piecewise',
+        orient: 'horizontal',
+        left: 'center',
+        top: 65,
+        textStyle: {
+            color: '#000'
+        }
+    },
+    calendar: {
+        range: {{ date_range|safe }},
+        top: 120,
+        left: 30,
+        right: 30,
+        cellSize: ['auto', 13],
+        itemStyle: {
+            normal: {borderWidth: 0.5}
+        },
+        yearLabel: {show: false}
+
+    },
+    series: {
+        type: 'heatmap',
+        coordinateSystem: 'calendar',
+        data: {{ locreq_data|safe }}
+    }
+};
+var myChart = echarts.init(document.getElementById('main3'));
+myChart.setOption(option);
+</script>
 {% endblock %}
