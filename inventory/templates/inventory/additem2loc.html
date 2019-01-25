@@ -20,7 +20,7 @@
             <td>{{ item.attribute }}</td>
             <td>{{ item.owner }}</td>
             <td>
-                <a class="btn btn-outline-primary" href="#" onClick="cfm('{% url 'inventory:put' item.id location.id %}', '{{ item }}', '{{ location }}')"
+                <a class="btn btn-outline-primary btn-sm" href="#" onClick="cfm('{% url 'inventory:put' item.id location.id %}', '{{ item }}', '{{ location }}')"
                     role="button">
                     <i class="fa fa-plus" aria-hidden="true"></i> 添加
                 </a>

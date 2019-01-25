@@ -26,7 +26,9 @@
             <td>{{ item.quantity }} {% if item.unit %}{{ item.unit }}{% endif %}</td>
             <td>{{ item.attribute }}</td>
             <td>
-                {{ item.owner }}
+                <a href="{% url 'personal:user' item.owner.id %}">
+                    {{ item.owner }}
+                </a>
             </td>
         </tr>
         {% endfor %}
