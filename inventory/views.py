@@ -127,8 +127,16 @@ class LocationView(generic.View):
             except Http404:
                 return redirect('inventory:applyloc', location_id)
             all_items = Item.objects.filter(location=loc_now)
-            item_list = get_my_list(tmp_user, all_items)
             all_locs = loc_now.parentPath.all()
+            item_list = get_my_list(tmp_user, all_items)
+            paginator = Paginator(item_list, OBJ_PER_PAGE)
+            page = request.GET.get('page')
+            try:
+                item_list = paginator.page(page)
+            except PageNotAnInteger:
+                item_list = paginator.page(1)
+            except EmptyPage:
+                item_list = paginator.page(paginator.num_pages)
         else:
             loc_now_str = 'root'
             all_locs = Location.objects.filter(parent=None)
