@@ -23,6 +23,9 @@ class ItemsView(generic.View):
     def get(self, request, *args, **kwargs):
         tmp_user = myUser.objects.get(id=request.session.get('user_id'))
         item_list = get_my_list(tmp_user, Item.objects.all())
+        keyword = request.GET.get('q')
+        if keyword:
+            item_list = item_list.filter(name__contains=keyword)
         paginator = Paginator(item_list, OBJ_PER_PAGE)
         page = request.GET.get('page')
         try:
