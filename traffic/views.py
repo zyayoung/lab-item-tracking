@@ -30,9 +30,10 @@ class Pages(generic.View):
     def get(self, requset):
         urlpatterns = show_urls(urls.urlpatterns)
         page_traffic = []
+        traffic = Traffic.objects.filter(user_id__gt=Traffic.objects.count()-10000)
         for name in urlpatterns.keys():
             r = wash_regex(urlpatterns[name].replace('^', '^/'))
-            objects = Traffic.objects.filter(url__regex=r)
+            objects = traffic.filter(url__regex=r)
             count = objects.count()
             if count > 0:
                 tot_time = objects.aggregate(Sum('response_time'))['response_time__sum']
