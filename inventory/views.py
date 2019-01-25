@@ -12,6 +12,7 @@ from login.models import User as myUser
 
 from urllib.parse import quote
 
+OBJ_PER_PAGE = 30
 
 class IndexView(generic.View):
     def get(self, request):
@@ -22,7 +23,7 @@ class ItemsView(generic.View):
     def get(self, request, *args, **kwargs):
         tmp_user = myUser.objects.get(id=request.session.get('user_id'))
         item_list = get_my_list(tmp_user, Item.objects.all())
-        paginator = Paginator(item_list, 30)
+        paginator = Paginator(item_list, OBJ_PER_PAGE)
         page = request.GET.get('page')
         try:
             item_list = paginator.page(page)
@@ -187,8 +188,16 @@ class AddItem2LocView(generic.View):
     def get(self, request, *args, **kwargs):
         user_id = request.session.get('user_id')
         tmp_user = myUser.objects.get(id=user_id)
-        item_list = get_my_list(tmp_user, Item.objects.filter(location=None))
         location = get_my_loc(tmp_user, kwargs.get('id'))
+        item_list = get_my_list(tmp_user, Item.objects.filter(location=None))
+        paginator = Paginator(item_list, OBJ_PER_PAGE)
+        page = request.GET.get('page')
+        try:
+            item_list = paginator.page(page)
+        except PageNotAnInteger:
+            item_list = paginator.page(1)
+        except EmptyPage:
+            item_list = paginator.page(paginator.num_pages)
         return render(request, 'inventory/additem2loc.html', locals())
 
 

@@ -45,6 +45,12 @@
                 上一页
             </a>
         </li>
+        {% else %}
+        <li class="page-item disabled">
+            <a class="page-link" href="#">
+                上一页
+            </a>
+        </li>
         {% endif %}
         <li class="page-item active">
             <a class="page-link" href="#">
@@ -54,6 +60,12 @@
         {% if item_list.has_next %}
         <li class="page-item">
             <a class="page-link" href="?page={{ item_list.next_page_number }}">
+                下一页
+            </a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+            <a class="page-link" href="#">
                 下一页
             </a>
         </li>
