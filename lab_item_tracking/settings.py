@@ -58,7 +58,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'silk.middleware.SilkyMiddleware',
     'traffic.middlewares.Profiler',
-    'middlewares.middlewares.AuthMD',
+    'login.middlewares.AuthMD',
 ]
 
 ROOT_URLCONF = 'lab_item_tracking.urls'
