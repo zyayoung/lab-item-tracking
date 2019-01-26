@@ -12,7 +12,8 @@ from login.models import User as myUser
 
 from urllib.parse import quote
 
-OBJ_PER_PAGE = 30
+OBJ_PER_PAGE = 50
+
 
 class IndexView(generic.View):
     def get(self, request):
@@ -25,13 +26,12 @@ class ItemsView(generic.View):
         item_list = get_my_list(tmp_user, Item.objects.all())
         keyword = request.GET.get('q')
         if keyword:
+            keyword_iri = quote(keyword)
             item_list = item_list.filter(name__contains=keyword)
         paginator = Paginator(item_list, OBJ_PER_PAGE)
-        page = request.GET.get('page')
+        page = request.GET.get('page', 1)
         try:
             item_list = paginator.page(page)
-        except PageNotAnInteger:
-            item_list = paginator.page(1)
         except EmptyPage:
             item_list = paginator.page(paginator.num_pages)
         return render(request, 'inventory/items.html', locals())

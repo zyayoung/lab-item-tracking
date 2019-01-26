@@ -51,13 +51,13 @@
 <nav aria-label="page navigation">
     <ul class="pagination justify-content-center">
         <li class="page-item">
-            <a class="page-link" href="?page=1">
+            <a class="page-link" href="?page=1&q={{ keyword_iri }}">
                 首页
             </a>
         </li>
         {% if item_list.has_previous %}
         <li class="page-item">
-            <a class="page-link" href="?page={{ item_list.previous_page_number }}">
+            <a class="page-link" href="?page={{ item_list.previous_page_number }}&q={{ keyword_iri }}">
                 上一页
             </a>
         </li>
@@ -75,7 +75,7 @@
         </li>
         {% if item_list.has_next %}
         <li class="page-item">
-            <a class="page-link" href="?page={{ item_list.next_page_number }}">
+            <a class="page-link" href="?page={{ item_list.next_page_number }}&q={{ keyword_iri }}">
                 下一页
             </a>
         </li>
@@ -87,7 +87,7 @@
         </li>
         {% endif %}
         <li class="page-item">
-            <a class="page-link" href="?page={{ item_list.paginator.num_pages }}">
+            <a class="page-link" href="?page={{ item_list.paginator.num_pages }}&q={{ keyword_iri }}">
                 尾页
             </a>
         </li>
