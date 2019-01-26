@@ -52,7 +52,7 @@ class Pages(generic.View):
         maxt = {}
         totalTime = {}
         totalTimes = {}
-        traffic = Traffic.objects.filter(id__gt=Traffic.objects.count()-5000)
+        traffic = Traffic.objects.filter(id__gt=Traffic.objects.count()-int(requset.GET.get('count', 2500)))
         for name in urlpatterns.keys():
             r = wash_regex(urlpatterns[name].replace('^', '^/'))
             objects = traffic.filter(url__regex=r)
@@ -210,5 +210,5 @@ class Locations(generic.View):
 
         # normalize
         for i in range(len(relation_nodes)):
-            relation_nodes[i]['symbolSize'] = int(relation_nodes[i]['symbolSize'] / tot_cnt * 100) + 10
+            relation_nodes[i]['symbolSize'] = int(np.sqrt(relation_nodes[i]['symbolSize'] / tot_cnt) * 60) + 10
         return render(request, 'traffic/locations.html', locals())
