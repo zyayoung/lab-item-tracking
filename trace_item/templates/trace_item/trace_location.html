@@ -14,7 +14,11 @@
         {% for log in logs %}
         <tr>
             <td>{% if loc == log.location_to %}存入{% else %}取出{% endif %}</td>
-            <td>{{ log.item }}</td>
+            <td>
+                <a href="{% url 'inventory:item' log.item.id %}">
+                    {{ log.item }}
+                </a>
+            </td>
             <td>{{ log.time }}</td>
             <td>
                 <a href="{% url 'personal:user' log.operator.id %}">
