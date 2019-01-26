@@ -9,7 +9,8 @@
   <p class="lead">
     您好，{{ request.session.user_name }}！欢迎回来！
   </p>
-  <div class="list-group col-sm-4">
+  <div class="row text-center">
+  <div class="list-group col-sm-6">
   <li class="list-group-item"><a href="{% url 'inventory:add' %}">添加物品</a></li>
   <li class="list-group-item"><a href="{% url 'inventory:items' %}">物品列表</a></li>
   <li class="list-group-item"><a href="{% url 'inventory:location_root' %}">位置列表</a></li>
@@ -18,9 +19,16 @@
   <li class="list-group-item"><a href="{% url 'personal:index' %}">我的主页</a></li>
   <li class="list-group-item"><a href="https://github.com/zyayoung/lab-item-tracking/wiki">使用手册</a></li>
   <li class="list-group-item"><a href="https://github.com/zyayoung/lab-item-tracking/issues">反馈问题</a></li>
+  </div>
 {% if request.session.is_superadmin %}
+  <div class="list-group col-sm-6">
   <li class="list-group-item"><a href="{% url 'admin:inventory_location_add' %}">添加位置</a></li>
   <li class="list-group-item"><a href="{% url 'admin:login_user_changelist' %}">管理用户</a></li>
+  <li class="list-group-item"><a href="{% url 'traffic:users' %}">用户视图</a></li>
+  <li class="list-group-item"><a href="{% url 'traffic:locations' %}">位置视图</a></li>
+  <li class="list-group-item"><a href="{% url 'traffic:calender' %}">日历视图</a></li>
+  <li class="list-group-item"><a href="{% url 'traffic:pages' %}">性能分析</a></li>
+  </div>
 {% endif %}
   </div>
   {% else %}

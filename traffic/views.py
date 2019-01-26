@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.views import generic
 from lab_item_tracking import urls
@@ -10,16 +10,19 @@ import datetime
 import numpy as np
 
 from traffic.models import Traffic
-from inventory.models import LocationPermissionApplication
+from inventory.models import LocationPermissionApplication, Location, Item
 from trace_item.models import ItemLog
 from login.models import User
+
+
+ban_list = ['app_list', 'calender']
 
 
 def show_urls(url_list, depth=0):
     ret = {}
     for entry in url_list:
         if type(entry) == django.urls.resolvers.URLPattern:
-            if str(entry.pattern) and str(entry.pattern)[0] == r'^' and entry.name and entry.name != 'app_list':
+            if str(entry.pattern) and str(entry.pattern)[0] == r'^' and entry.name and entry.name not in ban_list:
                 ret.update({str(entry.name): str(entry.pattern)})
         if hasattr(entry, 'url_patterns'):
             if entry.app_name in ['inventory', 'login', 'trace_item', 'personal', 'traffic']:
@@ -31,10 +34,24 @@ def wash_regex(r):
     return re.sub(r'\?P<.+?>', '', r)
 
 
+def check_admin(func):
+    def inner(*args, **kwargs):
+        request = args[1]
+        if not request.session.get('is_superadmin', False):
+            return redirect('inventory:index')
+        return func(*args, **kwargs)
+    return inner
+
+
 class Pages(generic.View):
+    @check_admin
     def get(self, requset):
         urlpatterns = show_urls(urls.urlpatterns)
         page_traffic = []
+        avgt = {}
+        maxt = {}
+        totalTime = {}
+        totalTimes = {}
         traffic = Traffic.objects.filter(id__gt=Traffic.objects.count()-5000)
         for name in urlpatterns.keys():
             r = wash_regex(urlpatterns[name].replace('^', '^/'))
@@ -52,19 +69,16 @@ class Pages(generic.View):
                     'avg_time': float(avg_time),
                     'max_time': float(max_time)
                 })
-            else:
-                page_traffic.append({
-                    'name': name,
-                    'url_pattern': urlpatterns[name],
-                    'count': count,
-                    'tot_time': 0,
-                    'avg_time': 0,
-                    'max_time': 0
-                })
-        return HttpResponse(json.dumps(page_traffic))
+                avgt.update({name: round(avg_time)})
+                maxt.update({name: round(max_time)})
+                totalTime.update({name: round(tot_time)})
+                totalTimes.update({name: count})
+
+        return render(requset, 'traffic/pages.html', locals())
 
 
 class Calender(generic.View):
+    @check_admin
     def get(self, request):
         traffic_data = []
         locreq_data = []
@@ -98,6 +112,7 @@ class Calender(generic.View):
 
 
 class Users(generic.View):
+    @check_admin
     def get(self, request):
         start = datetime.date.today()
         end = start + datetime.timedelta(days=1)
@@ -110,7 +125,7 @@ class Users(generic.View):
             if count:
                 user_data.append({
                     'name': user.name,
-                    'value': count,
+                    'value': count
                 })
         relation_nodes = []
         relation_links = []
@@ -118,7 +133,8 @@ class Users(generic.View):
             if not user.is_superadmin:
                 relation_nodes.append({
                     'name': user.name,
-                    'category': 0 if user.permission_str() == "员工" else 1
+                    'category': 1 if user.permission_str() == "员工" else 0,
+                    'sc': user.staff.count()
                 })
                 for staff in user.staff.all():
                     relation_links.append({
@@ -126,3 +142,60 @@ class Users(generic.View):
                         'target': staff.name,
                     })
         return render(request, 'traffic/users.html', locals())
+
+
+class Locations(generic.View):
+    @check_admin
+    def get(self, request):
+        start = datetime.date.today()
+        end = start + datetime.timedelta(days=1)
+        loc_data = []
+        relation_nodes = []
+        relation_links = []
+        locmap = {}
+        revlocmap = []
+        max_depth = 0
+        tot_cnt = 0
+        for idx, loc in enumerate(Location.objects.all()):
+            count = ItemLog.objects.filter(time__range=(start, end), location_from=loc).count() + \
+                    ItemLog.objects.filter(time__range=(start, end), location_to=loc).count()
+            if count:
+                loc_data.append({
+                    'name': loc.__str__(),
+                    'value': count,
+                })
+            depth = loc.__str__().count('-')
+            max_depth = max(max_depth, depth)
+            count = Item.objects.filter(location=loc).count()
+            relation_nodes.append({
+                'name': loc.path,
+                'category': depth,
+                'id': idx,
+                'symbolSize': count,
+                'value': count,
+            })
+            tot_cnt += count
+            locmap[loc.__str__()] = idx
+            revlocmap.append(loc.__str__())  # fast bls
+        for idx, loc in enumerate(Location.objects.all()):
+            if loc.parent:
+                relation_links.append({
+                    # 'source': locmap[loc.parent.__str__()],
+                    # 'target': locmap[loc.__str__()],
+                    'source': locmap[loc.parent.__str__()],
+                    'target': locmap[loc.__str__()],
+                })
+        categories = [{'name':  i} for i in range(max_depth)]
+
+        # Accumulate size
+        for depth in range(max_depth - 1):
+            selected_depth = max_depth - depth - 1
+            for idx, loc in enumerate(relation_nodes):
+                if loc['category'] == selected_depth:
+                    parent_ida = locmap['-'.join(revlocmap[idx].split('-')[:-1])]
+                    relation_nodes[parent_ida]['symbolSize'] += loc['symbolSize']
+
+        # normalize
+        for i in range(len(relation_nodes)):
+            relation_nodes[i]['symbolSize'] = int(relation_nodes[i]['symbolSize'] / tot_cnt * 100) + 10
+        return render(request, 'traffic/locations.html', locals())

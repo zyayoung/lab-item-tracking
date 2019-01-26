@@ -5,7 +5,7 @@
 {% block content %}
 <p class="lead">今日活跃</p>
 <div id="main1" class="col-sm-12" style="height: 300px;"></div>
-<p class="lead">用户关系</p>
+<p class="lead">位置关系</p>
 <div id="main2" class="col-sm-12 border" style="height: 600px;"></div>
 
 
@@ -22,7 +22,7 @@ option = {
             name: '访问来源',
             type: 'pie',
             radius: '55%',
-            data: {{ user_data|safe }}
+            data: {{ loc_data|safe }}
         }
     ]
 };
@@ -32,11 +32,10 @@ myChart.setOption(option);
 <script>
 data = {{ relation_nodes|safe }}
 data.forEach(function (node) {
-    node.symbolSize = 20;
     node.draggable = true;
     node.label = {
         normal: {
-            show: node.sc >= 5
+            show: node.symbolSize > 15
         }
     };
 });
@@ -49,21 +48,14 @@ option = {
             type: 'graph',
             layout: 'force',
             force:{
-                repulsion: 250
+                repulsion: 100
             },
             symbolSize: 50,
             edgeSymbol: ['circle', 'arrow'],
             edgeSymbolSize: [4, 10],
-            edgeLabel: {
-                normal: {
-                    textStyle: {
-                        fontSize: 18
-                    }
-                }
-            },
+            categories: {{ categories|safe }},
             data: data,
             links: {{ relation_links|safe }},
-            categories: [{name: "主管"}, {name: "员工"}],
             roam: true,
             focusNodeAdjacency: true,
             itemStyle: {

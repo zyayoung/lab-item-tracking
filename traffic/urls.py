@@ -7,7 +7,8 @@ app_name = 'traffic'
 urlpatterns = [
     # url(r'^$', views.index),
     # url(r'^index/', views.index),
-    url(r'pages', views.Pages.as_view()),
-    url(r'calender', views.Calender.as_view()),
-    url(r'users', views.Users.as_view()),
+    url(r'^traffic/pages/$', views.Pages.as_view(), name='pages'),
+    url(r'^traffic/calender/$', views.Calender.as_view(), name='calender'),
+    url(r'^traffic/users/$', views.Users.as_view(), name='users'),
+    url(r'^traffic/locations/$', views.Locations.as_view(), name='locations'),
 ]

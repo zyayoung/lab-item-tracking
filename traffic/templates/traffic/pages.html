@@ -1,0 +1,197 @@
+{% extends "base.html" %}
+
+{% block title %} 实验室物品管理 {% endblock %}
+
+{% block content %}
+<div id="main1" class="col-sm-12" style="height: 800px;"></div>
+
+
+
+{% endblock %}
+
+{% block script %}
+<script src="https://cdn.bootcss.com/echarts/4.2.0-rc.2/echarts.min.js"></script>
+<script>
+var time = {
+  "avg_time": {{ avgt|safe }},
+  "max_time": {{ maxt|safe }},
+};
+
+var totalTime = {{ totalTime|safe }};
+
+var totalTimes = {{ totalTimes|safe }};
+
+var waterMarkText = 'ECHARTS';
+
+var canvas = document.createElement('canvas');
+var ctx = canvas.getContext('2d');
+canvas.width = canvas.height = 100;
+ctx.textAlign = 'center';
+ctx.textBaseline = 'middle';
+ctx.globalAlpha = 0.08;
+ctx.font = '20px Microsoft Yahei';
+ctx.translate(50, 50);
+ctx.rotate(-Math.PI / 4);
+ctx.fillText(waterMarkText, 0, 0);
+
+option = {
+    backgroundColor: {
+        type: 'pattern',
+        image: canvas,
+        repeat: 'repeat'
+    },
+    tooltip: {},
+    title: [{
+        text: '平均加载时间',
+        x: '25%',
+        textAlign: 'center'
+    }, {
+        text: '各页面加载总耗时(毫秒)',
+        subtext: '总计 ' + Object.keys(totalTime).reduce(function (all, key) {
+            return all + totalTime[key];
+        }, 0),
+        x: '75%',
+        textAlign: 'center'
+    }, {
+        text: '各页面加载总次数(次)',
+        subtext: '总计 ' + Object.keys(totalTimes).reduce(function (all, key) {
+            return all + totalTimes[key];
+        }, 0),
+        x: '75%',
+        y: '50%',
+        textAlign: 'center'
+    }],
+    grid: [{
+        top: 50,
+        width: '50%',
+        bottom: '45%',
+        left: 10,
+        containLabel: true
+    }, {
+        top: '55%',
+        width: '50%',
+        bottom: 0,
+        left: 10,
+        containLabel: true
+    }],
+    xAxis: [{
+        type: 'value',
+        max: time.all,
+        splitLine: {
+            show: false
+        }
+    }, {
+        type: 'value',
+        max: time.all,
+        gridIndex: 1,
+        splitLine: {
+            show: false
+        }
+    }],
+    yAxis: [{
+        type: 'category',
+        data: Object.keys(time.avg_time),
+        axisLabel: {
+            interval: 0,
+            rotate: 30
+        },
+        splitLine: {
+            show: false
+        }
+    }, {
+        gridIndex: 1,
+        type: 'category',
+        data: Object.keys(time.max_time),
+        axisLabel: {
+            interval: 0,
+            rotate: 30
+        },
+        splitLine: {
+            show: false
+        }
+    }],
+    calculable : true,
+    series: [{
+        type: 'bar',
+        stack: 'chart',
+        z: 3,
+        label: {
+            normal: {
+                position: 'right',
+                show: true
+            }
+        },
+        data: Object.keys(time.avg_time).map(function (key) {
+            return time.avg_time[key];
+        })
+    }, {
+        type: 'bar',
+        stack: 'chart',
+        silent: true,
+        itemStyle: {
+            normal: {
+                color: '#eee'
+            }
+        },
+        data: Object.keys(time.avg_time).map(function (key) {
+            return time.all - time.avg_time[key];
+        })
+    }, {
+        type: 'bar',
+        barMaxWidth: 1000,
+        stack: 'component',
+        xAxisIndex: 1,
+        yAxisIndex: 1,
+        yAxisIndex: 1,
+        z: 3,
+        label: {
+            normal: {
+                position: 'right',
+                show: true
+            }
+        },
+        data: Object.keys(time.max_time).map(function (key) {
+            return time.max_time[key];
+        })
+    }, {
+        type: 'bar',
+        barMaxWidth: 1000,
+        stack: 'component',
+        silent: true,
+        xAxisIndex: 1,
+        yAxisIndex: 1,
+        itemStyle: {
+            normal: {
+                color: '#eee'
+            }
+        },
+        data: Object.keys(time.max_time).map(function (key) {
+            return time.all - time.max_time[key];
+        })
+    }, {
+        type: 'pie',
+        radius: [0, '30%'],
+        center: ['75%', '25%'],
+        data: Object.keys(totalTime).map(function (key) {
+            return {
+                name: key.replace('.js', ''),
+                value: totalTime[key]
+            }
+        })
+    }, {
+        type: 'pie',
+        radius: [0, '30%'],
+        center: ['75%', '75%'],
+        data: Object.keys(totalTimes).map(function (key) {
+            return {
+                name: key.replace('.js', ''),
+                value: totalTimes[key]
+            }
+        })
+    }]
+}
+var myChart = echarts.init(document.getElementById('main1'));
+myChart.setOption(option);
+</script>
+
+{% endblock %}
