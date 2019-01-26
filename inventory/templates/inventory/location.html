@@ -11,9 +11,11 @@
     <a class="btn btn-outline-primary pull-right" role="button" href="#" onClick="qrcodeMdl('{{ QRCode }}')">
         <i class="fa fa-qrcode" aria-hidden="true"></i> 二维码
     </a>
+    {% if loc_now_str != 'root' %}
     <a class="btn btn-outline-primary pull-right" role="button" href="{% url 'trace_item:traceLoc' loc_now.id %}">
         追踪
     </a>
+    {% endif %}
     {% endif %}
 </p>
 <table class="table table-striped table-sm row mx-0">
