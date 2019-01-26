@@ -1,5 +1,7 @@
 from django.contrib import admin
 from .models import *
+from django.contrib.auth.models import Group, User
+from django.views.decorators.cache import never_cache
 
 
 class LocationPermissionApplicationAdmin(admin.ModelAdmin):
@@ -24,6 +26,9 @@ class LocationAdmin(admin.ModelAdmin):
 
 admin.site.site_header = "实验室物品数据库"
 admin.site.site_title = "数据库"
+
+admin.site.unregister(Group)
+admin.site.unregister(User)
 
 admin.site.register(Item, ItemAdmin)
 admin.site.register(Location, LocationAdmin)
