@@ -9,9 +9,9 @@ class TrafficAdmin(admin.ModelAdmin):
         'datetime',
         'url',
         'ip',
-        'user_agent',
         'http_status',
     )
+    search_fields = ('user__name', 'url', 'ip')
 
 
 admin.site.register(Traffic, TrafficAdmin)
