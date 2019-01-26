@@ -12,6 +12,7 @@ class TrafficAdmin(admin.ModelAdmin):
         'http_status',
     )
     search_fields = ('user__name', 'url', 'ip')
+    list_filter = ('http_status', 'user')
 
 
 admin.site.register(Traffic, TrafficAdmin)
