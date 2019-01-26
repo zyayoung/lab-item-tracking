@@ -9,7 +9,10 @@
     当前位置：{{ loc_now_str }}
     {% if not pending %}
     <a class="btn btn-outline-primary pull-right" role="button" href="#" onClick="qrcodeMdl('{{ QRCode }}')">
-        <i class="fa fa-qrcode" aria-hidden="true"></i></i> 二维码
+        <i class="fa fa-qrcode" aria-hidden="true"></i> 二维码
+    </a>
+    <a class="btn btn-outline-primary pull-right" role="button" href="{% url 'trace_item:traceLoc' loc_now.id %}">
+        追踪
     </a>
     {% endif %}
 </p>
