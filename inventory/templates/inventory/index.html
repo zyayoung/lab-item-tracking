@@ -9,22 +9,21 @@
   <p class="lead">
     您好，{{ request.session.user_name }}！欢迎回来！
   </p>
+  <div class="list-group col-sm-4">
+  <li class="list-group-item"><a href="{% url 'inventory:add' %}">添加物品</a></li>
+  <li class="list-group-item"><a href="{% url 'inventory:items' %}">物品列表</a></li>
+  <li class="list-group-item"><a href="{% url 'inventory:location_root' %}">位置列表</a></li>
+  <li class="list-group-item"><a href="{% url 'personal:mylocreq' %}">我的申请</a></li>
+  <li class="list-group-item"><a href="{% url 'personal:locreq' %}">收到申请</a></li>
+  <li class="list-group-item"><a href="{% url 'personal:index' %}">我的主页</a></li>
+  <li class="list-group-item"><a href="https://github.com/zyayoung/lab-item-tracking/wiki">使用手册</a></li>
+  <li class="list-group-item"><a href="https://github.com/zyayoung/lab-item-tracking/issues">反馈问题</a></li>
+  </div>
   {% else %}
   <p class="lead">
     您尚未登录，只能访问公开内容！
   </p>
   {% endif %}
-  <p class="text-muted inline">网站施工中...</p>
-  <a href="https://github.com/zyayoung/lab-item-tracking/wiki">
-    <p class="text-info">
-      帮助
-    </p>
-  </a>
-  <a href="https://github.com/zyayoung/lab-item-tracking/issues">
-    <p class="text-info">
-      联系我们/反馈问题
-    </p>
-  </a>
 </div>
 
 
