@@ -18,6 +18,10 @@
   <li class="list-group-item"><a href="{% url 'personal:index' %}">我的主页</a></li>
   <li class="list-group-item"><a href="https://github.com/zyayoung/lab-item-tracking/wiki">使用手册</a></li>
   <li class="list-group-item"><a href="https://github.com/zyayoung/lab-item-tracking/issues">反馈问题</a></li>
+{% if request.session.is_superadmin %}
+  <li class="list-group-item"><a href="{% url 'admin:inventory_location_add' %}">添加位置</a></li>
+  <li class="list-group-item"><a href="{% url 'admin:login_user_changelist' %}">管理用户</a></li>
+{% endif %}
   </div>
   {% else %}
   <p class="lead">

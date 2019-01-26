@@ -13,6 +13,7 @@ class TrafficAdmin(admin.ModelAdmin):
     )
     search_fields = ('user__name', 'url', 'ip')
     list_filter = ('http_status', 'user')
+    date_hierarchy = 'datetime'
 
 
 admin.site.register(Traffic, TrafficAdmin)
