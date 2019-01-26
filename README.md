@@ -5,6 +5,8 @@
 ## Deploy
 
 ```bash
+vi login/settings.example.py
+cp login/settings.example.py login/settings.py
 python manage.py makemigrations
 python manage.py migrate
 python manage.py createsuperuser
