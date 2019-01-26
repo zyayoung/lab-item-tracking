@@ -3,9 +3,10 @@
 {% block title %} 实验室物品管理 {% endblock %}
 
 {% block content %}
-
+<p class="lead">今日活跃</p>
 <div id="main1" class="col-sm-12" style="height: 300px;"></div>
-<div id="main2" class="col-sm-12" style="height: 300px;"></div>
+<p class="lead">用户关系</p>
+<div id="main2" class="col-sm-12 border" style="height: 600px;"></div>
 <div id="main3" class="col-sm-12" style="height: 300px;"></div>
 
 
@@ -29,4 +30,50 @@ option = {
 var myChart = echarts.init(document.getElementById('main1'));
 myChart.setOption(option);
 </script>
+<script>
+option = {
+    tooltip: {},
+    animationDurationUpdate: 1500,
+    animationEasingUpdate: 'quinticInOut',
+    series : [
+        {
+            type: 'graph',
+            layout: 'force',
+            force:{
+                repulsion: 500
+            },
+            symbolSize: 50,
+            roam: true,
+            label: {
+                normal: {
+                    show: true
+                }
+            },
+            edgeSymbol: ['circle', 'arrow'],
+            edgeSymbolSize: [4, 10],
+            edgeLabel: {
+                normal: {
+                    textStyle: {
+                        fontSize: 20
+                    }
+                }
+            },
+            data: {{ relation_nodes|safe }},
+            // links: [],
+            links: {{ relation_links|safe }},
+            categories: [{name: "员工"}, {name: "主管"}],
+            lineStyle: {
+                normal: {
+                    opacity: 0.9,
+                    width: 2,
+                    curveness: 0
+                }
+            }
+        }
+    ]
+};
+var myChart = echarts.init(document.getElementById('main2'));
+myChart.setOption(option);
+</script>
+
 {% endblock %}

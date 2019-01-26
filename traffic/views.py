@@ -112,4 +112,17 @@ class Users(generic.View):
                     'name': user.name,
                     'value': count,
                 })
+        relation_nodes = []
+        relation_links = []
+        for user in User.objects.all():
+            if not user.is_superadmin:
+                relation_nodes.append({
+                    'name': user.name,
+                    'category': 0 if user.permission_str() == "员工" else 1
+                })
+                for staff in user.staff.all():
+                    relation_links.append({
+                        'source': user.name,
+                        'target': staff.name,
+                    })
         return render(request, 'traffic/users.html', locals())
