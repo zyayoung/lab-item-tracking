@@ -30,7 +30,11 @@
         </tr>
         <tr class="row mx-0">
             <th class="col-3">所有者</th>
-            <td class="col-9">{{ item.owner }}</td>
+            <td class="col-9">
+                <a href="{% url 'personal:user' item.owner.id %}">
+                    {{ item.owner }}
+                </a>
+            </td>
         </tr>
         <tr class="row mx-0">
             <th class="col-3">关联用户
