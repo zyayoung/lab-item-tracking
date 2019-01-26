@@ -3,15 +3,30 @@ from login.models import User
 
 
 class Traffic(models.Model):
-    url = models.CharField(max_length=128, verbose_name="URL")
+    url = models.CharField(
+        max_length=128,
+        verbose_name="URL",
+    )
     response_time = models.DecimalField(
         default=0,
         max_digits=8,
         decimal_places=2,
         verbose_name="Response Time",
     )
-    datetime = models.DateTimeField(auto_now_add=True, verbose_name="Request Time")
-    ip = models.CharField(max_length=16, verbose_name="IP")
+    datetime = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name="Request Time",
+    )
+    ip = models.CharField(
+        max_length=16,
+        verbose_name="IP",
+    )
+    user_agent = models.CharField(
+        max_length=256,
+        null=True,
+        default="unknown",
+        verbose_name="User-Agent",
+    )
     user = models.ForeignKey(
         User,
         null=True,
@@ -20,4 +35,7 @@ class Traffic(models.Model):
         verbose_name="User",
         related_name="user",
     )
-    http_status = models.CharField(max_length=16, verbose_name="HTTP Status")
+    http_status = models.CharField(
+        max_length=16,
+        verbose_name="HTTP Status",
+    )

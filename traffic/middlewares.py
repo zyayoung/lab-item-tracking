@@ -18,12 +18,14 @@ class Profiler(MiddlewareMixin):
             ip = request.META['HTTP_X_FORWARDED_FOR']
         else:
             ip = request.META['REMOTE_ADDR']
+        ua = request.META.get('HTTP_USER_AGENT', 'unknown')
         traffic = Traffic.objects.create(
             url=request.path_info,
             user=tmp_user,
             ip=ip,
             http_status=response.status_code,
             response_time=duration,
+            user_agent=ua,
         )
         traffic.save()
         return response
