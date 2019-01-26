@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %} 实验室物品管理 {% endblock %}
+
+{% block content %}
+
+<div id="main1" class="col-sm-12" style="height: 300px;"></div>
+<div id="main2" class="col-sm-12" style="height: 300px;"></div>
+<div id="main3" class="col-sm-12" style="height: 300px;"></div>
+
+
+
+{% endblock %}
+
+{% block script %}
+<script src="https://cdn.bootcss.com/echarts/4.2.0-rc.2/echarts.min.js"></script>
+<script>
+option = {
+    tooltip: {},
+    series : [
+        {
+            name: '访问来源',
+            type: 'pie',
+            radius: '55%',
+            data: {{ user_data|safe }}
+        }
+    ]
+};
+var myChart = echarts.init(document.getElementById('main1'));
+myChart.setOption(option);
+</script>
+{% endblock %}

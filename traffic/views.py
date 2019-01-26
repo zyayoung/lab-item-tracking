@@ -12,6 +12,7 @@ import numpy as np
 from traffic.models import Traffic
 from inventory.models import LocationPermissionApplication
 from trace_item.models import ItemLog
+from login.models import User
 
 
 def show_urls(url_list, depth=0):
@@ -94,3 +95,21 @@ class Calender(generic.View):
         itemlog_max = np.percentile(np.array(itemlog_num), 100)
         date_range = [traffic_data[0][0], traffic_data[-1][0]]
         return render(request, 'traffic/calendar.html', locals())
+
+
+class Users(generic.View):
+    def get(self, request):
+        start = datetime.date.today()
+        end = start + datetime.timedelta(days=1)
+        user_data = [{
+            'name': 'Other',
+            'value': Traffic.objects.filter(datetime__range=(start, end), user=None).count(),
+        }]
+        for user in User.objects.all():
+            count = Traffic.objects.filter(datetime__range=(start, end), user=user).count()
+            if count:
+                user_data.append({
+                    'name': user.name,
+                    'value': count,
+                })
+        return render(request, 'traffic/users.html', locals())

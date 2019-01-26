@@ -9,4 +9,5 @@ urlpatterns = [
     # url(r'^index/', views.index),
     url(r'pages', views.Pages.as_view()),
     url(r'calender', views.Calender.as_view()),
+    url(r'users', views.Users.as_view()),
 ]
