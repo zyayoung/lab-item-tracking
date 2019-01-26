@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.shortcuts import redirect
+from django.conf import settings
 from . import models
 from captcha.models import CaptchaStore
 from captcha.helpers import captcha_image_url
@@ -35,7 +36,7 @@ def login(request):
             password = login_form.cleaned_data['password']
             try:
                 user = models.User.objects.get(name=username)
-                if not user.has_confirmed:
+                if settings.EMAIL_ENABLE and not user.has_confirmed:
                     message = "该用户还未通过邮件确认！"
                     return render(request, 'login/login.html', locals())
                 if user.password == hash_code(password):
@@ -86,9 +87,10 @@ def register(request):
             new_user.password = hash_code(password1)
             new_user.email = email
             new_user.save()
-            # Send confirm email
-            code = get_confirm_string(new_user)
-            send_email(email, code)
+            if settings.EMAIL_ENABLE:
+                # Send confirm email
+                code = get_confirm_string(new_user)
+                send_email(email, code)
             message = "请前往注册邮箱，进行邮件确认！"
             return render(request, 'login/confirm.html', locals())
             # return redirect('/login/')
