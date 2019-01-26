@@ -87,7 +87,7 @@ class Calender(generic.View):
         traffic_label = []
         locreq_num = []
         itemlog_num = []
-        CalenderCache.objects.filter(date_str=datetime.date.today().strftime("%Y-%m-%d")).delete()
+        CalenderCache.objects.filter(need_update=True).delete()
         for i in range(365, -1, -1):
             start = datetime.date.today() - datetime.timedelta(days=i)
             end = start + datetime.timedelta(days=1)
@@ -97,6 +97,7 @@ class Calender(generic.View):
                     traffic_cnt=Traffic.objects.filter(datetime__range=(start, end)).count(),
                     locreq_cnt=LocationPermissionApplication.objects.filter(time__range=(start, end)).count(),
                     itemlog_cnt=ItemLog.objects.filter(time__range=(start, end)).count(),
+                    need_update=start.strftime("%Y-%m-%d") == datetime.date.today().strftime("%Y-%m-%d")
                 )
                 new_cache.save()
             cache = CalenderCache.objects.get(date_str=start.strftime("%Y-%m-%d"))

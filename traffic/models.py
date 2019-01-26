@@ -46,3 +46,4 @@ class CalenderCache(models.Model):
     traffic_cnt = models.IntegerField()
     locreq_cnt = models.IntegerField()
     itemlog_cnt = models.IntegerField()
+    need_update = models.BooleanField(blank=True, default=True)
