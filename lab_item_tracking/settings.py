@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.1/ref/settings/
 """
 
+from login import settings as login_settings
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -144,10 +145,10 @@ SILKY_PYTHON_PROFILER_RESULT_PATH = os.path.join(BASE_DIR, 'logs')
 
 # Email model
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.sina.com'
-EMAIL_PORT = 25
-EMAIL_HOST_USER = 'example@sina.com'
-EMAIL_HOST_PASSWORD = 'example'
-CONFIRM_DAYS = 1
+EMAIL_HOST = login_settings.EMAIL_HOST
+EMAIL_PORT = login_settings.EMAIL_PORT
+EMAIL_HOST_USER = login_settings.EMAIL_HOST_USER
+EMAIL_HOST_PASSWORD = login_settings.EMAIL_HOST_PASSWORD
 
-SITE_DOMAIN = 'www.example.com'
+CONFIRM_DAYS = 1
+SITE_DOMAIN = 'zyayoung.oicp.io'

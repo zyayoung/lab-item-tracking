@@ -35,9 +35,9 @@ def login(request):
             password = login_form.cleaned_data['password']
             try:
                 user = models.User.objects.get(name=username)
-                # if not user.has_confirmed:
-                #     message = "该用户还未通过邮件确认！"
-                #     return render(request, 'login/login.html', locals())
+                if not user.has_confirmed:
+                    message = "该用户还未通过邮件确认！"
+                    return render(request, 'login/login.html', locals())
                 if user.password == hash_code(password):
                     request.session['is_login'] = True
                     request.session['is_superadmin'] = user.is_superadmin
@@ -87,8 +87,8 @@ def register(request):
             new_user.email = email
             new_user.save()
             # Send confirm email
-            # code = get_confirm_string(new_user)
-            # send_email(email, code)
+            code = get_confirm_string(new_user)
+            send_email(email, code)
             message = "请前往注册邮箱，进行邮件确认！"
             return render(request, 'login/confirm.html', locals())
             # return redirect('/login/')
@@ -101,14 +101,13 @@ def register(request):
 
 def send_email(email, code):
     from django.core.mail import EmailMultiAlternatives
-    subject = '来自{0}的注册确认邮件'.format(settings.SITE_DOMAIN)
-    text_content = '''感谢注册{0}！\
-                    请在浏览器中访问以下地址完成注册确认！\
+    subject = '验证您的注册邮箱'
+    text_content = '''请在浏览器中访问以下地址完成注册确认！\
                     http://{0}/confirm/?code={1}\
                     如果你看到这条消息，说明你的邮箱服务器不提供HTML链接功能，请联系管理员！
                     '''.format(settings.SITE_DOMAIN, code)
-    html_content = '''<p>感谢注册<a href="http://{0}/confirm/?code={1}" target=blank>{0}</a>，</p>
-                    <p>请点击站点链接完成注册确认！</p>
+    html_content = '''<p>请点击以下链接完成注册确认！</p>
+                    <p><a href="http://{0}/confirm/?code={1}" target=blank>http://{0}/confirm/?code={1}</a></p>
                     <p>此链接有效期为{2}天！</p>
                     '''.format(settings.SITE_DOMAIN, code,
                                settings.CONFIRM_DAYS)
@@ -135,10 +134,11 @@ def get_confirm_string(user):
 def logout(request):
     if not request.session.get('is_login', None):
         return redirect("/index/")
-    request.session.flush()
-    # del request.session['is_login']
-    # del request.session['user_id']
-    # del request.session['user_name']
+    # request.session.flush()
+    del request.session['is_login']
+    del request.session['is_superadmin']
+    del request.session['user_id']
+    del request.session['user_name']
     return redirect("/index/")
 
 
