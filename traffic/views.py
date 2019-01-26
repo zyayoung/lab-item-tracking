@@ -9,13 +9,13 @@ import json
 import datetime
 import numpy as np
 
-from traffic.models import Traffic
+from traffic.models import *
 from inventory.models import LocationPermissionApplication, Location, Item
 from trace_item.models import ItemLog
 from login.models import User
 
 
-ban_list = ['app_list', 'calender']
+ban_list = ['app_list']
 
 
 def show_urls(url_list, depth=0):
@@ -84,22 +84,34 @@ class Calender(generic.View):
         locreq_data = []
         itemlog_data = []
         traffic_num = []
+        traffic_label = []
         locreq_num = []
         itemlog_num = []
-        for i in range(365):
+        CalenderCache.objects.filter(date_str=datetime.date.today().strftime("%Y-%m-%d")).delete()
+        for i in range(365, -1, -1):
             start = datetime.date.today() - datetime.timedelta(days=i)
             end = start + datetime.timedelta(days=1)
+            if not CalenderCache.objects.filter(date_str=start.strftime("%Y-%m-%d")).exists():
+                new_cache = CalenderCache.objects.create(
+                    date_str=start.strftime("%Y-%m-%d"),
+                    traffic_cnt=Traffic.objects.filter(datetime__range=(start, end)).count(),
+                    locreq_cnt=LocationPermissionApplication.objects.filter(time__range=(start, end)).count(),
+                    itemlog_cnt=ItemLog.objects.filter(time__range=(start, end)).count(),
+                )
+                new_cache.save()
+            cache = CalenderCache.objects.get(date_str=start.strftime("%Y-%m-%d"))
             traffic_data.append([
                 start.strftime("%Y-%m-%d"),
-                Traffic.objects.filter(datetime__range=(start, end)).count()
+                cache.traffic_cnt,
             ])
+            traffic_label.append(start.strftime("%Y-%m-%d"))
             locreq_data.append([
                 start.strftime("%Y-%m-%d"),
-                LocationPermissionApplication.objects.filter(time__range=(start, end)).count()
+                cache.locreq_cnt,
             ])
             itemlog_data.append([
                 start.strftime("%Y-%m-%d"),
-                ItemLog.objects.filter(time__range=(start, end)).count()
+                cache.itemlog_cnt,
             ])
             traffic_num.append(traffic_data[-1][1])
             locreq_num.append(locreq_data[-1][1])
@@ -107,7 +119,7 @@ class Calender(generic.View):
         traffic_max = np.percentile(np.array(traffic_num), 100)
         locreq_max = np.percentile(np.array(locreq_num), 100)
         itemlog_max = np.percentile(np.array(itemlog_num), 100)
-        date_range = [traffic_data[0][0], traffic_data[-1][0]]
+        date_range = [itemlog_data[0][0], itemlog_data[-1][0]]
         return render(request, 'traffic/calendar.html', locals())
 
 

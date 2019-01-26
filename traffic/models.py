@@ -39,3 +39,10 @@ class Traffic(models.Model):
         max_length=16,
         verbose_name="HTTP Status",
     )
+
+
+class CalenderCache(models.Model):
+    date_str = models.CharField(max_length=32)
+    traffic_cnt = models.IntegerField()
+    locreq_cnt = models.IntegerField()
+    itemlog_cnt = models.IntegerField()

@@ -3,7 +3,7 @@
 {% block title %} 实验室物品管理 {% endblock %}
 
 {% block content %}
-<div id="main1" class="col-sm-12" style="height: 800px;"></div>
+<div id="main1" class="container" style="height: 1200px;"></div>
 
 
 
@@ -21,8 +21,6 @@ var totalTime = {{ totalTime|safe }};
 
 var totalTimes = {{ totalTimes|safe }};
 
-var waterMarkText = 'ECHARTS';
-
 var canvas = document.createElement('canvas');
 var ctx = canvas.getContext('2d');
 canvas.width = canvas.height = 100;
@@ -32,7 +30,6 @@ ctx.globalAlpha = 0.08;
 ctx.font = '20px Microsoft Yahei';
 ctx.translate(50, 50);
 ctx.rotate(-Math.PI / 4);
-ctx.fillText(waterMarkText, 0, 0);
 
 option = {
     backgroundColor: {
@@ -44,6 +41,11 @@ option = {
     title: [{
         text: '平均加载时间',
         x: '25%',
+        textAlign: 'center'
+    }, {
+        text: '最大加载时间',
+        x: '25%',
+        y: '50%',
         textAlign: 'center'
     }, {
         text: '各页面加载总耗时(毫秒)',
@@ -62,15 +64,15 @@ option = {
         textAlign: 'center'
     }],
     grid: [{
-        top: 50,
+        top: '5%',
         width: '50%',
-        bottom: '45%',
+        bottom: '55%',
         left: 10,
         containLabel: true
     }, {
         top: '55%',
         width: '50%',
-        bottom: 0,
+        bottom: '5%',
         left: 10,
         containLabel: true
     }],
@@ -138,7 +140,6 @@ option = {
         })
     }, {
         type: 'bar',
-        barMaxWidth: 1000,
         stack: 'component',
         xAxisIndex: 1,
         yAxisIndex: 1,
@@ -155,7 +156,6 @@ option = {
         })
     }, {
         type: 'bar',
-        barMaxWidth: 1000,
         stack: 'component',
         silent: true,
         xAxisIndex: 1,
@@ -172,6 +172,7 @@ option = {
         type: 'pie',
         radius: [0, '30%'],
         center: ['75%', '25%'],
+        startAngle: 0,
         data: Object.keys(totalTime).map(function (key) {
             return {
                 name: key.replace('.js', ''),
@@ -182,6 +183,7 @@ option = {
         type: 'pie',
         radius: [0, '30%'],
         center: ['75%', '75%'],
+        startAngle: 0,
         data: Object.keys(totalTimes).map(function (key) {
             return {
                 name: key.replace('.js', ''),
