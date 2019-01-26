@@ -7,6 +7,7 @@ from django.db.models import Count, Min, Max, Sum, Avg
 import re
 import json
 import datetime
+import numpy as np
 
 from traffic.models import Traffic
 from inventory.models import LocationPermissionApplication
@@ -67,11 +68,11 @@ class Calender(generic.View):
         traffic_data = []
         locreq_data = []
         itemlog_data = []
-        traffic_max = 0
-        locreq_max = 0
-        itemlog_max = 0
+        traffic_num = []
+        locreq_num = []
+        itemlog_num = []
         for i in range(365):
-            start = datetime.datetime.today() - datetime.timedelta(days=i)
+            start = datetime.date.today() - datetime.timedelta(days=i)
             end = start + datetime.timedelta(days=1)
             traffic_data.append([
                 start.strftime("%Y-%m-%d"),
@@ -85,8 +86,11 @@ class Calender(generic.View):
                 start.strftime("%Y-%m-%d"),
                 ItemLog.objects.filter(time__range=(start, end)).count()
             ])
-            traffic_max = max(traffic_max, traffic_data[-1][1])
-            locreq_max = max(locreq_max, locreq_data[-1][1])
-            itemlog_max = max(itemlog_max, itemlog_data[-1][1])
+            traffic_num.append(traffic_data[-1][1])
+            locreq_num.append(locreq_data[-1][1])
+            itemlog_num.append(itemlog_data[-1][1])
+        traffic_max = np.percentile(np.array(traffic_num), 100)
+        locreq_max = np.percentile(np.array(locreq_num), 100)
+        itemlog_max = np.percentile(np.array(itemlog_num), 100)
         date_range = [traffic_data[0][0], traffic_data[-1][0]]
         return render(request, 'traffic/calendar.html', locals())

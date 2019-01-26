@@ -2,3 +2,4 @@ pillow
 django
 django-simple-captcha
 django-silk
+numpy
