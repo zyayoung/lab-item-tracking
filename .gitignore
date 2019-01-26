@@ -106,3 +106,4 @@ venv.bak/
 # Pycharm
 .idea
 *.prof
+*___jb_tmp___
