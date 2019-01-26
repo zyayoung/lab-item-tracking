@@ -19,6 +19,7 @@ class User(models.Model):
         default=False,
         verbose_name='超级管理员',
     )
+    has_confirmed = models.BooleanField(default=False)
 
     def permission_str(self):
         if self.is_superadmin:
@@ -29,9 +30,24 @@ class User(models.Model):
             return "员工"
 
     def __str__(self):
-        return "{0} {1}".format(self.name, "(管理员)" if self.is_superadmin else "")
+        return "{0} {1}".format(self.name,
+                                "(管理员)" if self.is_superadmin else "")
 
     class Meta:
         ordering = ["-c_time"]
         verbose_name = "用户"
         verbose_name_plural = verbose_name
+
+
+class ConfirmString(models.Model):
+    code = models.CharField(max_length=256)
+    user = models.OneToOneField('User', on_delete=models.CASCADE)
+    c_time = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.user.name + ":   " + self.code
+
+    class Meta:
+        ordering = ["-c_time"]
+        verbose_name = "确认码"
+        verbose_name_plural = "确认码"

@@ -5,7 +5,7 @@ from django.shortcuts import redirect, HttpResponse, render
 
 
 class AuthMD(MiddlewareMixin):
-    reg_ex = r"(^/login/$)|(^/register/$)|(^/captcha/.*)|(^/admin/.*)"
+    reg_ex = r"(^/login/$)|(^/register/$)|(^/captcha/.*)|(^/confirm/)|(^/admin/.*)"
 
     def process_request(self, request):
         request_url = request.path_info

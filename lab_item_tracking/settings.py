@@ -141,3 +141,13 @@ SILKY_PYTHON_PROFILER_BINARY = True
 if not os.path.exists(os.path.join(BASE_DIR, 'logs')):
     os.mkdir(os.path.join(BASE_DIR, 'logs'))
 SILKY_PYTHON_PROFILER_RESULT_PATH = os.path.join(BASE_DIR, 'logs')
+
+# Email model
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.sina.com'
+EMAIL_PORT = 25
+EMAIL_HOST_USER = 'example@sina.com'
+EMAIL_HOST_PASSWORD = 'example'
+CONFIRM_DAYS = 1
+
+SITE_DOMAIN = 'www.example.com'
