@@ -30,55 +30,36 @@ var myChart = echarts.init(document.getElementById('main1'));
 myChart.setOption(option);
 </script>
 <script>
-data = {{ relation_nodes|safe }}
-data.forEach(function (node) {
-    node.draggable = true;
-    node.label = {
-        normal: {
-            show: node.symbolSize > 15
-        }
-    };
-});
 option = {
     tooltip: {},
     animationDurationUpdate: 1500,
     animationEasingUpdate: 'quinticInOut',
     series : [
         {
-            type: 'graph',
-            layout: 'force',
-            force:{
-                repulsion: 100
-            },
-            symbolSize: 50,
-            edgeSymbol: ['circle', 'arrow'],
-            edgeSymbolSize: [4, 10],
-            categories: {{ categories|safe }},
-            data: data,
-            links: {{ relation_links|safe }},
-            roam: true,
-            focusNodeAdjacency: true,
-            itemStyle: {
-                normal: {
-                    borderColor: '#fff',
-                    borderWidth: 1,
-                    shadowBlur: 10,
-                    shadowColor: 'rgba(0, 0, 0, 0.3)'
-                }
-            },
+            type: 'tree',
+            name: 'loc_tree',
+            data: [{{ loc_node|safe }}],
+            initialTreeDepth: -1,
+            symbolSize: 7,
             label: {
-                position: 'right',
-                formatter: '{b}'
-            },
-            lineStyle: {
-                color: 'source',
-                curveness: 0.3
-            },
-            emphasis: {
-                lineStyle: {
-                    width: 10
+                normal: {
+                    position: 'left',
+                    verticalAlign: 'middle',
+                    align: 'right'
                 }
-            }
+            },
+            leaves: {
+                label: {
+                    normal: {
+                        position: 'right',
+                        verticalAlign: 'middle',
+                        align: 'left'
+                    }
+                }
+            },
+            expandAndCollapse: true,
+            animationDuration: 550,
+            animationDurationUpdate: 750
         }
     ]
 };
