@@ -149,11 +149,45 @@ class Users(generic.View):
             Traffic.objects.filter(datetime__range=(start, end),
                                    user=None).count(),
         }]
+        series_hour_data = []
+        for hour in range(25):
+            d = datetime.datetime(start.year, start.month, start.day) + datetime.timedelta(hours=hour)
+            series_hour_data.append(
+                Traffic.objects.filter(
+                    datetime__range=(d, d+datetime.timedelta(hours=1)),
+                    user=None,
+                ).count()
+            )
+        series_hour = [{
+            'name': 'Other',
+            'type': 'line',
+            'areaStyle': {},
+            'data': series_hour_data
+        }]
+        legend = ['Other']
+        xAxis = list(range(25))
         for user in User.objects.all():
             count = Traffic.objects.filter(
                 datetime__range=(start, end), user=user).count()
             if count:
                 user_data.append({'name': user.name, 'value': count})
+                series_hour_data = []
+                for hour in range(25):
+                    d = datetime.datetime(start.year, start.month, start.day) + datetime.timedelta(hours=hour)
+                    series_hour_data.append(
+                        Traffic.objects.filter(
+                            datetime__range=(d, d+datetime.timedelta(hours=1)),
+                            user=user,
+                        ).count()
+                    )
+                legend.append(user.name)
+                series_hour.append({
+                    'name': user.name,
+                    'type': 'line',
+                    'areaStyle': {},
+                    'stack': '总量',
+                    'data': series_hour_data
+                })
         relation_nodes = []
         relation_links = []
         for user in User.objects.all():

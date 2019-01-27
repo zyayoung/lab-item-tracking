@@ -5,6 +5,7 @@
 {% block content %}
 <p class="lead">今日活跃</p>
 <div id="main1" class="col-sm-12" style="height: 300px;"></div>
+<div id="main3" class="col-sm-12" style="height: 300px;"></div>
 <p class="lead">用户关系</p>
 <div id="main2" class="col-sm-12 border" style="height: 600px;"></div>
 
@@ -30,6 +31,44 @@ var myChart = echarts.init(document.getElementById('main1'));
 myChart.setOption(option);
 </script>
 <script>
+option = {
+    tooltip : {
+        trigger: 'axis',
+        axisPointer: {
+            type: 'cross',
+            label: {
+                backgroundColor: '#6a7985'
+            }
+        }
+    },
+    legend: {
+        data:{{ legend|safe }}
+    },
+    grid: {
+        left: '3%',
+        right: '4%',
+        bottom: '3%',
+        containLabel: true
+    },
+    xAxis : [
+        {
+            type : 'category',
+            boundaryGap : false,
+            data : {{ xAxis|safe }}
+        }
+    ],
+    yAxis : [
+        {
+            type : 'value'
+        }
+    ],
+    series : {{ series_hour|safe }}
+};
+
+var myChart = echarts.init(document.getElementById('main3'));
+myChart.setOption(option);
+</script>
+<script>
 data = {{ relation_nodes|safe }}
 data.forEach(function (node) {
     node.symbolSize = 20;
@@ -42,6 +81,11 @@ data.forEach(function (node) {
 });
 option = {
     tooltip: {},
+    toolbox: {
+        feature: {
+            saveAsImage: {}
+        }
+    },
     animationDurationUpdate: 1500,
     animationEasingUpdate: 'quinticInOut',
     series : [
