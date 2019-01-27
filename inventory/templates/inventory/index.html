@@ -31,7 +31,7 @@
     </p>
     <div class="row text-center">
         <div class="col-sm-4">
-            <div class="card">
+            <div class="card mb-3">
                 <div class="card-body">
                     <h5 class="card-title">物品</h5>
                     <a href="{% url 'inventory:items' %}" class="card-link">
@@ -44,7 +44,7 @@
             </div>
         </div>
         <div class="col-sm-4">
-            <div class="card">
+            <div class="card mb-3">
                 <div class="card-body">
                     <h5 class="card-title">位置</h5>
                     <a href="{% url 'inventory:location_root' %}" class="card-link">
@@ -52,13 +52,13 @@
                     </a>
                     <a href="{% url 'personal:mylocreq' %}" class="card-link">
                         <i class="fa fa-file" aria-hidden="true"></i>
-                        <span {% if others_request_list_count %}class="red-point"{% endif %}> 位置申请</span>
+                        <span {% if others_request_list_count %}class="red-point" {% endif %}> 位置申请</span>
                     </a>
                 </div>
             </div>
         </div>
         <div class="col-sm-4">
-            <div class="card">
+            <div class="card mb-3">
                 <div class="card-body">
                     <h5 class="card-title">关于</h5>
                     <a href="https://github.com/zyayoung/lab-item-tracking/wiki" class="card-link">
@@ -72,32 +72,40 @@
         </div>
     </div>
     {% if request.session.is_superadmin %}
-    <div class="row text-center mt-3">
-        <div class="col-sm-12">
-            <div class="card">
+    <div class="row text-center justify-content-md-center">
+        <div class="col-sm-4">
+            <div class="card mb-3">
                 <div class="card-body">
                     <h5 class="card-title">网站管理</h5>
-                    <a href="{% url 'admin:inventory_location_add' %}" class="card-link">
-                        <i class="fa fa-plus" aria-hidden="true"></i> 添加位置
-                    </a>
-                    <a href="{% url 'admin:login_user_changelist' %}" class="card-link">
-                        <i class="fa fa-gear" aria-hidden="true"></i> 管理用户
-                    </a>
-                    <a href="{% url 'traffic:users' %}" class="card-link">
-                        <i class="fa fa-pie-chart" aria-hidden="true"></i> 用户视图
-                    </a>
-                    <a href="{% url 'traffic:locations' %}" class="card-link">
-                        <i class="fa fa-pie-chart" aria-hidden="true"></i> 位置视图
-                    </a>
-                    <a href="{% url 'traffic:calender' %}" class="card-link">
-                        <i class="fa fa-calendar" aria-hidden="true"></i> 日历视图
-                    </a>
-                    <a href="{% url 'traffic:pages' %}" class="card-link">
-                        <i class="fa fa-bar-chart" aria-hidden="true"></i> 性能分析
-                    </a>
-                    <a href="{% url 'admin:index' %}" class="card-link">
-                        <i class="fa fa-database" aria-hidden="true"></i> 数据管理
-                    </a>
+                    <p>
+                        <a href="{% url 'admin:inventory_location_add' %}" class="card-link">
+                            <i class="fa fa-plus" aria-hidden="true"></i> 添加位置
+                        </a>
+                        <a href="{% url 'admin:login_user_changelist' %}" class="card-link">
+                            <i class="fa fa-gear" aria-hidden="true"></i> 管理用户
+                        </a>
+                    </p>
+                    <p>
+                        <a href="{% url 'traffic:users' %}" class="card-link">
+                            <i class="fa fa-pie-chart" aria-hidden="true"></i> 用户视图
+                        </a>
+                        <a href="{% url 'traffic:locations' %}" class="card-link">
+                            <i class="fa fa-pie-chart" aria-hidden="true"></i> 位置视图
+                        </a>
+                    </p>
+                    <p>
+                        <a href="{% url 'traffic:calender' %}" class="card-link">
+                            <i class="fa fa-calendar" aria-hidden="true"></i> 日历视图
+                        </a>
+                        <a href="{% url 'traffic:pages' %}" class="card-link">
+                            <i class="fa fa-bar-chart" aria-hidden="true"></i> 性能分析
+                        </a>
+                    </p>
+                    <p>
+                        <a href="{% url 'admin:index' %}" class="card-link">
+                            <i class="fa fa-database" aria-hidden="true"></i> 数据管理
+                        </a>
+                    </p>
                 </div>
             </div>
         </div>
