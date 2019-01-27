@@ -3,9 +3,42 @@
 {% block title %} 实验室物品管理 {% endblock %}
 
 {% block content %}
-<p class="lead">今日活跃</p>
+<p class="lead">{% if bias %}{{ start }}{% else %}今日{% endif %}活跃
+</p>
 <div id="main1" class="col-sm-12" style="height: 300px;"></div>
 <div id="main3" class="col-sm-12" style="height: 300px;"></div>
+<nav aria-label="page navigation">
+    <ul class="pagination justify-content-center">
+        <li class="page-item">
+            <a class="page-link" href="?bias={{ bias|add:-1 }}">
+                前一天
+            </a>
+        </li>
+        {% if bias < 0 %}
+        <li class="page-item">
+            <a class="page-link" href="?bias={{ bias|add:1 }}">
+                后一天
+            </a>
+        </li>
+        <li class="page-item">
+            <a class="page-link" href="?bias=0">
+                今天
+            </a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+            <a class="page-link" href="?bias=0">
+                后一天
+            </a>
+        </li>
+        <li class="page-item disabled">
+            <a class="page-link" href="?bias=0">
+                今天
+            </a>
+        </li>
+        {% endif %}
+    </ul>
+</nav>
 <p class="lead">用户关系</p>
 <div id="main2" class="col-sm-12 border" style="height: 600px;"></div>
 

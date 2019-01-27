@@ -140,7 +140,11 @@ class Calender(generic.View):
 class Users(generic.View):
     @check_admin
     def get(self, request):
-        start = datetime.date.today()
+        try:
+            bias = min(0, int(request.GET.get('bias', 0)))
+        except ValueError:
+            bias = 0
+        start = datetime.date.today() + datetime.timedelta(days=bias)
         end = start + datetime.timedelta(days=1)
         user_data = [{
             'name':
@@ -166,14 +170,14 @@ class Users(generic.View):
             'data': series_hour_data
         }]
         legend = ['Other']
-        xAxis = list(range(25))
+        xAxis = list(range(24))
         for user in User.objects.all():
             count = Traffic.objects.filter(
                 datetime__range=(start, end), user=user).count()
             if count:
                 user_data.append({'name': user.name, 'value': count})
                 series_hour_data = []
-                for hour in range(25):
+                for hour in range(24):
                     d = datetime.datetime(start.year, start.month, start.day) + datetime.timedelta(hours=hour)
                     series_hour_data.append(
                         Traffic.objects.filter(
