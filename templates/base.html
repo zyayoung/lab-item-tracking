@@ -42,16 +42,6 @@
         <ul class="navbar-nav mr-auto">
           {% block navbar %}
           <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="locDropdown" role="button" data-toggle="dropdown"
-              aria-haspopup="true" aria-expanded="false">
-              位置
-            </a>
-            <div class="dropdown-menu" style="min-width: 0px;" aria-labelledby="locDropdown">
-              <a class="dropdown-item" href="{% url 'inventory:location_root' %}">浏览</a>
-              <a class="dropdown-item" href="{% url 'personal:locreq' %}">申请</a>
-            </div>
-          </li>
-          <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="itemDropdown" role="button" data-toggle="dropdown"
               aria-haspopup="true" aria-expanded="false">
               物品
@@ -61,11 +51,16 @@
               <a class="dropdown-item" href="{% url 'inventory:add' %}">添加</a>
             </div>
           </li>
-          {% if request.session.is_superadmin %}
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'admin:index' %}">数据库管理</a>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="locDropdown" role="button" data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="false">
+              位置
+            </a>
+            <div class="dropdown-menu" style="min-width: 0px;" aria-labelledby="locDropdown">
+              <a class="dropdown-item" href="{% url 'inventory:location_root' %}">浏览</a>
+              <a class="dropdown-item" href="{% url 'personal:locreq' %}">申请</a>
+            </div>
           </li>
-          {% endif %}
           {% endblock %}
         </ul>
         <div class="dropdown-divider"></div>
