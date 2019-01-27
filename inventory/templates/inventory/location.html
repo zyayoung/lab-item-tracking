@@ -72,6 +72,7 @@
         {% endfor %}
     </tbody>
 </table>
+<div id="main2" class="col-sm-12 border" style="height: 300px;"></div>
 {% if item_list %}
 <p class="lead">
     已存放物品：
@@ -223,5 +224,49 @@
         $('#qrcodeModal').modal();
         $("#qrcodeId").attr('src', url);
     }
+</script>
+<script src="https://cdn.bootcss.com/echarts/4.2.0-rc.2/echarts.min.js"></script>
+<script>
+data = {{ loc_node|safe }}
+option = {
+    tooltip: {},
+    animationDurationUpdate: 1500,
+    animationEasingUpdate: 'quinticInOut',
+    toolbox: {
+        feature: {
+            saveAsImage: {}
+        }
+    },
+    series : [
+        {
+            type: 'tree',
+            name: 'loc_tree',
+            data: [data],
+            initialTreeDepth: -1,
+            symbolSize: 7,
+            label: {
+                normal: {
+                    position: 'left',
+                    verticalAlign: 'middle',
+                    align: 'right'
+                }
+            },
+            leaves: {
+                label: {
+                    normal: {
+                        position: 'right',
+                        verticalAlign: 'middle',
+                        align: 'left'
+                    }
+                }
+            },
+            expandAndCollapse: true,
+            animationDuration: 550,
+            animationDurationUpdate: 750
+        }
+    ]
+};
+var myChart = echarts.init(document.getElementById('main2'));
+myChart.setOption(option);
 </script>
 {% endblock %}

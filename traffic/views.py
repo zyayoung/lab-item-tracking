@@ -1,50 +1,14 @@
-from django.shortcuts import render, redirect
-from django.http import HttpResponse
+from django.shortcuts import render
 from django.views import generic
 from lab_item_tracking import urls
-import django.urls.resolvers
 from django.db.models import Count, Min, Max, Sum, Avg
-import re
-import json
 import datetime
 import numpy as np
-
+from .utils import *
 from traffic.models import *
 from inventory.models import LocationPermissionApplication, Location, Item
 from trace_item.models import ItemLog
 from login.models import User
-
-ban_list = ['app_list']
-
-
-def show_urls(url_list, depth=0):
-    ret = {}
-    for entry in url_list:
-        if type(entry) == django.urls.resolvers.URLPattern:
-            if str(entry.pattern) and str(
-                    entry.pattern
-            )[0] == r'^' and entry.name and entry.name not in ban_list:
-                ret.update({str(entry.name): str(entry.pattern)})
-        if hasattr(entry, 'url_patterns'):
-            if entry.app_name in [
-                    'inventory', 'login', 'trace_item', 'personal', 'traffic'
-            ]:
-                ret.update(show_urls(entry.url_patterns, depth + 1))
-    return ret
-
-
-def wash_regex(r):
-    return re.sub(r'\?P<.+?>', '', r)
-
-
-def check_admin(func):
-    def inner(*args, **kwargs):
-        request = args[1]
-        if not request.session.get('is_superadmin', False):
-            return redirect('inventory:index')
-        return func(*args, **kwargs)
-
-    return inner
 
 
 class Pages(generic.View):
@@ -219,12 +183,6 @@ class Locations(generic.View):
         start = datetime.date.today()
         end = start + datetime.timedelta(days=1)
         loc_data = []
-        # relation_nodes = []
-        # relation_links = []
-        # locmap = {}
-        # revlocmap = []
-        # max_depth = 0
-        # tot_cnt = 0
         for idx, loc in enumerate(Location.objects.all()):
             count = ItemLog.objects.filter(time__range=(start, end), location_from=loc).count() + \
                     ItemLog.objects.filter(time__range=(start, end), location_to=loc).count()
@@ -233,68 +191,5 @@ class Locations(generic.View):
                     'name': loc.__str__(),
                     'value': count,
                 })
-            # depth = loc.__str__().count('-')
-            # max_depth = max(max_depth, depth)
-            # count = Item.objects.filter(location=loc).count()
-            # relation_nodes.append({
-            #     'name': loc.path,
-            #     'category': depth,
-            #     'id': idx,
-            #     'symbolSize': count,
-            #     'value': count,
-            # })
-            # tot_cnt += count
-            # locmap[loc.__str__()] = idx
-            # revlocmap.append(loc.__str__())  # fast bls
-        # for idx, loc in enumerate(Location.objects.all()):
-        #     if loc.parent:
-        #         relation_links.append({
-        #             # 'source': locmap[loc.parent.__str__()],
-        #             # 'target': locmap[loc.__str__()],
-        #             'source': locmap[loc.parent.__str__()],
-        #             'target': locmap[loc.__str__()],
-        #         })
-        # categories = [{'name': i} for i in range(max_depth)]
-
-        # Accumulate size
-        # for depth in range(max_depth - 1):
-        #     selected_depth = max_depth - depth - 1
-        #     for idx, loc in enumerate(relation_nodes):
-        #         if loc['category'] == selected_depth:
-        #             parent_ida = locmap['-'.join(
-        #                 revlocmap[idx].split('-')[:-1])]
-        #             relation_nodes[parent_ida]['symbolSize'] += loc[
-        #                 'symbolSize']
-
-        # # normalize
-        # for i in range(len(relation_nodes)):
-        #     relation_nodes[i]['symbolSize'] = int(
-        #         np.sqrt(relation_nodes[i]['symbolSize'] / tot_cnt) * 60) + 10
-        item_count = Item.objects.exclude(location=None).count()
-        locations = Location.objects.filter(parent=None)
-        loc_node = {
-            "name": "root",
-            "children": display(locations, item_count)[0],
-            "value": item_count,
-            "symbolSize": 70,
-        }
+        loc_node, item_count = build_loc_tree(count=True)
         return render(request, 'traffic/locations.html', locals())
-
-
-def display(locations, tot_count):
-    res_list = []
-    for loc in locations:
-        count = Item.objects.filter(location=loc).count()
-        tmp_dict = {
-            "name": loc.path,
-            "value": count,
-        }
-        tmp_count = 0
-        children = loc.location_children.all()
-        if len(children) > 0:
-            tmp_dict["children"], tmp_count = display(
-                loc.location_children.all(), tot_count)
-        tmp_dict["symbolSize"] = int(
-            ((count + tmp_count) / tot_count)**0.5 * 60) + 10
-        res_list.append(tmp_dict)
-    return res_list, count + tmp_count

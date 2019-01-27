@@ -3,8 +3,10 @@
 {% block title %} 实验室物品管理 {% endblock %}
 
 {% block content %}
+{% if loc_data %}
 <p class="lead">今日活跃</p>
 <div id="main1" class="col-sm-12" style="height: 300px;"></div>
+{% endif %}
 <p class="lead">位置关系</p>
 <div id="main2" class="col-sm-12 border" style="height: 600px;"></div>
 
@@ -14,6 +16,7 @@
 
 {% block script %}
 <script src="https://cdn.bootcss.com/echarts/4.2.0-rc.2/echarts.min.js"></script>
+{% if loc_data %}
 <script>
 option = {
     tooltip: {},
@@ -29,7 +32,14 @@ option = {
 var myChart = echarts.init(document.getElementById('main1'));
 myChart.setOption(option);
 </script>
+{% endif %}
 <script>
+data = {{ loc_node|safe }}
+norm = function(node){
+    node.symbolSize = Math.sqrt(node.value/{{ item_count }}) * 60 + 10;
+    node.children.forEach(norm)
+};
+norm(data);
 option = {
     tooltip: {},
     animationDurationUpdate: 1500,
@@ -43,7 +53,7 @@ option = {
         {
             type: 'tree',
             name: 'loc_tree',
-            data: [{{ loc_node|safe }}],
+            data: [data],
             initialTreeDepth: -1,
             symbolSize: 7,
             label: {
@@ -71,5 +81,4 @@ option = {
 var myChart = echarts.init(document.getElementById('main2'));
 myChart.setOption(option);
 </script>
-
 {% endblock %}

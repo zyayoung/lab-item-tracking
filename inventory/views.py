@@ -11,6 +11,7 @@ from inventory.models import Item, Location, LocationPermissionApplication
 from login.models import User as myUser
 from personal.utils import get_others_request_list
 from urllib.parse import quote
+from traffic.utils import build_loc_tree
 
 OBJ_PER_PAGE = 50
 
@@ -143,11 +144,14 @@ class LocationView(generic.View):
             except EmptyPage:
                 item_list = paginator.page(paginator.num_pages)
         else:
+            loc_now = None
             loc_now_str = 'root'
             all_locs = Location.objects.filter(parent=None)
         allow_locs = get_my_list(tmp_user, all_locs)
         unallow_locs = all_locs.difference(allow_locs)
-        # loc_list = all_locs
+
+        # Fancy charts
+        loc_node, item_count = build_loc_tree(loc_now, count=False, user=tmp_user)
         return render(request, 'inventory/location.html', locals())
 
 
