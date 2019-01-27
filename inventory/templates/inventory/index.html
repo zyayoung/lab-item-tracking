@@ -51,7 +51,8 @@
                         <i class="fa fa-list-ul" aria-hidden="true"></i> 位置列表
                     </a>
                     <a href="{% url 'personal:mylocreq' %}" class="card-link">
-                        <i class="fa fa-file" aria-hidden="true"></i> 位置申请
+                        <i class="fa fa-file" aria-hidden="true"></i>
+                        <span {% if others_request_list_count %}class="red-point"{% endif %}> 位置申请</span>
                     </a>
                 </div>
             </div>
