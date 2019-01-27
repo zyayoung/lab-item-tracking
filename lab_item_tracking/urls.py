@@ -16,10 +16,14 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.conf.urls import url
+from django.conf import settings
+from django.views.static import serve
 from login import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    url(r'^static/(?P<path>.*)$', serve,
+        {'document_root': settings.STATIC_ROOT}),
     url(r'^captcha/', include('captcha.urls')),
     url(r'^', include('inventory.urls')),
     url(r'^', include('login.urls')),
