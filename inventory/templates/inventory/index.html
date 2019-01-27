@@ -50,10 +50,16 @@
                     <a href="{% url 'inventory:location_root' %}" class="card-link">
                         <i class="fa fa-list-ul" aria-hidden="true"></i> 位置列表
                     </a>
-                    <a href="{% url 'personal:mylocreq' %}" class="card-link">
+                    {% if others_request_list_count %}
+                    <a href="{% url 'personal:locreq' %}" class="card-link">
                         <i class="fa fa-file" aria-hidden="true"></i>
-                        <span {% if others_request_list_count %}class="red-point" {% endif %}> 位置申请</span>
+                        <span class="red-point" > 位置申请</span>
                     </a>
+                    {% else %}
+                    <a href="{% url 'personal:mylocreq' %}" class="card-link">
+                        <i class="fa fa-file" aria-hidden="true"></i>位置申请
+                    </a>
+                    {% endif %}
                 </div>
             </div>
         </div>
