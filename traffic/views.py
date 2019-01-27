@@ -162,6 +162,7 @@ class Users(generic.View):
             'name': 'Other',
             'type': 'line',
             'areaStyle': {},
+            'stack': '总量',
             'data': series_hour_data
         }]
         legend = ['Other']
