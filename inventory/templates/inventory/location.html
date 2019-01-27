@@ -153,6 +153,11 @@
     <a class="btn btn-outline-primary pull-right" role="button" href="{% url 'inventory:additem2loc' location_id %}">
         <i class="fa fa-plus" aria-hidden="true"></i> 添加
     </a>
+    {% else %}
+    <a class="btn btn-outline-primary pull-right" href="#" onClick="cfm('您确认要将<b>{{ pending }}</b>存入<b>{{ loc_now_str }}</b>吗？', '{% url 'inventory:put' pending.pk location_id %}')"
+        role="button">
+        将{{ pending }}存入此位置
+    </a>
     {% endif %}
 </p>
 {% endif %}
