@@ -5,11 +5,22 @@
 ## Deploy
 
 ```bash
-vi login/settings.example.py
-cp login/settings.example.py login/settings.py
 python manage.py makemigrations
 python manage.py migrate
 python manage.py createsuperuser
+python manage.py runserver
+```
+
+If you want to use full functions of it:
+
+```bash
+cp local_settings.py.template local_settings.py
+vi local_settings.py
+```
+
+Edit the settings, then run:
+
+```bash
 python manage.py runserver
 ```
 

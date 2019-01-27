@@ -24,7 +24,7 @@ SECRET_KEY = 'nq84=5-(*h46c$*7(%3u+@q6ncr#pg&^qoz+b%x@hpr*pfbq17'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["zyayoung.oicp.io", "127.0.0.1", "localhost"]
+ALLOWED_HOSTS = ['*']
 
 CAPTCHA_IMAGE_SIZE = (100, 30)
 CAPTCHA_TEST_MODE = DEBUG
@@ -151,7 +151,8 @@ EMAIL_HOST_USER = 'example@sina.com'
 EMAIL_HOST_PASSWORD = 'example'
 
 CONFIRM_DAYS = 1
-SITE_DOMAIN = 'zyayoung.oicp.io'
+
+SITE_DOMAIN = 'www.example.com'
 
 try:
     from local_settings import *
