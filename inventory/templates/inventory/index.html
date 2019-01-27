@@ -2,6 +2,24 @@
 
 {% block title %} 实验室物品管理 {% endblock %}
 
+{% block css %}
+<style>
+.red-point{
+  position: relative;
+}
+
+.red-point::before{
+  content: " ";
+  border: 3px solid red;/*设置红色*/
+  border-radius:3px;/*设置圆角*/
+  position: absolute;
+  z-index: 1000;
+  right: 0;
+  margin-right: -8px;
+}
+</style>
+{% endblock %}
+
 {% block content %}
 
 <div class="container">
@@ -11,23 +29,54 @@
   </p>
   <div class="row text-center">
   <div class="list-group col-sm-6">
-  <li class="list-group-item"><a href="{% url 'inventory:add' %}">添加物品</a></li>
-  <li class="list-group-item"><a href="{% url 'inventory:items' %}">物品列表</a></li>
-  <li class="list-group-item"><a href="{% url 'inventory:location_root' %}">位置列表</a></li>
-  <li class="list-group-item"><a href="{% url 'personal:mylocreq' %}">我的申请</a></li>
-  <li class="list-group-item"><a href="{% url 'personal:locreq' %}">收到申请</a></li>
-  <li class="list-group-item"><a href="{% url 'personal:index' %}">我的主页</a></li>
-  <li class="list-group-item"><a href="https://github.com/zyayoung/lab-item-tracking/wiki">使用手册</a></li>
-  <li class="list-group-item"><a href="https://github.com/zyayoung/lab-item-tracking/issues">反馈问题</a></li>
+  <li class="list-group-item"><a href="{% url 'inventory:add' %}">
+      <i class="fa fa-plus" aria-hidden="true"></i> 添加物品
+  </a></li>
+  <li class="list-group-item"><a href="{% url 'inventory:items' %}">
+      <i class="fa fa-list-ul" aria-hidden="true"></i> 物品列表
+  </a></li>
+  <li class="list-group-item"><a href="{% url 'inventory:location_root' %}">
+      <i class="fa fa-list-ul" aria-hidden="true"></i> 位置列表
+  </a></li>
+  <li class="list-group-item"><a href="{% url 'personal:mylocreq' %}">
+      <i class="fa fa-file" aria-hidden="true"></i> 我的申请
+  </a></li>
+  {% if tmp_user.staff.exists or tmp_user.is_superadmin %}
+  <li class="list-group-item"><a href="{% url 'personal:locreq' %}">
+      <i class="fa fa-file-text" aria-hidden="true"></i>
+      <span {% if others_request_list_count > 0 %}class="red-point"{% endif %}>收到申请</span>
+  </a></li>
+  {% endif %}
+  <li class="list-group-item"><a href="{% url 'personal:index' %}">
+      <i class="fa fa-user" aria-hidden="true"></i> 我的主页
+  </a></li>
+  <li class="list-group-item"><a href="https://github.com/zyayoung/lab-item-tracking/wiki">
+      <i class="fa fa-book" aria-hidden="true"></i> 使用手册
+  </a></li>
+  <li class="list-group-item"><a href="https://github.com/zyayoung/lab-item-tracking/issues">
+      <i class="fa fa-stethoscope" aria-hidden="true"></i> 反馈问题
+  </a></li>
   </div>
 {% if request.session.is_superadmin %}
   <div class="list-group col-sm-6">
-  <li class="list-group-item"><a href="{% url 'admin:inventory_location_add' %}">添加位置</a></li>
-  <li class="list-group-item"><a href="{% url 'admin:login_user_changelist' %}">管理用户</a></li>
-  <li class="list-group-item"><a href="{% url 'traffic:users' %}">用户视图</a></li>
-  <li class="list-group-item"><a href="{% url 'traffic:locations' %}">位置视图</a></li>
-  <li class="list-group-item"><a href="{% url 'traffic:calender' %}">日历视图</a></li>
-  <li class="list-group-item"><a href="{% url 'traffic:pages' %}">性能分析</a></li>
+  <li class="list-group-item"><a href="{% url 'admin:inventory_location_add' %}">
+      <i class="fa fa-plus" aria-hidden="true"></i>添加位置
+  </a></li>
+  <li class="list-group-item"><a href="{% url 'admin:login_user_changelist' %}">
+      <i class="fa fa-gear" aria-hidden="true"></i>管理用户
+  </a></li>
+  <li class="list-group-item"><a href="{% url 'traffic:users' %}">
+      <i class="fa fa-pie-chart" aria-hidden="true"></i>用户视图
+  </a></li>
+  <li class="list-group-item"><a href="{% url 'traffic:locations' %}">
+      <i class="fa fa-pie-chart" aria-hidden="true"></i>位置视图
+  </a></li>
+  <li class="list-group-item"><a href="{% url 'traffic:calender' %}">
+      <i class="fa fa-calendar" aria-hidden="true"></i>日历视图
+  </a></li>
+  <li class="list-group-item"><a href="{% url 'traffic:pages' %}">
+      <i class="fa fa-bar-chart" aria-hidden="true"></i>性能分析
+  </a></li>
   </div>
 {% endif %}
   </div>

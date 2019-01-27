@@ -9,7 +9,7 @@ from inventory import forms
 
 from inventory.models import Item, Location, LocationPermissionApplication
 from login.models import User as myUser
-
+from personal.utils import get_others_request_list
 from urllib.parse import quote
 
 OBJ_PER_PAGE = 50
@@ -17,7 +17,9 @@ OBJ_PER_PAGE = 50
 
 class IndexView(generic.View):
     def get(self, request):
-        return render(request, 'inventory/index.html')
+        tmp_user = myUser.objects.get(id=request.session.get('user_id'))
+        others_request_list_count = get_others_request_list(tmp_user).filter(approved=False, rejected=False).count()
+        return render(request, 'inventory/index.html', locals())
 
 
 class ItemsView(generic.View):
