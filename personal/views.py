@@ -37,8 +37,11 @@ class UserView(generic.View):
 
 class LocReqView(generic.View):
     def get(self, request, *args, **kwargs):
-        user = myUser.objects.get(id=request.session.get('user_id'))
-        others_request_list = get_others_request_list(user)
+        tmp_user = myUser.objects.get(id=request.session.get('user_id'))
+        if not tmp_user.is_superadmin and not tmp_user.staff.exists():
+            return redirect('personal:mylocreq')
+        others_request_list = get_others_request_list(tmp_user)
+        others_request_list_count = others_request_list.filter(approved=False, rejected=False).count()
         paginator = Paginator(others_request_list, OBJ_PER_PAGE)
         page = request.GET.get('page')
         try:
@@ -52,8 +55,9 @@ class LocReqView(generic.View):
 
 class MyLocReqView(generic.View):
     def get(self, request, *args, **kwargs):
-        user = myUser.objects.get(id=request.session.get('user_id'))
-        my_request_list = get_my_request_list(user)
+        tmp_user = myUser.objects.get(id=request.session.get('user_id'))
+        others_request_list_count = get_others_request_list(tmp_user).filter(approved=False, rejected=False).count()
+        my_request_list = get_my_request_list(tmp_user)
         paginator = Paginator(my_request_list, OBJ_PER_PAGE)
         page = request.GET.get('page')
         try:

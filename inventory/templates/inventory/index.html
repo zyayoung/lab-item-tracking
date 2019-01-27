@@ -44,7 +44,7 @@
   {% if tmp_user.staff.exists or tmp_user.is_superadmin %}
   <li class="list-group-item"><a href="{% url 'personal:locreq' %}">
       <i class="fa fa-file-text" aria-hidden="true"></i>
-      <span {% if others_request_list_count > 0 %}class="red-point"{% endif %}>收到申请</span>
+      <span {% if others_request_list_count > 0 %}class="red-point"{% endif %}> 收到申请</span>
   </a></li>
   {% endif %}
   <li class="list-group-item"><a href="{% url 'personal:index' %}">
@@ -59,23 +59,29 @@
   </div>
 {% if request.session.is_superadmin %}
   <div class="list-group col-sm-6">
+  <li class="list-group-item">
+      网站管理
+  </li>
   <li class="list-group-item"><a href="{% url 'admin:inventory_location_add' %}">
-      <i class="fa fa-plus" aria-hidden="true"></i>添加位置
+      <i class="fa fa-plus" aria-hidden="true"></i> 添加位置
   </a></li>
   <li class="list-group-item"><a href="{% url 'admin:login_user_changelist' %}">
-      <i class="fa fa-gear" aria-hidden="true"></i>管理用户
+      <i class="fa fa-gear" aria-hidden="true"></i> 管理用户
   </a></li>
   <li class="list-group-item"><a href="{% url 'traffic:users' %}">
-      <i class="fa fa-pie-chart" aria-hidden="true"></i>用户视图
+      <i class="fa fa-pie-chart" aria-hidden="true"></i> 用户视图
   </a></li>
   <li class="list-group-item"><a href="{% url 'traffic:locations' %}">
-      <i class="fa fa-pie-chart" aria-hidden="true"></i>位置视图
+      <i class="fa fa-pie-chart" aria-hidden="true"></i> 位置视图
   </a></li>
   <li class="list-group-item"><a href="{% url 'traffic:calender' %}">
-      <i class="fa fa-calendar" aria-hidden="true"></i>日历视图
+      <i class="fa fa-calendar" aria-hidden="true"></i> 日历视图
   </a></li>
   <li class="list-group-item"><a href="{% url 'traffic:pages' %}">
-      <i class="fa fa-bar-chart" aria-hidden="true"></i>性能分析
+      <i class="fa fa-bar-chart" aria-hidden="true"></i> 性能分析
+  </a></li>
+  <li class="list-group-item"><a href="{% url 'admin:inventory_location_add' %}">
+      <i class="fa fa-database" aria-hidden="true"></i> 数据管理
   </a></li>
   </div>
 {% endif %}
