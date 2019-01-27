@@ -17,7 +17,7 @@ class Location(models.Model):
         blank=True,
         on_delete=models.SET_NULL,
         verbose_name="父位置",
-        related_name="parentPath",
+        related_name="location_children",
     )
     is_public = models.BooleanField(default=False, verbose_name='公开')
     allowed_users = models.ManyToManyField(
@@ -61,14 +61,14 @@ class Item(models.Model):
         blank=True,
         on_delete=models.SET_NULL,
         verbose_name="位置",
-        related_name="location",
+        related_name="location_item",
     )
     owner = models.ForeignKey(
         myUser,
         blank=True,
         on_delete=models.CASCADE,
         verbose_name="所有者",
-        related_name="owner",
+        related_name="user_item",
     )
     is_public = models.BooleanField(default=False, verbose_name='公开')
     allowed_users = models.ManyToManyField(
@@ -103,7 +103,7 @@ class LocationPermissionApplication(models.Model):
         null=True,
         blank=True,
         on_delete=models.SET_NULL,
-        related_name='applicant',
+        related_name='user_apply',
     )
     location = models.ForeignKey(
         Location,
@@ -127,7 +127,7 @@ class LocationPermissionApplication(models.Model):
         null=True,
         blank=True,
         on_delete=models.SET_NULL,
-        related_name='auditor',
+        related_name='user_audit',
     )
 
     def closed(self):

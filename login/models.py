@@ -13,7 +13,7 @@ class User(models.Model):
         symmetrical=False,
         blank=True,
         verbose_name="被管理员工",
-        related_name="staffUser",
+        related_name="user_manager",
     )
     is_superadmin = models.BooleanField(
         default=False,

@@ -33,7 +33,7 @@ class Traffic(models.Model):
         blank=True,
         on_delete=models.SET_NULL,
         verbose_name="User",
-        related_name="user",
+        related_name="user_traffic",
     )
     http_status = models.CharField(
         max_length=16,

@@ -5,24 +5,50 @@ from inventory.models import Location, Item
 
 
 class ItemLog(models.Model):
-    operator = models.ForeignKey(myUser, verbose_name='操作人', null=True, blank=True, on_delete=models.SET_NULL)
+    operator = models.ForeignKey(
+        myUser,
+        verbose_name='操作人',
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+    )
     time = models.DateTimeField('操作时间', auto_now_add=True)
-    item = models.ForeignKey(Item, verbose_name='物品', null=True, blank=True, on_delete=models.SET_NULL)
-    location_from = models.ForeignKey(Location, verbose_name='从', related_name='location_from', blank=True, null=True, on_delete=models.SET_NULL)
+    item = models.ForeignKey(
+        Item,
+        verbose_name='物品',
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+    )
+    location_from = models.ForeignKey(
+        Location,
+        verbose_name='从',
+        related_name='location_from_here',
+        blank=True,
+        null=True,
+        on_delete=models.SET_NULL,
+    )
     quantity_from = models.DecimalField(
         default=0,
         max_digits=10,
         decimal_places=2,
         blank=True,
-        verbose_name="操作前数量"
+        verbose_name="操作前数量",
     )
-    location_to = models.ForeignKey(Location, verbose_name='到', related_name='location_to', blank=True, null=True, on_delete=models.SET_NULL)
+    location_to = models.ForeignKey(
+        Location,
+        verbose_name='到',
+        related_name='location_to_here',
+        blank=True,
+        null=True,
+        on_delete=models.SET_NULL,
+    )
     quantity_to = models.DecimalField(
         default=0,
         max_digits=10,
         decimal_places=2,
         blank=True,
-        verbose_name="操作后数量"
+        verbose_name="操作后数量",
     )
 
     def __str__(self):
@@ -35,7 +61,8 @@ class ItemLog(models.Model):
         if self.quantity_to != self.quantity_from:
             if ret:
                 ret += ' | '
-            ret += '数量: {0} -> {1}'.format(self.quantity_from, self.quantity_to)
+            ret += '数量: {0} -> {1}'.format(self.quantity_from,
+                                           self.quantity_to)
         return ret
 
     def operation(self):

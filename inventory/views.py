@@ -132,7 +132,7 @@ class LocationView(generic.View):
             except Http404:
                 return redirect('inventory:applyloc', location_id)
             all_items = Item.objects.filter(location=loc_now)
-            all_locs = loc_now.parentPath.all()
+            all_locs = loc_now.children.all()
             item_list = get_my_list(tmp_user, all_items)
             paginator = Paginator(item_list, OBJ_PER_PAGE)
             page = request.GET.get('page')
