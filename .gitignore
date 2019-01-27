@@ -107,4 +107,3 @@ venv.bak/
 .idea
 *.prof
 *___jb_tmp___
-login/settings.py
