@@ -109,23 +109,18 @@ class Users(generic.View):
         except ValueError:
             bias = 0
         start = datetime.date.today() + datetime.timedelta(days=bias)
-        end = start + datetime.timedelta(days=1)
+        traffic_today = Traffic.objects\
+            .filter(datetime__year=start.year)\
+            .filter(datetime__month=start.month)\
+            .filter(datetime__day=start.day)
         user_data = [{
             'name':
             'Other',
-            'value':
-            Traffic.objects.filter(datetime__range=(start, end),
-                                   user=None).count(),
+            'value': traffic_today.filter(user=None).count(),
         }]
         series_hour_data = []
-        for hour in range(25):
-            d = datetime.datetime(start.year, start.month, start.day) + datetime.timedelta(hours=hour)
-            series_hour_data.append(
-                Traffic.objects.filter(
-                    datetime__range=(d, d+datetime.timedelta(hours=1)),
-                    user=None,
-                ).count()
-            )
+        for hour in range(24):
+            series_hour_data.append(traffic_today.filter(datetime__hour=hour, user=None).count())
         series_hour = [{
             'name': 'Other',
             'type': 'line',
@@ -136,19 +131,12 @@ class Users(generic.View):
         legend = ['Other']
         xAxis = list(range(24))
         for user in User.objects.all():
-            count = Traffic.objects.filter(
-                datetime__range=(start, end), user=user).count()
+            count = traffic_today.filter(user=user).count()
             if count:
                 user_data.append({'name': user.name, 'value': count})
                 series_hour_data = []
                 for hour in range(24):
-                    d = datetime.datetime(start.year, start.month, start.day) + datetime.timedelta(hours=hour)
-                    series_hour_data.append(
-                        Traffic.objects.filter(
-                            datetime__range=(d, d+datetime.timedelta(hours=1)),
-                            user=user,
-                        ).count()
-                    )
+                    series_hour_data.append(traffic_today.filter(datetime__hour=hour, user=user).count())
                 legend.append(user.name)
                 series_hour.append({
                     'name': user.name,
