@@ -151,7 +151,7 @@ class LocationView(generic.View):
         unallow_locs = all_locs.difference(allow_locs)
 
         # Fancy charts
-        loc_node, item_count = build_loc_tree(loc_now, count=False, user=tmp_user, depth=3, link=True)
+        loc_node, item_count = build_loc_tree(loc_now, count=False, user=tmp_user, depth=2, link=True)
         return render(request, 'inventory/location.html', locals())
 
 
