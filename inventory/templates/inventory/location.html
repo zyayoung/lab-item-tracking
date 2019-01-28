@@ -7,16 +7,12 @@
 {% endif %}
 <p class="title">
     {{ loc_now_str }}
-{#    <a class="btn btn-outline-primary pull-left" role="button" href="#" onClick="back">返回</a>#}
     {% if not pending %}
     <a class="btn btn-outline-primary pull-right" role="button" href="#" onClick="qrcodeMdl('{{ QRCode }}')">
         <i class="fa fa-qrcode" aria-hidden="true"></i> 二维码
     </a>
     {% endif %}
 </p>
-{% if all_locs %}
-<div id="main2" class="border chart" style="height: 80vh;"></div>
-{% endif %}
 <table class="table table-striped table-sm row mx-0">
     <thead class="w-100">
         <tr class="row mx-0">
@@ -217,109 +213,4 @@
         $("#qrcodeId").attr('src', url);
     }
 </script>
-{% if all_locs %}
-<script src="https://cdn.bootcss.com/echarts/4.2.0-rc.2/echarts.min.js"></script>
-<script>
-data ={{ loc_node|safe }}
-norm = function(node){
-    node.value = node.children.length + 1;
-    node.children.forEach(norm);
-};
-norm(data);
-var formatUtil = echarts.format;
-function getLevelOption() {
-    return [
-        {
-            itemStyle: {
-                normal: {
-                    borderColor: '#777',
-                    borderWidth: 0,
-                    gapWidth: 1
-                }
-            },
-            upperLabel: {
-                normal: {
-                    show: false
-                }
-            }
-        },
-        {
-            itemStyle: {
-                normal: {
-                    borderColor: '#555',
-                    borderWidth: 5,
-                    gapWidth: 1
-                },
-                emphasis: {
-                    borderColor: '#ddd'
-                }
-            }
-        },
-        {
-            colorSaturation: [0.35, 0.5],
-            itemStyle: {
-                normal: {
-                    borderWidth: 5,
-                    gapWidth: 1,
-                    borderColorSaturation: 0.6
-                }
-            }
-        }
-    ];
-}
-option = {
-    tooltip: {
-        formatter: function (info) {
-            var value = info.value;
-            var treePathInfo = info.treePathInfo;
-            var treePath = [];
-
-            for (var i = 1; i < treePathInfo.length; i++) {
-                treePath.push(treePathInfo[i].name);
-            }
-
-            return '<div class="tooltip-title">' + formatUtil.encodeHTML(treePath.join('-')) + '</div>'
-        }
-    },
-
-    series: [
-        {
-            name: 'root',
-            type: 'treemap',
-            visibleMin: 500,
-            width: '100%',
-            height: '100%',
-            label: {
-                show: true,
-                formatter: '{b}'
-            },
-            breadcrumb: {
-                show: false
-            },
-            roam: false,
-            nodeClick: false,
-            upperLabel: {
-                normal: {
-                    show: true,
-                    height: 40
-                }
-            },
-            itemStyle: {
-                normal: {
-                    borderColor: '#fff'
-                }
-            },
-            levels: getLevelOption(),
-            data: data.children
-        }
-    ]
-    };
-var myChart = echarts.init(document.getElementById('main2'));
-myChart.setOption(option);
-myChart.on('click', function (param){
-    var link=param.data.link;
-    window.location.href=link;
-});
-</script>
-{% endif %}
 {% endblock %}
