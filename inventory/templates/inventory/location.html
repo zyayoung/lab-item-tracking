@@ -5,6 +5,8 @@
 {% if pending %}
 <p class="lead">选择想存入{{ pending }}的位置：</p>
 {% endif %}
+<div class="row">
+<div class="col-lg-6">
 <p class="lead">
     当前位置：{{ loc_now_str }}
     {% if not pending %}
@@ -72,10 +74,7 @@
         {% endfor %}
     </tbody>
 </table>
-{% if allow_locs %}
-<div id="main2" class="col-sm-12 border" style="height: 300px;"></div>
-{% endif %}
-{% if item_list %}
+{% if loc_now %}
 <p class="lead">
     已存放物品：
     {% if not pending %}
@@ -89,6 +88,8 @@
     </a>
     {% endif %}
 </p>
+{% endif %}
+{% if item_list %}
 <table class="table table-striped table-sm">
     <thead>
         <th>名称</th>
@@ -150,20 +151,14 @@
         </li>
     </ul>
 </nav>
-{% elif loc_now %}
-<p class="lead">没有存放物品
-    {% if not pending %}
-    <a class="btn btn-outline-primary pull-right" role="button" href="{% url 'inventory:additem2loc' location_id %}">
-        <i class="fa fa-plus" aria-hidden="true"></i> 添加
-    </a>
-    {% else %}
-    <a class="btn btn-outline-primary pull-right" href="#" onClick="cfm('您确认要将<b>{{ pending }}</b>存入<b>{{ loc_now_str }}</b>吗？', '{% url 'inventory:put' pending.pk location_id %}')"
-        role="button">
-        将{{ pending }}存入此位置
-    </a>
-    {% endif %}
-</p>
 {% endif %}
+</div>
+{% if allow_locs %}
+<div class="col-lg-6">
+<div id="main2" class="border" style="height: 800px;"></div>
+</div>
+{% endif %}
+</div>
 <!-- modal start -->
 {% if pending %}
 <div class="modal fade" id="cfmModal" tabindex="-1" role="dialog" aria-labelledby="cfmModalTitle" aria-hidden="true">
@@ -230,45 +225,99 @@
 {% if allow_locs %}
 <script src="https://cdn.bootcss.com/echarts/4.2.0-rc.2/echarts.min.js"></script>
 <script>
-data = {{ loc_node|safe }}
+data ={{ loc_node|safe }}
+norm = function(node){
+    node.value = 1;
+    node.children.forEach(norm)
+};
+norm(data);
+var formatUtil = echarts.format;
+function getLevelOption() {
+    return [
+        {
+            itemStyle: {
+                normal: {
+                    borderColor: '#777',
+                    borderWidth: 0,
+                    gapWidth: 1
+                }
+            },
+            upperLabel: {
+                normal: {
+                    show: false
+                }
+            }
+        },
+        {
+            itemStyle: {
+                normal: {
+                    borderColor: '#555',
+                    borderWidth: 5,
+                    gapWidth: 1
+                },
+                emphasis: {
+                    borderColor: '#ddd'
+                }
+            }
+        },
+        {
+            colorSaturation: [0.35, 0.5],
+            itemStyle: {
+                normal: {
+                    borderWidth: 5,
+                    gapWidth: 1,
+                    borderColorSaturation: 0.6
+                }
+            }
+        }
+    ];
+}
 option = {
-    tooltip: {},
-    animationDurationUpdate: 1500,
-    animationEasingUpdate: 'quinticInOut',
-    toolbox: {
-        feature: {
-            saveAsImage: {}
+    tooltip: {
+        formatter: function (info) {
+            var value = info.value;
+            var treePathInfo = info.treePathInfo;
+            var treePath = [];
+
+            for (var i = 1; i < treePathInfo.length; i++) {
+                treePath.push(treePathInfo[i].name);
+            }
+
+            return '<div class="tooltip-title">' + formatUtil.encodeHTML(treePath.join('-')) + '</div>'
         }
     },
-    series : [
+
+    series: [
         {
-            type: 'tree',
-            name: 'loc_tree',
-            data: data.children,
-            initialTreeDepth: 3,
-            symbolSize: 7,
+            type: 'treemap',
+            visibleMin: 500,
+            width: '100%',
+            height: '100%',
             label: {
+                show: true,
+                formatter: '{b}'
+            },
+            roam: false,
+            nodeClick: 'link',
+            upperLabel: {
                 normal: {
-                    position: 'left',
-                    verticalAlign: 'middle',
-                    align: 'right'
+                    show: true,
+                    height: 30
                 }
             },
-            leaves: {
-                label: {
-                    normal: {
-                        position: 'right',
-                        verticalAlign: 'middle',
-                        align: 'left'
-                    }
+            itemStyle: {
+                normal: {
+                    borderColor: '#fff'
                 }
             },
-            expandAndCollapse: true,
-            animationDuration: 550,
-            animationDurationUpdate: 750
+            breadcrumb: {
+                show: false
+            },
+            levels: getLevelOption(),
+            data: data.children
         }
     ]
-};
+    };
 var myChart = echarts.init(document.getElementById('main2'));
 myChart.setOption(option);
 </script>

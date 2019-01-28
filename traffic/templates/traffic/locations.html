@@ -97,15 +97,26 @@ function getLevelOption() {
         {
             itemStyle: {
                 normal: {
+                    borderColor: '#777',
                     borderWidth: 0,
-                    gapWidth: 5
+                    gapWidth: 1
+                }
+            },
+            upperLabel: {
+                normal: {
+                    show: false
                 }
             }
         },
         {
             itemStyle: {
                 normal: {
+                    borderColor: '#555',
+                    borderWidth: 5,
                     gapWidth: 1
+                },
+                emphasis: {
+                    borderColor: '#ddd'
                 }
             }
         },
@@ -113,6 +124,7 @@ function getLevelOption() {
             colorSaturation: [0.35, 0.5],
             itemStyle: {
                 normal: {
+                    borderWidth: 5,
                     gapWidth: 1,
                     borderColorSaturation: 0.6
                 }
@@ -136,22 +148,20 @@ option = {
                 treePath.push(treePathInfo[i].name);
             }
 
-            return [
-                '<div class="tooltip-title">' + formatUtil.encodeHTML(treePath.join('-')) + '</div>',
-                'Room Usage: ' + formatUtil.addCommas(value) + ' 件',
-            ].join('');
+            return '<div class="tooltip-title">' + formatUtil.encodeHTML(treePath.join('-')) + '</div>'
         }
     },
 
     series: [
         {
-            name:'Disk Usage',
-            type:'treemap',
-            visibleMin: 500,
+            name: 'Location',
+            type: 'treemap',
+            visibleMin: 1000,
             label: {
                 show: true,
                 formatter: '{b}'
             },
+            nodeClick: 'link',
             itemStyle: {
                 normal: {
                     borderColor: '#fff'
@@ -161,7 +171,7 @@ option = {
             data: data.children
         }
     ]
-};
+    };
 var myChart = echarts.init(document.getElementById('main3'));
 myChart.setOption(option);
 </script>

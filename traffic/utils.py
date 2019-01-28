@@ -1,6 +1,6 @@
 import re
 import django.urls.resolvers
-from django.shortcuts import redirect
+from django.shortcuts import redirect, resolve_url
 from inventory.models import Item, Location
 from inventory.utils import get_my_list
 
@@ -62,15 +62,18 @@ def check_admin(func):
 #     return res_list, count + tmp_count
 
 
-def build_loc_tree(location=None, count=False, user=None):
+def build_loc_tree(location=None, count=False, user=None, depth=1000, link=False):
     ret = {'name': location.path if location else 'root'}
     tot_count = Item.objects.filter(location=location).count() if location and count else 0
     children = []
-    _children = location.location_children.all() if location else Location.objects.filter(parent=None)
-    for child in get_my_list(user, _children) if user else _children:
-        sub_tree, sub_tree_count = build_loc_tree(child, count, user)
-        tot_count += sub_tree_count
-        children.append(sub_tree)
+    if depth:
+        _children = location.location_children.all() if location else Location.objects.filter(parent=None)
+        for child in get_my_list(user, _children) if user else _children:
+            sub_tree, sub_tree_count = build_loc_tree(child, count, user, depth - 1, link)
+            tot_count += sub_tree_count
+            children.append(sub_tree)
     ret['children'] = children
+    if link and location:
+        ret['link'] = resolve_url('inventory:location', location.id)
     ret['value'] = tot_count
     return ret, tot_count

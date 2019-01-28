@@ -191,6 +191,6 @@ class Locations(generic.View):
                     'name': loc.__str__(),
                     'value': count,
                 })
-        loc_node, item_count = build_loc_tree(count=True)
+        loc_node, item_count = build_loc_tree(count=True, link=True)
         loc_data_children = loc_node['children']
         return render(request, 'traffic/locations.html', locals())
