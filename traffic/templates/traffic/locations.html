@@ -9,6 +9,7 @@
 {% endif %}
 <p class="lead">位置关系</p>
 <div id="main2" class="col-sm-12 border" style="height: 600px;"></div>
+<div id="main3" class="col-sm-12 border" style="height: 600px;"></div>
 
 
 
@@ -79,6 +80,46 @@ option = {
     ]
 };
 var myChart = echarts.init(document.getElementById('main2'));
+myChart.setOption(option);
+</script>
+<script>
+option = {
+    tooltip: {
+        formatter: function (info) {
+            var value = info.value;
+            var treePathInfo = info.treePathInfo;
+            var treePath = [];
+
+            for (var i = 1; i < treePathInfo.length; i++) {
+                treePath.push(treePathInfo[i].name);
+            }
+
+            return [
+                '<div class="tooltip-title">' + formatUtil.encodeHTML(treePath.join('-')) + '</div>',
+            ].join('');
+        }
+    },
+
+    series: [
+        {
+            name:'Disk Usage',
+            type:'treemap',
+            visibleMin: 300,
+            label: {
+                show: true,
+                formatter: '{b}'
+            },
+            itemStyle: {
+                normal: {
+                    borderColor: '#fff'
+                }
+            },
+            levels: getLevelOption(),
+            data: {{ loc_data.children|safe }}
+        }
+    ]
+};
+var myChart = echarts.init(document.getElementById('main3'));
 myChart.setOption(option);
 </script>
 {% endblock %}
