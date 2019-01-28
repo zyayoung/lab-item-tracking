@@ -81,8 +81,6 @@ option = {
 };
 var myChart = echarts.init(document.getElementById('main2'));
 myChart.setOption(option);
-</script>
-<script>
 option = {
     tooltip: {
         formatter: function (info) {
@@ -102,20 +100,18 @@ option = {
 
     series: [
         {
-            name:'Disk Usage',
+            name:'Room Usage',
             type:'treemap',
-            visibleMin: 300,
             label: {
                 show: true,
                 formatter: '{b}'
             },
             itemStyle: {
                 normal: {
-                    borderColor: '#fff'
+                    borderColor: '#000'
                 }
             },
-            levels: getLevelOption(),
-            data: {{ loc_data_children|safe }}
+            data: data.children
         }
     ]
 };
