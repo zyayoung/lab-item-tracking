@@ -8,8 +8,8 @@
 <div id="main1" class="col-sm-12" style="height: 300px;"></div>
 {% endif %}
 <p class="lead">位置关系</p>
-<div id="main2" class="col-sm-12 border" style="height: 600px;"></div>
-<div id="main3" class="col-sm-12 border" style="height: 600px;"></div>
+<div id="main2" class="col-sm-12 border" style="height: 800px;"></div>
+<div id="main3" class="col-sm-12 border" style="height: 800px;"></div>
 
 
 
@@ -55,7 +55,7 @@ option = {
             type: 'tree',
             name: 'loc_tree',
             data: [data],
-            initialTreeDepth: -1,
+            initialTreeDepth: 4,
             symbolSize: 7,
             label: {
                 normal: {
@@ -147,7 +147,7 @@ option = {
         {
             name:'Disk Usage',
             type:'treemap',
-            visibleMin: 300,
+            visibleMin: 500,
             label: {
                 show: true,
                 formatter: '{b}'

@@ -72,7 +72,9 @@
         {% endfor %}
     </tbody>
 </table>
+{% if allow_locs %}
 <div id="main2" class="col-sm-12 border" style="height: 300px;"></div>
+{% endif %}
 {% if item_list %}
 <p class="lead">
     已存放物品：
@@ -225,6 +227,7 @@
         $("#qrcodeId").attr('src', url);
     }
 </script>
+{% if allow_locs %}
 <script src="https://cdn.bootcss.com/echarts/4.2.0-rc.2/echarts.min.js"></script>
 <script>
 data = {{ loc_node|safe }}
@@ -241,8 +244,8 @@ option = {
         {
             type: 'tree',
             name: 'loc_tree',
-            data: [data],
-            initialTreeDepth: -1,
+            data: data.children,
+            initialTreeDepth: 3,
             symbolSize: 7,
             label: {
                 normal: {
@@ -269,4 +272,5 @@ option = {
 var myChart = echarts.init(document.getElementById('main2'));
 myChart.setOption(option);
 </script>
+{% endif %}
 {% endblock %}
