@@ -12,8 +12,8 @@
             {% csrf_token %}
             <h2 class="text-center">编辑物品</h2>
             <div class="form-group">
-                {{ add_form.template.label_tag }}
-                {{ add_form.template }}
+                {{ choose_form.template.label_tag }}
+                {{ choose_form.template }}
             </div>
             <div id="innerform">
 
@@ -28,7 +28,7 @@
 function ajaxSubmit() {
         var name = $.trim($('#id_template').val());
         $.ajax({
-            url: './ajax/',
+            url: '{% url "inventory:templateAjax" %}',
             type: 'POST',
             data: {
                 'csrfmiddlewaretoken': '{{ csrf_token }}',

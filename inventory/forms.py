@@ -25,19 +25,25 @@ class AddItemForm(forms.Form):
         required=False,
         widget=forms.TextInput(attrs={'class': 'form-control'}),
     )
-    template = forms.ChoiceField(
-        label="类型",
-        widget=forms.Select(attrs={'class': 'form-control'}),
-    )
     public = forms.BooleanField(
         label="公开",
         required=False,
         widget=forms.CheckboxInput(attrs={'class': 'form-check-input'}),
     )
 
+
+class ChooseTemplateForm(forms.Form):
+
+    template = forms.ChoiceField(
+        label="类型",
+        required=False,
+        widget=forms.Select(attrs={'class': 'form-control'}),
+    )
+
     def __init__(self, *args, **kwargs):
-        super(AddItemForm, self).__init__(*args)
+        super(ChooseTemplateForm, self).__init__(*args)
         self.fields["template"].choices = kwargs.get('choices', [('', '--')])
+
 
 
 class AddLocationForm(forms.Form):

@@ -46,11 +46,7 @@ class ItemsView(generic.View):
 
 class AddItemView(generic.View):
     def get_form(self, *args, **kwargs):
-        _templates = ItemTemplate.objects.filter(extra_data__has_key="verbose_name")
-        choices = [('', '--')]
-        if _templates.exists():
-            choices.extend([(t.name, t.extra_data['verbose_name']) for t in _templates.all()])
-        return forms.AddItemForm(*args, choices=choices)
+        return forms.AddItemForm(*args)
 
     def get(self, request):
         add_form = self.get_form()
@@ -65,14 +61,13 @@ class AddItemView(generic.View):
             quantity = add_form.cleaned_data['quantity']
             unit = add_form.cleaned_data['unit']
             public = add_form.cleaned_data['public']
-            template = add_form.cleaned_data['template']
             new_item = Item.objects.create(
                 name=name,
                 quantity=0,
                 unit=unit,
                 owner=tmp_user,
                 is_public=public,
-                template=ItemTemplate.objects.filter(name=template).get() if template else None,
+                template=None,
             )
             new_item.allowed_users.add(tmp_user)
             set_quantity(new_item, quantity, tmp_user)
@@ -134,6 +129,7 @@ def template_ajax(request, *args, **kwargs):
     if template_name:
         template = ItemTemplate.objects.get(name=template_name)
         extra_data = template.extra_data
+        data = extra_data.get('data', {})
     return render(request, 'inventory/editajax.html', locals())
 
 
@@ -146,39 +142,33 @@ class EditItemView(generic.View):
         choices = [('', '--')]
         if _templates.exists():
             choices.extend([(t.name, t.extra_data['verbose_name']) for t in _templates.all()])
-        return forms.AddItemForm(*args, choices=choices)
+        return forms.ChooseTemplateForm(*args, choices=choices)
 
     def get(self, request, *args, **kwargs):
         user_id = request.session.get('user_id')
         self.tmp_user = myUser.objects.get(id=user_id)
         self.item = get_my_item(self.tmp_user, kwargs.get('item_id'))
-        add_form = self.get_form()
+        choose_form = self.get_form()
         return render(request, 'inventory/edit.html', locals())
 
-    # def post(self, request, *args, **kwargs):
-    #     add_form = self.get_form(request.POST)
-    #     message = "请检查填写的内容！"
-    #     if add_form.is_valid():
-    #         tmp_user = myUser.objects.get(id=request.session.get('user_id'))
-    #         name = add_form.cleaned_data['name']
-    #         quantity = add_form.cleaned_data['quantity']
-    #         unit = add_form.cleaned_data['unit']
-    #         public = add_form.cleaned_data['public']
-    #         template = add_form.cleaned_data['template']
-    #         new_item = Item.objects.create(
-    #             name=name,
-    #             quantity=0,
-    #             unit=unit,
-    #             owner=tmp_user,
-    #             is_public=public,
-    #             template=ItemTemplate.objects.filter(name=template).get() if template else None,
-    #         )
-    #         new_item.allowed_users.add(tmp_user)
-    #         set_quantity(new_item, quantity, tmp_user)
-    #         message = "添加成功！"
-    #         return redirect('inventory:item', new_item.id)
-    #     else:
-    #         return render(request, 'inventory/add.html', locals())
+    def post(self, request, *args, **kwargs):
+        choose_form = self.get_form(request.POST)
+        message = "请检查填写的内容！"
+        if choose_form.is_valid():
+            tmp_user = myUser.objects.get(id=request.session.get('user_id'))
+            item = get_my_item(tmp_user, kwargs.get('item_id'))
+            template = choose_form.cleaned_data['template']
+            template = ItemTemplate.objects.get(name=template) if template else None
+            data = {}
+            for idx, (key, value) in enumerate(template.extra_data['data'].items()):
+                data[key] = request.POST.get(str(idx), '')
+            item.extra_data = data
+            item.template = template
+            item.save()
+            message = "修改成功！"
+            return redirect('inventory:item', item.id)
+        else:
+            return render(request, 'inventory/edit.html', locals())
 
 
 class LocationView(generic.View):
