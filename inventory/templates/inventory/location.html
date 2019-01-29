@@ -90,8 +90,7 @@
     </a>
     {% endif %}
     {% else %}
-    <a class="btn btn-outline-primary pull-right" href="#" onClick="cfm('您确认要将<b>{{ pending }}</b>存入<b>{{ loc_now_str }}</b>吗？', '{% url 'inventory:put' pending.pk location_id %}')"
-        role="button">
+    <a class="btn btn-outline-primary pull-right" href="#" role="button" onClick="cfm()">
         将{{ pending }}存入此位置
     </a>
     {% endif %}
@@ -174,10 +173,12 @@
                 </button>
             </div>
             <div class="modal-body">
-                <p id="modalNotice"></p>
+                <p id="modalNotice">
+                    您确认要将<b>{{ pending }}</b>存入<b>{{ loc_now_str }}</b>吗？
+                </p>
             </div>
             <div class="modal-footer">
-                <input type="hidden" id="cfmUrl" />
+                <input type="hidden" id="cfmUrl" value="{% url 'inventory:put' pending.pk location_id %}" />
                 <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">取消</button>
                 <button type="button" class="btn btn-outline-primary" onClick="urlSubmit()">确定</button>
             </div>
@@ -236,9 +237,7 @@
 {% endblock %}
 {% block script %}
 <script>
-    function cfm(msg, url) {
-        $('#modalNotice').html(msg);
-        $('#cfmUrl').val(url);
+    function cfm() {
         $('#cfmModal').modal();
     }
 
