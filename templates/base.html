@@ -69,6 +69,13 @@
               <a class="dropdown-item" href="{% url 'personal:locreq' %}">申请</a>
             </div>
           </li>
+          {% if request.session.is_superadmin %}
+          <li class="nav-item">
+            <a href="{% url 'admin:index' %}" class="nav-link">
+              数据库
+            </a>
+          </li>
+          {% endif %}
           {% endblock %}
         </ul>
         <div class="dropdown-divider"></div>
