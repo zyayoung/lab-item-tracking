@@ -109,6 +109,9 @@ class ItemTemplate(models.Model):
     extra_data = JSONField(default=dict, blank=True, verbose_name="扩展数据")
     create_time = models.DateTimeField("create_time", auto_now_add=True)
 
+    def __str__(self):
+        return self.name
+
     class Meta:
         ordering = ['-create_time']
         verbose_name = "模块配置"
