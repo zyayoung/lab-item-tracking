@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block title %}编辑物品{% endblock %}
+{% block css %}{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="col-md-8 offset-md-2">
+        <form class="form-add" action="" method="post">
+            {% if message %}
+            <div class="alert alert-warning">{{ message }}</div>
+            {% endif %}
+            {% csrf_token %}
+            <h2 class="text-center">编辑物品</h2>
+            <div class="form-group">
+                {{ add_form.template.label_tag }}
+                {{ add_form.template }}
+            </div>
+            <div id="innerform">
+
+            </div>
+            <button type="submit" class="btn btn-outline-primary">提交</button>
+        </form>
+    </div>
+</div> <!-- /container -->
+{% endblock %}
+{% block script %}
+<script>
+function ajaxSubmit() {
+        var name = $.trim($('#id_template').val());
+        $.ajax({
+            url: './ajax/',
+            type: 'POST',
+            data: {
+                'csrfmiddlewaretoken': '{{ csrf_token }}',
+                'name': name,
+            },
+            success: function (arg) {
+                console.log(arg);
+                $('#innerform').html(arg);
+            }
+        });
+    }
+$('#id_template').change(function(e){
+  ajaxSubmit()
+});
+</script>
+{% endblock %}

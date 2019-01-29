@@ -1,0 +1,6 @@
+{% for item in extra_data.data %}
+<div class="form-group">
+    <label for="id_name">{{ item }}</label>
+    <input type="text" name="name" id="id_name" class="form-control" maxlength="128" required="">
+</div>
+{% endfor %}

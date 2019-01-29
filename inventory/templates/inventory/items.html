@@ -23,7 +23,7 @@
         <th>名称</th>
         <th>位置</th>
         <th>数量</th>
-        <th>属性</th>
+        <th>类型</th>
         <th>所有者</th>
     </thead>
     <tbody>
@@ -38,7 +38,7 @@
                 {% endif %}
             </td>
             <td>{{ item.quantity }} {% if item.unit %}{{ item.unit }}{% endif %}</td>
-            <td>{{ item.attribute }}</td>
+            <td>{{ item.template }}</td>
             <td>
                 <a href="{% url 'personal:user' item.owner.id %}">
                     {{ item.owner }}

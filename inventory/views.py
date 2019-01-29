@@ -129,6 +129,58 @@ class ItemView(generic.View):
         return self.get(request, *args, **kwargs)
 
 
+def template_ajax(request, *args, **kwargs):
+    template_name = request.POST.get('name', '')
+    if template_name:
+        template = ItemTemplate.objects.get(name=template_name)
+        extra_data = template.extra_data
+    return render(request, 'inventory/editajax.html', locals())
+
+
+class EditItemView(generic.View):
+    tmp_user = None
+    item = None
+
+    def get_form(self, *args, **kwargs):
+        _templates = ItemTemplate.objects.filter(extra_data__has_key="verbose_name")
+        choices = [('', '--')]
+        if _templates.exists():
+            choices.extend([(t.name, t.extra_data['verbose_name']) for t in _templates.all()])
+        return forms.AddItemForm(*args, choices=choices)
+
+    def get(self, request, *args, **kwargs):
+        user_id = request.session.get('user_id')
+        self.tmp_user = myUser.objects.get(id=user_id)
+        self.item = get_my_item(self.tmp_user, kwargs.get('item_id'))
+        add_form = self.get_form()
+        return render(request, 'inventory/Edit.html', locals())
+
+    # def post(self, request, *args, **kwargs):
+    #     add_form = self.get_form(request.POST)
+    #     message = "请检查填写的内容！"
+    #     if add_form.is_valid():
+    #         tmp_user = myUser.objects.get(id=request.session.get('user_id'))
+    #         name = add_form.cleaned_data['name']
+    #         quantity = add_form.cleaned_data['quantity']
+    #         unit = add_form.cleaned_data['unit']
+    #         public = add_form.cleaned_data['public']
+    #         template = add_form.cleaned_data['template']
+    #         new_item = Item.objects.create(
+    #             name=name,
+    #             quantity=0,
+    #             unit=unit,
+    #             owner=tmp_user,
+    #             is_public=public,
+    #             template=ItemTemplate.objects.filter(name=template).get() if template else None,
+    #         )
+    #         new_item.allowed_users.add(tmp_user)
+    #         set_quantity(new_item, quantity, tmp_user)
+    #         message = "添加成功！"
+    #         return redirect('inventory:item', new_item.id)
+    #     else:
+    #         return render(request, 'inventory/add.html', locals())
+
+
 class LocationView(generic.View):
     tmp_user = None
     location_id = None
