@@ -1,6 +1,6 @@
 {% for field in edit_form %}
-<div class="form-group">
-    {{ field.label }}
-    {{ field }}
+<div class="form-group row">
+    <label class="col-3 col-form-label"><b>{{ field.label }}</b></label>
+    <div class="col-9">{{ field }}</div>
 </div>
 {% endfor %}

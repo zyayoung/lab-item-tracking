@@ -149,16 +149,24 @@ class EditItemView(generic.View):
 
     def get(self, request, *args, **kwargs):
         user_id = request.session.get('user_id')
-        self.tmp_user = myUser.objects.get(id=user_id)
-        self.item = get_my_item(self.tmp_user, kwargs.get('item_id'))
+        tmp_user = myUser.objects.get(id=user_id)
+        item = get_my_item(tmp_user, kwargs.get('item_id'))
         choose_form = self.get_form()
+        add_form = forms.AddItemForm()
         return render(request, 'inventory/edit.html', locals())
 
     def post(self, request, *args, **kwargs):
         tmp_user = myUser.objects.get(id=request.session.get('user_id'))
         item = get_my_item(tmp_user, kwargs.get('item_id'))
-        choose_form = self.get_form(request.POST)
         message = "请检查填写的内容！"
+        add_form = forms.AddItemForm(request.POST)
+        if add_form.is_valid():
+            item.name = add_form.cleaned_data['name']
+            item.quantity = add_form.cleaned_data['quantity']
+            item.unit = add_form.cleaned_data['unit']
+        else:
+            return render(request, 'inventory/edit.html', locals())
+        choose_form = self.get_form(request.POST)
         if choose_form.is_valid():
             data = {}
             template_name = choose_form.cleaned_data['template']
@@ -174,11 +182,11 @@ class EditItemView(generic.View):
                 template = None
             item.extra_data = data
             item.template = template
-            item.save()
-            message = "修改成功！"
-            return redirect('inventory:item', item.id)
         else:
             return render(request, 'inventory/edit.html', locals())
+        item.save()
+        message = "修改成功！"
+        return redirect('inventory:item', item.id)
 
 
 class LocationView(generic.View):

@@ -3,7 +3,34 @@
 {% block title %}编辑物品{% endblock %}
 {% block css %}{% endblock %}
 {% block content %}
-<div class="container">
+<p class="lead">编辑物品：</p>
+<form class="form-add" action="" method="post">
+    {% csrf_token %}
+    <div class="form-group row">
+        <label class="col-3 col-form-label"><b>名称</b></label>
+        <div class="col-9">
+            <input type="text" name="name" class="form-control" maxlength="128" required="" id="id_name" value="{{ item.name }}">
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-3 col-form-label"><b>数量</b></label>
+        <div class="col-3">
+            <input type="number" name="quantity" class="form-control" step="0.01" value="1" min="0.00" required="" id="id_quantity" value="{{ item.quantity }}">
+        </div>
+        <label class="col-3 col-form-label"><b>单位</b></label>
+        <div class="col-3">
+                <input type="text" name="unit" class="form-control" maxlength="32" id="id_unit" value="{{ item.unit }}">
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-3 col-form-label"><b>类型</b></label>
+        <div class="col-9">{{ choose_form.template }}</div>
+    </div>
+    <div id="innerform">
+    </div>
+    <button type="submit" class="btn btn-outline-primary">提交</button>
+</form>
+<!-- <div class="container">
     <div class="col-md-8 offset-md-2">
         <form class="form-add" action="" method="post">
             {% if message %}
@@ -20,39 +47,43 @@
             <button type="submit" class="btn btn-outline-primary">提交</button>
         </form>
     </div>
-</div> <!-- /container -->
+</div> -->
 {% endblock %}
 {% block script %}
 <script>
-False = false;
-True = true;
-None = null;
-data = {{ self.item.extra_data|safe }}
-function ajaxSubmit() {
-    var name = $.trim($('#id_template').val());
-    $.ajax({
-        url: '{% url "inventory:templateAjax" %}',
-        type: 'POST',
-        data: {
-            'csrfmiddlewaretoken': '{{ csrf_token }}',
-            'name': name,
-        },
-        success: function (arg) {
-            $('#innerform').html(arg);
-            Object.keys(data).forEach(function (key){
-                if(data[key] === True)$('#id_' + key.replace(' ', '_')).prop("checked",true);
-                else if(data[key] === False)$('#id_' + key.replace(' ', '_')).prop("checked",false);
-                else $('#id_' + key.replace(' ', '_')).val(data[key]);
-            });
-        }
+    False = false;
+    True = true;
+    None = null;
+    data = {{ item.extra_data | safe }}
+
+    function ajaxSubmit() {
+        var name = $.trim($('#id_template').val());
+        $.ajax({
+            url: '{% url "inventory:templateAjax" %}',
+            type: 'POST',
+            data: {
+                'csrfmiddlewaretoken': '{{ csrf_token }}',
+                'name': name,
+            },
+            success: function (arg) {
+                $('#innerform').html(arg);
+                Object.keys(data).forEach(function (key) {
+                    if (data[key] === True)
+                        $('#id_' + key.replace(' ', '_')).prop("checked", true);
+                    else if (data[key] === False)
+                        $('#id_' + key.replace(' ', '_')).prop("checked", false);
+                    else
+                        $('#id_' + key.replace(' ', '_')).val(data[key]);
+                });
+            }
+        });
+    };
+    $('#id_template').change(function () {
+        ajaxSubmit()
     });
-};
-$('#id_template').change(function(){
-  ajaxSubmit()
-});
-$(function () {
-   $('#id_template').val("{{ self.item.template.name }}");
-   ajaxSubmit();
-});
+    $(function () {
+        $('#id_template').val("{{ item.template.name }}");
+        ajaxSubmit();
+    });
 </script>
 {% endblock %}
