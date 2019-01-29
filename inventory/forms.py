@@ -39,6 +39,14 @@ class AddItemForm(forms.Form):
     )
 
 
+class AddLocationForm(forms.Form):
+    name = forms.CharField(
+        label="名称",
+        max_length=128,
+        widget=forms.TextInput(attrs={'class': 'form-control'}),
+    )
+
+
 class UseItemForm(forms.Form):
     quantity = forms.DecimalField(
         label="使用数量",

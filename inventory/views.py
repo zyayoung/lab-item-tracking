@@ -21,7 +21,9 @@ class IndexView(generic.View):
         user_id = request.session.get('user_id')
         if user_id:
             tmp_user = myUser.objects.get(id=user_id)
-            others_request_list_count = get_others_request_list(tmp_user).filter(approved=False, rejected=False).count()
+            others_request_list_count = get_others_request_list(
+                tmp_user).filter(
+                    approved=False, rejected=False).count()
         return render(request, 'inventory/index.html', locals())
 
 
@@ -63,7 +65,8 @@ class AddItemView(generic.View):
                 unit=unit,
                 owner=tmp_user,
                 is_public=public,
-                template=ItemTemplate.objects.filter(name=template).get() if template != '--' else None,
+                template=ItemTemplate.objects.filter(
+                    name=template).get() if template != '--' else None,
             )
             new_item.allowed_users.add(tmp_user)
             set_quantity(new_item, quantity, tmp_user)
@@ -104,7 +107,9 @@ class ItemView(generic.View):
             tmp_user = self.tmp_user
             quantity = float(use_item_form.cleaned_data['quantity'])
             if 0 < quantity < self.item.quantity:
-                set_quantity(self.item, float(self.item.quantity) - quantity, self.tmp_user)
+                set_quantity(self.item,
+                             float(self.item.quantity) - quantity,
+                             self.tmp_user)
                 self.message = "使用成功！"
             else:
                 self.message = "使用数量有误！"
@@ -119,17 +124,28 @@ class ItemView(generic.View):
 
 
 class LocationView(generic.View):
-    def get(self, request, *args, **kwargs):
+    tmp_user = None
+    location_id = None
+    message = None
+
+    def dispatch(self, request, *args, **kwargs):
         user_id = request.session.get('user_id')
-        tmp_user = myUser.objects.get(id=user_id)
-        location_id = kwargs.get('id')
+        self.tmp_user = myUser.objects.get(id=user_id)
+        self.location_id = kwargs.get('id')
+        return super(LocationView, self).dispatch(request, *args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        message = self.message
+        tmp_user = self.tmp_user
+        location_id = self.location_id
         QRCode = "http://qr.liantu.com/api.php?text={0}".format(
             quote(request.build_absolute_uri()))
+        if tmp_user.is_superadmin:
+            add_loc_form = forms.AddLocationForm()
         if 'pending' in request.GET.keys():
             pending = get_my_item(tmp_user, request.GET['pending'])
         else:
             pending = None
-        # root directory
         if location_id:
             try:
                 loc_now = get_my_loc(tmp_user, location_id)
@@ -147,6 +163,7 @@ class LocationView(generic.View):
                 item_list = paginator.page(1)
             except EmptyPage:
                 item_list = paginator.page(paginator.num_pages)
+        # root directory
         else:
             loc_now = None
             loc_now_str = 'root'
@@ -157,6 +174,25 @@ class LocationView(generic.View):
         # Fancy charts
         # loc_node, item_count = build_loc_tree(loc_now, count=False, user=tmp_user, depth=2, link=True)
         return render(request, 'inventory/location.html', locals())
+
+    def post(self, request, *args, **kwargs):
+        tmp_user = self.tmp_user
+        location_id = self.location_id
+        if not tmp_user.is_superadmin:
+            raise Http404()
+        add_loc_form = forms.AddLocationForm(request.POST)
+        if add_loc_form.is_valid():
+            loc_now = get_my_loc(tmp_user,
+                                 location_id) if location_id else None
+            path = add_loc_form.cleaned_data['name']
+            new_location = Location.objects.create(
+                path=path,
+                parent=loc_now,
+                is_public=True,
+            )
+            new_location.save()
+            self.message = "新建成功！"
+            return self.get(request, *args, **kwargs)
 
 
 def put_item_to_location(request, item_id, location_id):
@@ -247,10 +283,10 @@ class Apply4Loc(generic.View):
             message = "请检查填写的内容！"
             if apply_form.is_valid():
                 if LocationPermissionApplication.objects.filter(
-                    applicant=tmp_user,
-                    location=loc,
-                    approved=False,
-                    rejected=False,
+                        applicant=tmp_user,
+                        location=loc,
+                        approved=False,
+                        rejected=False,
                 ).exists():
                     message = "请勿重复提交"
                 else:
@@ -261,7 +297,8 @@ class Apply4Loc(generic.View):
                     )
                     new_form.save()
                     message = "提交成功"
-                return render(request, 'inventory/location_apply.html', locals())
+                return render(request, 'inventory/location_apply.html',
+                              locals())
             else:
                 return self.get(request)
         return redirect('inventory:location', loc_id)

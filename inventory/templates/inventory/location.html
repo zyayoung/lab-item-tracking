@@ -2,15 +2,25 @@
 {% load staticfiles %}
 {% block title %}位置列表{% endblock %}
 {% block content %}
+{% if message %}
+<div class="alert alert-warning">{{ message }}</div>
+{% endif %}
 {% if pending %}
 <p class="lead">选择想存入{{ pending }}的位置：</p>
 {% endif %}
-<p class="title">
+<p class="lead">
     {{ loc_now_str }}
     {% if not pending %}
-    <a class="btn btn-outline-primary pull-right" role="button" href="#" onClick="qrcodeMdl('{{ QRCode }}')">
-        <i class="fa fa-qrcode" aria-hidden="true"></i> 二维码
-    </a>
+    <span class="pull-right">
+        {% if add_loc_form %}
+        <a class="btn btn-outline-primary" role="button" href="#" onClick="addLocMdl()">
+            <i class="fa fa-plus" aria-hidden="true"></i> 新建
+        </a>
+        {% endif %}
+        <a class="btn btn-outline-primary" role="button" href="#" onClick="qrcodeMdl('{{ QRCode }}')">
+            <i class="fa fa-qrcode" aria-hidden="true"></i> 二维码
+        </a>
+    </span>
     {% endif %}
 </p>
 <table class="table table-striped table-sm row mx-0">
@@ -192,6 +202,35 @@
         </div>
     </div>
 </div>
+{% if add_loc_form %}
+<div class="modal fade" id="addLocModal" tabindex="-1" role="dialog" aria-labelledby="addLocModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <form class="form-change" action="" method="post">
+                {% csrf_token %}
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addLocModalTitle">
+                        <i class="fa fa-plus" aria-hidden="true"></i> 添加位置
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        {{ add_loc_form.name.label_tag }}
+                        {{ add_loc_form.name}}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">取消</button>
+                        <button type="submit" class="btn btn-outline-primary">确认</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endif %}
 {% endif %}
 <!-- modal end -->
 {% endblock %}
@@ -211,6 +250,10 @@
     function qrcodeMdl(url) {
         $('#qrcodeModal').modal();
         $("#qrcodeId").attr('src', url);
+    }
+
+    function addLocMdl(url) {
+        $('#addLocModal').modal();
     }
 </script>
 {% endblock %}
