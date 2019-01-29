@@ -7,6 +7,7 @@ from django.shortcuts import redirect, HttpResponse, render
 class AuthMD(MiddlewareMixin):
     reg_list = [
         r"^/$",
+        r"^/static/",
         r"^/login/$",
         r"^/register/$",
         r"^/captcha/.*",
