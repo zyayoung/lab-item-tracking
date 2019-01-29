@@ -104,6 +104,17 @@ class Item(models.Model):
         verbose_name_plural = verbose_name
 
 
+class ItemTemplate(models.Model):
+    name = models.CharField(max_length=64, verbose_name="模块名称")
+    extra_data = JSONField(default=dict, blank=True, verbose_name="扩展数据")
+    create_time = models.DateTimeField("create_time", auto_now_add=True)
+
+    class Meta:
+        ordering = ['-create_time']
+        verbose_name = "模块配置"
+        verbose_name_plural = verbose_name
+
+
 class LocationPermissionApplication(models.Model):
     applicant = models.ForeignKey(
         myUser,
