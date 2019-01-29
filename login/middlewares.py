@@ -5,12 +5,20 @@ from django.shortcuts import redirect, HttpResponse, render
 
 
 class AuthMD(MiddlewareMixin):
-    reg_ex = r"(^/login/$)|(^/register/$)|(^/captcha/.*)|(^/confirm/)|(^/admin/.*)"
+    reg_list = [
+        r"^/$",
+        r"^/login/$",
+        r"^/register/$",
+        r"^/captcha/.*",
+        r"^/confirm/",
+        r"^/admin/.*",
+    ]
 
     def process_request(self, request):
         request_url = request.path_info
-        # print(request.path_info, request.get_full_path())
-        if re.match(self.reg_ex, request_url) or request.session.get('is_login'):
+        reg_str = "|".join(r"(" + reg_ex + r")" for reg_ex in self.reg_list)
+        print(reg_str)
+        if request.session.get('is_login') or re.match(reg_str, request_url):
             return
         else:
             return render(request, 'inventory/index.html')

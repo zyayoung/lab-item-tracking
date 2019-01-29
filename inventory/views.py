@@ -18,8 +18,10 @@ OBJ_PER_PAGE = 50
 
 class IndexView(generic.View):
     def get(self, request):
-        tmp_user = myUser.objects.get(id=request.session.get('user_id'))
-        others_request_list_count = get_others_request_list(tmp_user).filter(approved=False, rejected=False).count()
+        user_id = request.session.get('user_id')
+        if user_id:
+            tmp_user = myUser.objects.get(id=user_id)
+            others_request_list_count = get_others_request_list(tmp_user).filter(approved=False, rejected=False).count()
         return render(request, 'inventory/index.html', locals())
 
 
