@@ -45,12 +45,19 @@ class ItemsView(generic.View):
 
 
 class AddItemView(generic.View):
+    def get_form(self, *args, **kwargs):
+        _templates = ItemTemplate.objects.filter(extra_data__has_key="verbose_name")
+        choices = [('', '--')]
+        if _templates.exists():
+            choices.extend([(t.name, t.extra_data['verbose_name']) for t in _templates.all()])
+        return forms.AddItemForm(*args, choices=choices)
+
     def get(self, request):
-        add_form = forms.AddItemForm()
+        add_form = self.get_form()
         return render(request, 'inventory/add.html', locals())
 
     def post(self, request):
-        add_form = forms.AddItemForm(request.POST)
+        add_form = self.get_form(request.POST)
         message = "请检查填写的内容！"
         if add_form.is_valid():
             tmp_user = myUser.objects.get(id=request.session.get('user_id'))
@@ -65,8 +72,7 @@ class AddItemView(generic.View):
                 unit=unit,
                 owner=tmp_user,
                 is_public=public,
-                template=ItemTemplate.objects.filter(
-                    name=template).get() if template != '--' else None,
+                template=ItemTemplate.objects.filter(name=template).get() if template else None,
             )
             new_item.allowed_users.add(tmp_user)
             set_quantity(new_item, quantity, tmp_user)

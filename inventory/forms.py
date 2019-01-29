@@ -1,5 +1,4 @@
 from django import forms
-from .models import ItemTemplate
 
 
 class AddItemForm(forms.Form):
@@ -26,22 +25,19 @@ class AddItemForm(forms.Form):
         required=False,
         widget=forms.TextInput(attrs={'class': 'form-control'}),
     )
-    _templates = ItemTemplate.objects.filter(extra_data__has_attr="verbose_name")
-    if _templates.exists():
-        choices = [(t.name, t.extra_data['verbose_name']) for t in _templates.all()]
-    else:
-        choices = []
-    choices.append(('--', '--'))
-    choices = [('--', '--')]
-    template = forms.CharField(
+    template = forms.ChoiceField(
         label="类型",
-        widget=forms.widgets.Select(choices=choices, attrs={'class': 'form-control'})
+        widget=forms.Select(attrs={'class': 'form-control'}),
     )
     public = forms.BooleanField(
         label="公开",
         required=False,
         widget=forms.CheckboxInput(attrs={'class': 'form-check-input'}),
     )
+
+    def __init__(self, *args, **kwargs):
+        super(AddItemForm, self).__init__(*args)
+        self.fields["template"].choices = kwargs.get('choices', [('', '--')])
 
 
 class AddLocationForm(forms.Form):
