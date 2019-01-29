@@ -24,6 +24,9 @@
 {% endblock %}
 {% block script %}
 <script>
+False = false;
+True = true;
+None = null;
 data = {{ self.item.extra_data|safe }}
 function ajaxSubmit() {
     var name = $.trim($('#id_template').val());
@@ -36,9 +39,11 @@ function ajaxSubmit() {
         },
         success: function (arg) {
             $('#innerform').html(arg);
-            Object.keys(data).forEach(function (key) {
-                $('#id_' + key.replace(' ', '_')).val(data[key]);
-            })
+            Object.keys(data).forEach(function (key){
+                if(data[key] === True)$('#id_' + key.replace(' ', '_')).prop("checked",true);
+                else if(data[key] === False)$('#id_' + key.replace(' ', '_')).prop("checked",false);
+                else $('#id_' + key.replace(' ', '_')).val(data[key]);
+            });
         }
     });
 };
