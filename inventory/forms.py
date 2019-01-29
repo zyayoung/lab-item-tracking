@@ -26,8 +26,12 @@ class AddItemForm(forms.Form):
         required=False,
         widget=forms.TextInput(attrs={'class': 'form-control'}),
     )
-    choices = [(t.name, t.extra_data['verbose_name']) for t in ItemTemplate.objects.all()]
-    choices.append(('--', '--'))
+    # if ItemTemplate.objects.exists():
+    #     choices = [(t.name, t.extra_data['verbose_name']) for t in ItemTemplate.objects.all()]
+    # else:
+    #     choices = []
+    # choices.append(('--', '--'))
+    choices = [('--', '--')]
     template = forms.CharField(
         label="类型",
         widget=forms.widgets.Select(choices=choices, attrs={'class': 'form-control'})

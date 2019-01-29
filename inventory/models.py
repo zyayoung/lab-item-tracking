@@ -85,7 +85,7 @@ class Item(models.Model):
         blank=True,
         on_delete=models.SET_NULL,
         verbose_name="扩展数据模板",
-        related_name="template_instance",
+        related_name="itemtemplate_instance",
     )
     extra_data = JSONField(default=dict, blank=True, verbose_name="扩展数据")
     location = models.ForeignKey(
