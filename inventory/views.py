@@ -153,7 +153,7 @@ class EditItemView(generic.View):
         self.tmp_user = myUser.objects.get(id=user_id)
         self.item = get_my_item(self.tmp_user, kwargs.get('item_id'))
         add_form = self.get_form()
-        return render(request, 'inventory/Edit.html', locals())
+        return render(request, 'inventory/edit.html', locals())
 
     # def post(self, request, *args, **kwargs):
     #     add_form = self.get_form(request.POST)
