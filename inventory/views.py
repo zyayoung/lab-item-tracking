@@ -158,20 +158,23 @@ class EditItemView(generic.View):
             tmp_user = myUser.objects.get(id=request.session.get('user_id'))
             item = get_my_item(tmp_user, kwargs.get('item_id'))
             template = choose_form.cleaned_data['template']
-            template = ItemTemplate.objects.get(name=template) if template else None
             data = {}
-            for idx, (key, value) in enumerate(template.extra_data['data'].items()):
-                rawdata = request.POST.get(str(idx), '')
-                try:
-                    if value == 'text':
-                        data[key] = str(rawdata)
-                    elif value == 'number':
-                        data[key] = int(rawdata)
-                    elif value == 'float':
-                        data[key] = float(rawdata)
-                except ValueError:
-                    message = "ValueError"
-                    return render(request, 'inventory/edit.html', locals())
+            if template:
+                template = ItemTemplate.objects.get(name=template)
+                for idx, (key, value) in enumerate(template.extra_data['data'].items()):
+                    rawdata = request.POST.get(str(idx), '')
+                    try:
+                        if value == 'text':
+                            data[key] = str(rawdata)
+                        elif value == 'number':
+                            data[key] = int(rawdata)
+                        elif value == 'float':
+                            data[key] = float(rawdata)
+                    except ValueError:
+                        message = "ValueError"
+                        return render(request, 'inventory/edit.html', locals())
+            else:
+                template = None
             item.extra_data = data
             item.template = template
             item.save()

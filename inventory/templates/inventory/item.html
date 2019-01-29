@@ -71,6 +71,12 @@
             <th class="col-3">类型</th>
             <td class="col-9">{{ item.template }}</td>
         </tr>
+    {% for key, value in item.extra_data.items %}
+        <tr class="row mx-0">
+            <th class="col-3">{{ key }}</th>
+            <td class="col-9">{{ value }}</td>
+        </tr>
+    {% endfor %}
     </tbody>
 </table>
 
