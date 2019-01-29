@@ -73,7 +73,7 @@ class EditItemForm(forms.Form):
                         widget=forms.CheckboxInput(
                             attrs={'class': 'form-check-input'}),
                     )
-                self.fields[key] = tmp_field
+                self.fields[key.replace(' ', '_')] = tmp_field
 
 
 class ChooseTemplateForm(forms.Form):

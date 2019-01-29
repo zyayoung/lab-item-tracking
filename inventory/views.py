@@ -169,7 +169,7 @@ class EditItemView(generic.View):
                     data = {}
                     for idx, (key, value) in enumerate(
                             template.extra_data['data'].items()):
-                        data[key] = edit_form.cleaned_data[key]
+                        data[key] = edit_form.cleaned_data[key.replace(' ', '_')]
             else:
                 template = None
             item.extra_data = data
