@@ -3,3 +3,4 @@ django
 django-simple-captcha
 django-silk
 numpy
+psycopg2

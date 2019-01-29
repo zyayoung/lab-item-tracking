@@ -16,3 +16,15 @@ CONFIRM_DAYS = 1
 SITE_DOMAIN = 'www.example.com'
 
 ALLOWED_HOSTS = [SITE_DOMAIN, "127.0.0.1", "localhost"]
+
+# DataBase
+DATABASES = {
+  'default': {
+    'ENGINE': 'django.db.backends.postgresql_psycopg2',
+    'NAME': 'lab',
+    'USER': 'postgres',
+    'PASSWORD': '',
+    'HOST': 'localhost',
+    'PORT': '5432',
+  }
+}
