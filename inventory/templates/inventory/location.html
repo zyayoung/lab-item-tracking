@@ -80,20 +80,22 @@
 {% if loc_now %}
 <p class="lead">
     已存放物品：
-    {% if not pending %}
-    <a class="btn btn-outline-primary pull-right" role="button" href="{% url 'inventory:additem2loc' location_id %}">
-        <i class="fa fa-plus" aria-hidden="true"></i> 添加
-    </a>
-    {% if loc_now_str != 'root' %}
-    <a class="btn btn-outline-primary pull-right" role="button" href="{% url 'trace_item:traceLoc' loc_now.id %}">
-        追踪
-    </a>
-    {% endif %}
-    {% else %}
-    <a class="btn btn-outline-primary pull-right" href="#" role="button" onClick="cfm()">
-        将{{ pending }}存入此位置
-    </a>
-    {% endif %}
+    <span class="pull-right">
+        {% if not pending %}
+        <a class="btn btn-outline-primary" role="button" href="{% url 'inventory:additem2loc' location_id %}">
+            <i class="fa fa-plus" aria-hidden="true"></i> 添加
+        </a>
+        {% if loc_now_str != 'root' %}
+        <a class="btn btn-outline-primary" role="button" href="{% url 'trace_item:traceLoc' loc_now.id %}">
+            <i class="fa fa-search" aria-hidden="true"></i> 追踪
+        </a>
+        {% endif %}
+        {% else %}
+        <a class="btn btn-outline-primary" href="#" role="button" onClick="cfm()">
+            将{{ pending }}存入此位置
+        </a>
+        {% endif %}
+    </span>
 </p>
 {% if item_list %}
 <table class="table table-striped table-sm">
