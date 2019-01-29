@@ -33,7 +33,6 @@ class AddItemForm(forms.Form):
 
 
 class ChooseTemplateForm(forms.Form):
-
     template = forms.ChoiceField(
         label="类型",
         required=False,
@@ -43,7 +42,6 @@ class ChooseTemplateForm(forms.Form):
     def __init__(self, *args, **kwargs):
         super(ChooseTemplateForm, self).__init__(*args)
         self.fields["template"].choices = kwargs.get('choices', [('', '--')])
-
 
 
 class AddLocationForm(forms.Form):

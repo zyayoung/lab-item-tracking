@@ -25,23 +25,32 @@
 {% endblock %}
 {% block script %}
 <script>
+data = {{ self.item.extra_data|safe }}
 function ajaxSubmit() {
-        var name = $.trim($('#id_template').val());
-        $.ajax({
-            url: '{% url "inventory:templateAjax" %}',
-            type: 'POST',
-            data: {
-                'csrfmiddlewaretoken': '{{ csrf_token }}',
-                'name': name,
-            },
-            success: function (arg) {
-                console.log(arg);
-                $('#innerform').html(arg);
+    var name = $.trim($('#id_template').val());
+    $.ajax({
+        url: '{% url "inventory:templateAjax" %}',
+        type: 'POST',
+        data: {
+            'csrfmiddlewaretoken': '{{ csrf_token }}',
+            'name': name,
+        },
+        success: function (arg) {
+            $('#innerform').html(arg);
+            if(name === '{{ self.item.template.name }}') {
+                Object.keys(data).forEach(function (key, index) {
+                    $('#id_' + index).val(data[key]);
+                })
             }
-        });
-    }
-$('#id_template').change(function(e){
+        }
+    });
+};
+$('#id_template').change(function(){
   ajaxSubmit()
+});
+$(function () {
+   $('#id_template').val("{{ self.item.template.name }}");
+   ajaxSubmit();
 });
 </script>
 {% endblock %}

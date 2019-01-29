@@ -72,7 +72,7 @@ class AddItemView(generic.View):
             new_item.allowed_users.add(tmp_user)
             set_quantity(new_item, quantity, tmp_user)
             message = "添加成功！"
-            return redirect('inventory:item', new_item.id)
+            return redirect('inventory:edit', new_item.id)
         else:
             return render(request, 'inventory/add.html', locals())
 
@@ -161,7 +161,17 @@ class EditItemView(generic.View):
             template = ItemTemplate.objects.get(name=template) if template else None
             data = {}
             for idx, (key, value) in enumerate(template.extra_data['data'].items()):
-                data[key] = request.POST.get(str(idx), '')
+                rawdata = request.POST.get(str(idx), '')
+                try:
+                    if value == 'text':
+                        data[key] = str(rawdata)
+                    elif value == 'number':
+                        data[key] = int(rawdata)
+                    elif value == 'float':
+                        data[key] = float(rawdata)
+                except ValueError:
+                    message = "ValueError"
+                    return render(request, 'inventory/edit.html', locals())
             item.extra_data = data
             item.template = template
             item.save()
