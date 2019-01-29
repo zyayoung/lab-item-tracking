@@ -45,6 +45,24 @@ class Location(models.Model):
         verbose_name_plural = verbose_name
 
 
+class ItemTemplate(models.Model):
+    name = models.CharField(max_length=64, verbose_name="模块ID")
+    extra_data = JSONField(default=dict, blank=True, verbose_name="扩展数据")
+    create_time = models.DateTimeField("create_time", auto_now_add=True)
+
+    def __str__(self):
+        return self.extra_data['verbose_name']
+
+    def verbose_name(self):
+        return self.extra_data['verbose_name']
+    verbose_name.short_description = "显示名称"
+
+    class Meta:
+        ordering = ['-create_time']
+        verbose_name = "模块配置"
+        verbose_name_plural = verbose_name
+
+
 class Item(models.Model):
     name = models.CharField(max_length=128, verbose_name="名称")
     quantity = models.DecimalField(
@@ -61,6 +79,14 @@ class Item(models.Model):
         verbose_name="单位",
     )
     attribute = models.TextField(blank=True, verbose_name="属性")
+    template = models.ForeignKey(
+        ItemTemplate,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        verbose_name="扩展数据模板",
+        related_name="template_instance",
+    )
     extra_data = JSONField(default=dict, blank=True, verbose_name="扩展数据")
     location = models.ForeignKey(
         Location,
@@ -101,20 +127,6 @@ class Item(models.Model):
     class Meta:
         ordering = ['-update_time']
         verbose_name = "物品"
-        verbose_name_plural = verbose_name
-
-
-class ItemTemplate(models.Model):
-    name = models.CharField(max_length=64, verbose_name="模块名称")
-    extra_data = JSONField(default=dict, blank=True, verbose_name="扩展数据")
-    create_time = models.DateTimeField("create_time", auto_now_add=True)
-
-    def __str__(self):
-        return self.name
-
-    class Meta:
-        ordering = ['-create_time']
-        verbose_name = "模块配置"
         verbose_name_plural = verbose_name
 
 

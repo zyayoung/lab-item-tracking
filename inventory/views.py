@@ -7,7 +7,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from inventory.utils import *
 from inventory import forms
 
-from inventory.models import Item, Location, LocationPermissionApplication
+from inventory.models import Item, Location, LocationPermissionApplication, ItemTemplate
 from login.models import User as myUser
 from personal.utils import get_others_request_list
 from urllib.parse import quote
@@ -56,12 +56,14 @@ class AddItemView(generic.View):
             quantity = add_form.cleaned_data['quantity']
             unit = add_form.cleaned_data['unit']
             public = add_form.cleaned_data['public']
+            template = add_form.cleaned_data['template']
             new_item = Item.objects.create(
                 name=name,
                 quantity=0,
                 unit=unit,
                 owner=tmp_user,
                 is_public=public,
+                template=ItemTemplate.objects.filter(name=template).get() if template != '--' else None,
             )
             new_item.allowed_users.add(tmp_user)
             set_quantity(new_item, quantity, tmp_user)

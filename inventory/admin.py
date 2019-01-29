@@ -12,7 +12,7 @@ class LocationPermissionApplicationAdmin(admin.ModelAdmin):
 
 
 class ItemAdmin(admin.ModelAdmin):
-    list_display = ('name', 'quantity', 'unit', 'location', 'owner', 'is_public')
+    list_display = ('name', 'quantity', 'unit', 'location', 'template', 'owner', 'is_public')
     search_fields = ('name', 'unit', 'owner__name', 'location__path')
     list_filter = ('is_public', 'owner', 'unit')
     filter_horizontal = ('allowed_users',)
@@ -25,7 +25,7 @@ class LocationAdmin(admin.ModelAdmin):
 
 
 class ItemTemplateAdmin(admin.ModelAdmin):
-    list_display = ('name', 'extra_data')
+    list_display = ('name', 'verbose_name', 'extra_data')
     search_fields = ('name', 'extra_data')
     date_hierarchy = 'create_time'
 

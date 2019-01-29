@@ -1,4 +1,5 @@
 from django import forms
+from .models import ItemTemplate
 
 
 class AddItemForm(forms.Form):
@@ -24,6 +25,12 @@ class AddItemForm(forms.Form):
         max_length=32,
         required=False,
         widget=forms.TextInput(attrs={'class': 'form-control'}),
+    )
+    choices = [(t.name, t.extra_data['verbose_name']) for t in ItemTemplate.objects.all()]
+    choices.append(('--', '--'))
+    template = forms.CharField(
+        label="类型",
+        widget=forms.widgets.Select(choices=choices, attrs={'class': 'form-control'})
     )
     public = forms.BooleanField(
         label="公开",
