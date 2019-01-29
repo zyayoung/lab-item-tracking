@@ -17,7 +17,6 @@ class AuthMD(MiddlewareMixin):
     def process_request(self, request):
         request_url = request.path_info
         reg_str = "|".join(r"(" + reg_ex + r")" for reg_ex in self.reg_list)
-        print(reg_str)
         if request.session.get('is_login') or re.match(reg_str, request_url):
             return
         else:
