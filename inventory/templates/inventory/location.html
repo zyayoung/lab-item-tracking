@@ -95,7 +95,6 @@
     </a>
     {% endif %}
 </p>
-{% endif %}
 {% if item_list %}
 <table class="table table-striped table-sm">
     <thead>
@@ -159,8 +158,9 @@
     </ul>
 </nav>
 {% endif %}
+{% endif %}
 <!-- modal start -->
-{% if pending %}
+{% if pending and loc_now %}
 <div class="modal fade" id="cfmModal" tabindex="-1" role="dialog" aria-labelledby="cfmModalTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
