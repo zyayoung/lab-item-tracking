@@ -160,13 +160,13 @@ class EditItemView(generic.View):
         choose_form = self.get_form(request.POST)
         message = "请检查填写的内容！"
         if choose_form.is_valid():
+            data = {}
             template_name = choose_form.cleaned_data['template']
             if template_name:
                 template = ItemTemplate.objects.get(name=template_name)
                 extra_data = template.extra_data
                 edit_form = forms.EditItemForm(request.POST, data=extra_data)
                 if edit_form.is_valid():
-                    data = {}
                     for idx, (key, value) in enumerate(
                             template.extra_data['data'].items()):
                         data[key] = edit_form.cleaned_data[key.replace(' ', '_')]
