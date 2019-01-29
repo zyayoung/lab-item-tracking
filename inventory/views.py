@@ -130,6 +130,7 @@ def template_ajax(request, *args, **kwargs):
         template = ItemTemplate.objects.get(name=template_name)
         extra_data = template.extra_data
         data = extra_data.get('data', {})
+        edit_form = forms.EditItemForm(*args, data=extra_data)
     return render(request, 'inventory/editajax.html', locals())
 
 
@@ -138,10 +139,12 @@ class EditItemView(generic.View):
     item = None
 
     def get_form(self, *args, **kwargs):
-        _templates = ItemTemplate.objects.filter(extra_data__has_key="verbose_name")
+        _templates = ItemTemplate.objects.filter(
+            extra_data__has_key="verbose_name")
         choices = [('', '--')]
         if _templates.exists():
-            choices.extend([(t.name, t.extra_data['verbose_name']) for t in _templates.all()])
+            choices.extend([(t.name, t.extra_data['verbose_name'])
+                            for t in _templates.all()])
         return forms.ChooseTemplateForm(*args, choices=choices)
 
     def get(self, request, *args, **kwargs):
@@ -152,27 +155,21 @@ class EditItemView(generic.View):
         return render(request, 'inventory/edit.html', locals())
 
     def post(self, request, *args, **kwargs):
+        tmp_user = myUser.objects.get(id=request.session.get('user_id'))
+        item = get_my_item(tmp_user, kwargs.get('item_id'))
         choose_form = self.get_form(request.POST)
         message = "请检查填写的内容！"
         if choose_form.is_valid():
-            tmp_user = myUser.objects.get(id=request.session.get('user_id'))
-            item = get_my_item(tmp_user, kwargs.get('item_id'))
-            template = choose_form.cleaned_data['template']
-            data = {}
-            if template:
-                template = ItemTemplate.objects.get(name=template)
-                for idx, (key, value) in enumerate(template.extra_data['data'].items()):
-                    rawdata = request.POST.get(str(idx), '')
-                    try:
-                        if value == 'text':
-                            data[key] = str(rawdata)
-                        elif value == 'number':
-                            data[key] = int(rawdata)
-                        elif value == 'float':
-                            data[key] = float(rawdata)
-                    except ValueError:
-                        message = "ValueError"
-                        return render(request, 'inventory/edit.html', locals())
+            template_name = choose_form.cleaned_data['template']
+            if template_name:
+                template = ItemTemplate.objects.get(name=template_name)
+                extra_data = template.extra_data
+                edit_form = forms.EditItemForm(request.POST, data=extra_data)
+                if edit_form.is_valid():
+                    data = {}
+                    for idx, (key, value) in enumerate(
+                            template.extra_data['data'].items()):
+                        data[key] = edit_form.cleaned_data[key]
             else:
                 template = None
             item.extra_data = data

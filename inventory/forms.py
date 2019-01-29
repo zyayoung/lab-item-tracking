@@ -32,6 +32,50 @@ class AddItemForm(forms.Form):
     )
 
 
+class EditItemForm(forms.Form):
+    def __init__(self, *args, **kwargs):
+        super(EditItemForm, self).__init__(*args)
+        extra_data = kwargs.get('data')
+        if extra_data:
+            data = extra_data.get('data', {})
+            for idx, (key, value) in enumerate(data.items()):
+                if value == 'text':
+                    tmp_field = forms.CharField(
+                        label=key,
+                        max_length=128,
+                        required=key in extra_data['required'],
+                        widget=forms.TextInput(
+                            attrs={'class': 'form-control'}),
+                    )
+                elif value == 'number':
+                    tmp_field = forms.IntegerField(
+                        label=key,
+                        required=key in extra_data['required'],
+                        widget=forms.TextInput(attrs={
+                            'class': 'form-control',
+                            'type': 'number',
+                            'step': '1',
+                        }),
+                    )
+                elif value == 'float':
+                    tmp_field = forms.FloatField(
+                        label=key,
+                        required=key in extra_data['required'],
+                        widget=forms.TextInput(attrs={
+                            'class': 'form-control',
+                            'type': 'number',
+                        }),
+                    )
+                elif value == 'bool':
+                    public = forms.BooleanField(
+                        label=key,
+                        required=key in extra_data['required'],
+                        widget=forms.CheckboxInput(
+                            attrs={'class': 'form-check-input'}),
+                    )
+                self.fields[key] = tmp_field
+
+
 class ChooseTemplateForm(forms.Form):
     template = forms.ChoiceField(
         label="类型",

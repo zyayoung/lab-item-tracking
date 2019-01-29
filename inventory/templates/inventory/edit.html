@@ -16,7 +16,6 @@
                 {{ choose_form.template }}
             </div>
             <div id="innerform">
-
             </div>
             <button type="submit" class="btn btn-outline-primary">提交</button>
         </form>
@@ -38,8 +37,8 @@ function ajaxSubmit() {
         success: function (arg) {
             $('#innerform').html(arg);
             if(name === '{{ self.item.template.name }}') {
-                Object.keys(data).forEach(function (key, index) {
-                    $('#id_' + index).val(data[key]);
+                Object.keys(data).forEach(function (key) {
+                    $('#id_' + key).val(data[key]);
                 })
             }
         }

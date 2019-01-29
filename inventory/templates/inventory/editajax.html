@@ -1,10 +1,6 @@
-{% for key, value in data.items %}
+{% for field in edit_form %}
 <div class="form-group">
-    <label for="id_name">{{ key }}</label>
-    <input type="{{ value }}"
-           name="{{ forloop.counter0 }}"
-           id="id_{{ forloop.counter0 }}"
-           class="form-control"
-           {% if key in extra_data.required %}required{% endif %}>
+    {{ field.label }}
+    {{ field }}
 </div>
 {% endfor %}
