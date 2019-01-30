@@ -125,9 +125,9 @@ class ItemView(generic.View):
 
 
 def template_ajax(request, *args, **kwargs):
-    template_name = request.POST.get('name', '')
-    if template_name:
-        template = ItemTemplate.objects.get(name=template_name)
+    template_id = int(request.POST.get('id', 0))
+    if template_id != 0:
+        template = ItemTemplate.objects.get(id=template_id)
         extra_data = template.extra_data
         data = extra_data.get('data', {})
         edit_form = forms.EditItemForm(*args, data=extra_data)
@@ -139,11 +139,10 @@ class EditItemView(generic.View):
     item = None
 
     def get_form(self, *args, **kwargs):
-        _templates = ItemTemplate.objects.filter(
-            extra_data__has_key="verbose_name")
-        choices = [('', '--')]
+        _templates = ItemTemplate.objects.all()
+        choices = [(0, '--')]
         if _templates.exists():
-            choices.extend([(t.name, t.extra_data['verbose_name'])
+            choices.extend([(t.id, t.name)
                             for t in _templates.all()])
         return forms.ChooseTemplateForm(*args, choices=choices)
 
@@ -169,9 +168,9 @@ class EditItemView(generic.View):
         choose_form = self.get_form(request.POST)
         if choose_form.is_valid():
             data = {}
-            template_name = choose_form.cleaned_data['template']
-            if template_name:
-                template = ItemTemplate.objects.get(name=template_name)
+            template_id = int(choose_form.cleaned_data['template'])
+            if template_id != 0:
+                template = ItemTemplate.objects.get(id=template_id)
                 extra_data = template.extra_data
                 edit_form = forms.EditItemForm(request.POST, data=extra_data)
                 if edit_form.is_valid():

@@ -29,49 +29,60 @@ class AddItemForm(forms.Form):
         label="公开",
         required=False,
         widget=forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+        initial=True,
     )
 
 
 class EditItemForm(forms.Form):
     def __init__(self, *args, **kwargs):
         super(EditItemForm, self).__init__(*args)
-        extra_data = kwargs.get('data')
-        if extra_data:
-            data = extra_data.get('data', {})
+        data = kwargs.get('data')
+        if data:
             for idx, (key, value) in enumerate(data.items()):
-                if value.lower() == 'number':
+                tmp_required = bool(value.get('required', True))
+                tmp_placeholder = value.get('placeholder', '')
+                if value['type'].lower() == 'int':
                     tmp_field = forms.IntegerField(
                         label=key,
-                        required=key in extra_data['required'],
-                        widget=forms.TextInput(attrs={
-                            'class': 'form-control',
-                            'type': 'number',
-                            'step': '1',
-                        }),
+                        required=tmp_required,
+                        widget=forms.TextInput(
+                            attrs={
+                                'class': 'form-control',
+                                'type': 'number',
+                                'step': '1',
+                                'placeholder': tmp_placeholder,
+                            }),
                     )
-                elif value.lower() == 'float':
+                elif value['type'].lower() == 'float':
                     tmp_field = forms.FloatField(
                         label=key,
-                        required=key in extra_data['required'],
-                        widget=forms.TextInput(attrs={
-                            'class': 'form-control',
-                            'type': 'number',
-                        }),
+                        required=tmp_required,
+                        widget=forms.TextInput(
+                            attrs={
+                                'class': 'form-control',
+                                'type': 'number',
+                                'placeholder': tmp_placeholder,
+                            }),
                     )
-                elif value.lower() in ['bool', 'boolean']:
+                elif value['type'].lower() in ['bool', 'boolean']:
                     tmp_field = forms.BooleanField(
                         label=key,
-                        required=key in extra_data['required'],
+                        required=tmp_required,
                         widget=forms.CheckboxInput(
-                            attrs={'class': 'form-check-input'}),
+                            attrs={
+                                'class': 'form-check-input position-static',
+                            }),
                     )
                 else:
                     tmp_field = forms.CharField(
                         label=key,
                         max_length=128,
-                        required=key in extra_data['required'],
+                        required=tmp_required,
                         widget=forms.TextInput(
-                            attrs={'class': 'form-control'}),
+                            attrs={
+                                'class': 'form-control',
+                                'placeholder': tmp_placeholder,
+                            }),
                     )
                 self.fields[key.replace(' ', '_')] = tmp_field
 
@@ -85,7 +96,7 @@ class ChooseTemplateForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         super(ChooseTemplateForm, self).__init__(*args)
-        self.fields["template"].choices = kwargs.get('choices', [('', '--')])
+        self.fields["template"].choices = kwargs.get('choices', [(0, '--')])
 
 
 class AddLocationForm(forms.Form):

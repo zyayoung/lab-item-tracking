@@ -46,16 +46,12 @@ class Location(models.Model):
 
 
 class ItemTemplate(models.Model):
-    name = models.CharField(max_length=64, verbose_name="模块ID")
+    name = models.CharField(max_length=64, unique=True, verbose_name="模块名称")
     extra_data = JSONField(default=dict, blank=True, verbose_name="扩展数据")
     create_time = models.DateTimeField("create_time", auto_now_add=True)
 
     def __str__(self):
-        return self.extra_data['verbose_name']
-
-    def verbose_name(self):
-        return self.extra_data['verbose_name']
-    verbose_name.short_description = "显示名称"
+        return self.name
 
     class Meta:
         ordering = ['-create_time']

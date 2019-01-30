@@ -19,7 +19,7 @@
         </div>
         <label class="col-3 col-form-label"><b>单位</b></label>
         <div class="col-3">
-                <input type="text" name="unit" class="form-control" maxlength="32" id="id_unit" value="{{ item.unit }}">
+            <input type="text" name="unit" class="form-control" maxlength="32" id="id_unit" value="{{ item.unit }}">
         </div>
     </div>
     <div class="form-group row">
@@ -30,40 +30,22 @@
     </div>
     <button type="submit" class="btn btn-outline-primary">提交</button>
 </form>
-<!-- <div class="container">
-    <div class="col-md-8 offset-md-2">
-        <form class="form-add" action="" method="post">
-            {% if message %}
-            <div class="alert alert-warning">{{ message }}</div>
-            {% endif %}
-            {% csrf_token %}
-            <h2 class="text-center">编辑物品</h2>
-            <div class="form-group">
-                {{ choose_form.template.label_tag }}
-                {{ choose_form.template }}
-            </div>
-            <div id="innerform">
-            </div>
-            <button type="submit" class="btn btn-outline-primary">提交</button>
-        </form>
-    </div>
-</div> -->
 {% endblock %}
 {% block script %}
 <script>
     False = false;
     True = true;
     None = null;
-    data = {{ item.extra_data | safe }}
+    data = {{ item.extra_data | safe }};
 
     function ajaxSubmit() {
-        var name = $.trim($('#id_template').val());
+        var id = $.trim($('#id_template').val());
         $.ajax({
             url: '{% url "inventory:templateAjax" %}',
             type: 'POST',
             data: {
                 'csrfmiddlewaretoken': '{{ csrf_token }}',
-                'name': name,
+                'id': Number(id),
             },
             success: function (arg) {
                 $('#innerform').html(arg);
@@ -82,7 +64,7 @@
         ajaxSubmit()
     });
     $(function () {
-        $('#id_template').val("{{ item.template.name }}");
+        $('#id_template').val({{ item.template.id }});
         ajaxSubmit();
     });
 </script>

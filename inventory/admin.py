@@ -25,7 +25,7 @@ class LocationAdmin(admin.ModelAdmin):
 
 
 class ItemTemplateAdmin(admin.ModelAdmin):
-    list_display = ('name', 'verbose_name', 'extra_data')
+    list_display = ('name', 'extra_data')
     search_fields = ('name', 'extra_data')
     date_hierarchy = 'create_time'
 

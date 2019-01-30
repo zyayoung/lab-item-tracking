@@ -12,22 +12,22 @@
             {% csrf_token %}
             <h2 class="text-center">添加物品</h2>
             <div class="form-group">
-                {{ add_form.name.label_tag }}
+                <b>{{ add_form.name.label_tag }}</b>
                 {{ add_form.name}}
             </div>
-            <div class="form-group">
-                {{ add_form.quantity.label_tag }}
-                {{ add_form.quantity }}
-            </div>
-            <div class="form-group">
-                {{ add_form.unit.label_tag }}
-                {{ add_form.unit }}
-            </div>
-            <div class="form-group">
-                <div class="form-check">
-                    {{ add_form.public }}
-                    {{ add_form.public.label }}
+            <div class="form-group row">
+                <div class="col-6">
+                    <b>{{ add_form.quantity.label_tag }}</b>
+                    {{ add_form.quantity }}
                 </div>
+                <div class="col-6">
+                    {{ add_form.unit.label_tag }}
+                    {{ add_form.unit }}
+                </div>
+            </div>
+            <div class="form-group form-check">
+                {{ add_form.public }}
+                <b>{{ add_form.public.label }}</b>
             </div>
             <button type="submit" class="btn btn-outline-primary">提交</button>
         </form>
