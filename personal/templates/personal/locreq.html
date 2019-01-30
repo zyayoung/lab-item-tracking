@@ -10,7 +10,7 @@
             <i class="fa fa-file-text" aria-hidden="true"></i>
             收到申请
             {% if others_request_list_count > 0 %}
-            <span class="badge badge-pill badge-danger">
+            <span class="badge badge-pill badge-danger" id="others_request_list_count">
                 {{ others_request_list_count }}
             </span>
             {% endif %}
@@ -148,6 +148,7 @@
 {% endblock %}
 {% block script %}
 <script>
+    let others_request_list_count = {{ others_request_list_count }};
     function cfm(id, result) {
         re_str = result ? '同意' : '拒绝';
         $('#modalNotice').html('您确认要<b>' + re_str + '</b>该申请吗？');
@@ -176,6 +177,11 @@
                     $('#cfmModal').modal('hide');
                     $('#auditor_' + id).html(auditor_html);
                     $('#status_' + id).html(status_html[result]);
+                    others_request_list_count -= 1;
+                    if(others_request_list_count > 0)
+                        $('#others_request_list_count').html(others_request_list_count);
+                    else
+                        $('#others_request_list_count').html('');
                 } else {
                     $('#modalNotice').html('发生错误！');
                 }
