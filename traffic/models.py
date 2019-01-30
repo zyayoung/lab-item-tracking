@@ -21,9 +21,7 @@ class Traffic(models.Model):
         max_length=16,
         verbose_name="IP",
     )
-    user_agent = models.CharField(
-        max_length=256,
-        null=True,
+    user_agent = models.TextField(
         default="unknown",
         verbose_name="User-Agent",
     )
