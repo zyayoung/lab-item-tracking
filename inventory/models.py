@@ -164,6 +164,13 @@ class LocationPermissionApplication(models.Model):
     def approve(self):
         self.approved = True
         self.closed = True
+        
+        # recursively permit
+        loc = self.location
+        while loc:
+            loc.allowed_users.add(self.applicant)
+            loc.save()
+            loc = loc.parent
 
     def reject(self):
         self.rejected = True
@@ -173,6 +180,6 @@ class LocationPermissionApplication(models.Model):
         return "{1} | {0}".format(self.applicant, self.location)
 
     class Meta:
-        ordering = ['closed', 'time']
+        ordering = ['closed', 'id']
         verbose_name = "位置申请"
         verbose_name_plural = verbose_name
