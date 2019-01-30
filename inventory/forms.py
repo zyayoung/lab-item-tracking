@@ -40,7 +40,7 @@ class EditItemForm(forms.Form):
         data = kwargs.get('data')
         if data:
             for idx, (key, value) in enumerate(data.items()):
-                tmp_required = bool(value.get('required', True))
+                tmp_required = bool(value.get('required', False))
                 tmp_placeholder = value.get('placeholder', '')
                 if value['type'].lower() == 'int':
                     tmp_field = forms.IntegerField(
