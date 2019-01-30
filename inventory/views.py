@@ -1,4 +1,4 @@
-from django.shortcuts import get_object_or_404, render, redirect
+sfrom django.shortcuts import get_object_or_404, render, redirect
 from django.http import HttpResponseRedirect, HttpResponse
 from django.urls import reverse
 from django.views import generic
@@ -358,7 +358,7 @@ class AddItem2LocView(generic.View):
                 quantity = 1
             new_item.allowed_users.add(tmp_user)
             set_quantity(new_item, quantity, tmp_user)
-            set_location(new_item, location)
+            set_location(new_item, location, tmp_user)
             message = "添加成功！"
             return redirect('inventory:edit', new_item.id)
         else:
