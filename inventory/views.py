@@ -142,8 +142,7 @@ class EditItemView(generic.View):
         _templates = ItemTemplate.objects.all()
         choices = [(0, '--')]
         if _templates.exists():
-            choices.extend([(t.id, t.name)
-                            for t in _templates.all()])
+            choices.extend([(t.id, t.name) for t in _templates.all()])
         return forms.ChooseTemplateForm(*args, choices=choices)
 
     def get(self, request, *args, **kwargs):
@@ -174,9 +173,10 @@ class EditItemView(generic.View):
                 extra_data = template.extra_data
                 edit_form = forms.EditItemForm(request.POST, data=extra_data)
                 if edit_form.is_valid():
-                    for idx, (key, value) in enumerate(
-                            template.extra_data['data'].items()):
-                        data[key] = edit_form.cleaned_data[key.replace(' ', '_')]
+                    for idx, (key,
+                              value) in enumerate(template.extra_data.items()):
+                        data[key] = edit_form.cleaned_data[key.replace(
+                            ' ', '_')]
             else:
                 template = None
             item.extra_data = data
