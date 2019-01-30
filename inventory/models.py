@@ -150,6 +150,7 @@ class LocationPermissionApplication(models.Model):
     )
     approved = models.BooleanField(default=False, verbose_name='是否同意')
     rejected = models.BooleanField(default=False, verbose_name='是否拒绝')
+    closed = models.BooleanField(default=False, verbose_name='是否拒绝')
     time = models.DateTimeField(auto_now=True, verbose_name='申请时间')
     auditor = models.ForeignKey(
         myUser,
@@ -160,13 +161,18 @@ class LocationPermissionApplication(models.Model):
         related_name='user_audit',
     )
 
-    def closed(self):
-        return self.approved or self.rejected
+    def approve(self):
+        self.approved = True
+        self.closed = True
+
+    def reject(self):
+        self.rejected = True
+        self.closed = True
 
     def __str__(self):
         return "{1} | {0}".format(self.applicant, self.location)
 
     class Meta:
-        ordering = ['-time']
+        ordering = ['closed', 'time']
         verbose_name = "位置申请"
         verbose_name_plural = verbose_name

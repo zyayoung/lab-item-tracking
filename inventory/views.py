@@ -22,8 +22,7 @@ class IndexView(generic.View):
         if user_id:
             tmp_user = myUser.objects.get(id=user_id)
             others_request_list_count = get_others_request_list(
-                tmp_user).filter(
-                    approved=False, rejected=False).count()
+                tmp_user).filter(closed=False).count()
         return render(request, 'inventory/index.html', locals())
 
 
@@ -350,8 +349,7 @@ class Apply4Loc(generic.View):
                 if LocationPermissionApplication.objects.filter(
                         applicant=tmp_user,
                         location=loc,
-                        approved=False,
-                        rejected=False,
+                        closed=False,
                 ).exists():
                     message = "请勿重复提交"
                 else:
