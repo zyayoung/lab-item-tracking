@@ -8,7 +8,7 @@
         <th>操作</th>
         <th>物品</th>
         <th>时间</th>
-        <th>操作人</th>
+        <th class="d-none d-sm-table-cell">操作人</th>
     </thead>
     <tbody>
         {% for log in logs %}
@@ -20,7 +20,7 @@
                 </a>
             </td>
             <td>{{ log.time }}</td>
-            <td>
+            <td class="d-none d-sm-table-cell">
                 <a href="{% url 'personal:user' log.operator.id %}">
                     {{ log.operator }}
                 </a>

@@ -26,7 +26,7 @@
                 <th>申请人</th>
                 <th>申请位置</th>
                 <th>申请理由</th>
-                <th class="d-none d-sm-table-cell">申请时间</th>
+                <th class="d-none d-md-table-cell">申请时间</th>
                 <th class="d-none d-sm-table-cell">处理人</th>
                 <th>状态</th>
             </thead>
@@ -45,7 +45,7 @@
                         </a>
                     </td>
                     <td>{{ loc_req.explanation }}</td>
-                    <td class="d-none d-sm-table-cell">{{ loc_req.time }}</td>
+                    <td class="d-none d-md-table-cell">{{ loc_req.time }}</td>
                     <td class="d-none d-sm-table-cell" id="auditor_{{ loc_req.id }}">
                         {% if loc_req.auditor %}
                         <a href="{% url 'personal:user' loc_req.auditor.id %}">

@@ -19,6 +19,10 @@
         right: 0;
         margin-right: -8px;
     }
+
+    .section{
+        margin-bottom: 30px;
+    }
 </style>
 {% endblock %}
 
@@ -33,7 +37,7 @@
         {% endif %}
     </p>
     <div class="row text-center justify-content-md-center">
-        <div class="col-lg-3 col-sm-6">
+        <div class="col-lg-3 col-sm-6 section">
             <div class="card">
                 <h5 class="card-title mt-3">物品</h5>
                 <ul class="list-group list-group-flush">
@@ -50,7 +54,7 @@
                 </ul>
             </div>
         </div>
-        <div class="col-lg-3 col-sm-6">
+        <div class="col-lg-3 col-sm-6 section">
             <div class="card">
                 <h5 class="card-title mt-3">位置</h5>
                 <ul class="list-group list-group-flush">
@@ -76,7 +80,7 @@
                 </ul>
             </div>
         </div>
-        <div class="col-lg-3 col-sm-6">
+        <div class="col-lg-3 col-sm-6 section">
             <div class="card">
                 <h5 class="card-title mt-3">关于</h5>
                 <ul class="list-group list-group-flush">
@@ -94,7 +98,7 @@
             </div>
         </div>
         {% if request.session.is_superadmin %}
-        <div class="col-lg-3 col-sm-6">
+        <div class="col-lg-3 col-sm-6 section">
             <div class="card">
                 <h5 class="card-title mt-3">管理</h5>
                 <ul class="list-group list-group-flush">

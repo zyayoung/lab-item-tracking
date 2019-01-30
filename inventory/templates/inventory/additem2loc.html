@@ -7,18 +7,18 @@
 <table class="table table-striped table-sm">
     <thead>
         <th>名称</th>
-        <th>数量</th>
-        <th>属性</th>
-        <th>所有者</th>
+        <th class="d-none d-sm-table-cell">数量</th>
+        <th>类型</th>
+        <th class="d-none d-md-table-cell">所有者</th>
         <th></th>
     </thead>
     <tbody>
         {% for item in item_list %}
         <tr>
             <td><a href="{% url 'inventory:item' item.id %}">{{ item }}</a></td>
-            <td>{{ item.quantity }} {% if item.unit %}{{ item.unit }}{% endif %}</td>
-            <td>{{ item.attribute }}</td>
-            <td>{{ item.owner }}</td>
+            <td class="d-none d-sm-table-cell">{{ item.quantity }} {% if item.unit %}{{ item.unit }}{% endif %}</td>
+            <td>{% if item.template %}{{ item.template }}{% endif %}</td>
+            <td class="d-none d-md-table-cell">{{ item.owner }}</td>
             <td>
                 <a class="btn btn-outline-primary btn-sm" href="#" onClick="cfm('{% url 'inventory:put' item.id location.id %}', '{{ item }}', '{{ location }}')"
                     role="button">

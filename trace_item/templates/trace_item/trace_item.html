@@ -8,8 +8,8 @@
         <th>操作</th>
         <th>自</th>
         <th>至</th>
-        <th>时间</th>
-        <th>操作人</th>
+        <th class="d-none d-md-table-cell">时间</th>
+        <th class="d-none d-sm-table-cell">操作人</th>
     </thead>
     <tbody>
         {% for log in logs %}
@@ -38,8 +38,8 @@
             <td>{{ log.fr }}</td>
             <td>{{ log.to }}</td>
             {% endif %}
-            <td>{{ log.time }}</td>
-            <td>
+            <td class="d-none d-md-table-cell">{{ log.time }}</td>
+            <td class="d-none d-sm-table-cell">
                 <a href="{% url 'personal:user' log.operator.id %}">
                     {{ log.operator }}
                 </a>
