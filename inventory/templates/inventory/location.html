@@ -221,8 +221,12 @@
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
-                        {{ add_loc_form.name.label_tag }}
+                        <b>{{ add_loc_form.name.label_tag }}</b>
                         {{ add_loc_form.name}}
+                    </div>
+                    <div class="form-group form-check">
+                        {{ add_loc_form.public }}
+                        <b>{{ add_loc_form.public.label }}</b>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">取消</button>

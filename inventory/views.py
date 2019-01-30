@@ -257,10 +257,17 @@ class LocationView(generic.View):
             loc_now = get_my_loc(tmp_user,
                                  location_id) if location_id else None
             path = add_loc_form.cleaned_data['name']
+            public = add_loc_form.cleaned_data['public']
+            if Location.objects.filter(
+                path=path,
+                parent=loc_now,
+            ).exists():
+                self.message = "不能重复添加！"
+                return self.get(request, *args, **kwargs)
             new_location = Location.objects.create(
                 path=path,
                 parent=loc_now,
-                is_public=True,
+                is_public=public,
             )
             new_location.save()
             self.message = "新建成功！"
@@ -327,7 +334,35 @@ class AddItem2LocView(generic.View):
             item_list = paginator.page(1)
         except EmptyPage:
             item_list = paginator.page(paginator.num_pages)
+        add_form = forms.AddItemForm()
         return render(request, 'inventory/additem2loc.html', locals())
+
+    def post(self, request, *args, **kwargs):
+        add_form = forms.AddItemForm(request.POST)
+        message = "请检查填写的内容！"
+        if add_form.is_valid():
+            tmp_user = myUser.objects.get(id=request.session.get('user_id'))
+            location = get_my_loc(tmp_user, kwargs.get('id'))
+            name = add_form.cleaned_data['name']
+            quantity = add_form.cleaned_data['quantity']
+            unit = add_form.cleaned_data['unit']
+            public = add_form.cleaned_data['public']
+            new_item = Item.objects.create(
+                name=name,
+                quantity=0,
+                owner=tmp_user,
+                is_public=public,
+                template=None,
+                location=location,
+            )
+            if not quantity:
+                quantity = 1
+            new_item.allowed_users.add(tmp_user)
+            set_quantity(new_item, quantity, tmp_user)
+            message = "添加成功！"
+            return redirect('inventory:edit', new_item.id)
+        else:
+            return render(request, 'inventory/add.html', locals())
 
 
 class Apply4Loc(generic.View):

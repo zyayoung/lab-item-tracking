@@ -105,6 +105,12 @@ class AddLocationForm(forms.Form):
         max_length=128,
         widget=forms.TextInput(attrs={'class': 'form-control'}),
     )
+    public = forms.BooleanField(
+        label="公开",
+        required=False,
+        widget=forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+        initial=True,
+    )
 
 
 class UseItemForm(forms.Form):
