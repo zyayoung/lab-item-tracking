@@ -34,18 +34,18 @@
     <div class="tab-pane show active" id="others-req" role="tabpanel" aria-labelledby="others-req-tab">
         <table class="table table-striped table-sm">
             <thead>
-                <th>#</th>
+                <th class="d-none d-sm-table-cell">#</th>
                 <th>申请人</th>
                 <th>申请位置</th>
                 <th>申请理由</th>
-                <th>申请时间</th>
-                <th>处理人</th>
+                <th class="d-none d-sm-table-cell">申请时间</th>
+                <th class="d-none d-sm-table-cell">处理人</th>
                 <th>状态</th>
             </thead>
             <tbody>
                 {% for loc_req in others_request_list %}
                 <tr>
-                    <td>{{ loc_req.id }}</td>
+                    <td class="d-none d-sm-table-cell">{{ loc_req.id }}</td>
                     <td>
                         <a href="{% url 'personal:user' loc_req.applicant.id %}">
                             {{ loc_req.applicant }}
@@ -57,8 +57,8 @@
                         </a>
                     </td>
                     <td>{{ loc_req.explanation }}</td>
-                    <td>{{ loc_req.time }}</td>
-                    <td id="auditor_{{ loc_req.id }}">
+                    <td class="d-none d-sm-table-cell">{{ loc_req.time }}</td>
+                    <td class="d-none d-sm-table-cell" id="auditor_{{ loc_req.id }}">
                         {% if loc_req.auditor %}
                         <a href="{% url 'personal:user' loc_req.auditor.id %}">
                             {{ loc_req.auditor }}
