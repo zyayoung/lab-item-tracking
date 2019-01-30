@@ -3,6 +3,26 @@
 {% block title %} 实验室物品管理 {% endblock %}
 
 {% block content %}
+<nav class="mb-3">
+    <div class="nav nav-tabs" role="tablist">
+        <a class="nav-item nav-link" href="{% url 'traffic:userAnalyze' %}" aria-selected="false">
+            <i class="fa fa-file-text" aria-hidden="true"></i>
+            用户视图
+        </a>
+        <a class="nav-item nav-link active" href="{% url 'traffic:locationAnalyze' %}" aria-selected="true">
+            <i class="fa fa-pie-chart" aria-hidden="true"></i>
+            位置视图
+        </a>
+        <a class="nav-item nav-link" href="{% url 'traffic:calender' %}" aria-selected="false">
+            <i class="fa fa-pie-chart" aria-hidden="true"></i>
+            日历视图
+        </a>
+        <a class="nav-item nav-link" href="{% url 'traffic:performance' %}" aria-selected="false">
+            <i class="fa fa-pie-chart" aria-hidden="true"></i>
+            性能分析
+        </a>
+    </div>
+</nav>
 {% if loc_data %}
 <p class="lead">今日活跃</p>
 <div id="main1" class="chart" style="height: 300px;"></div>
@@ -10,9 +30,6 @@
 <p class="lead">位置关系</p>
 <div id="main2" class="border chart" style="height: 800px;"></div>
 <div id="main3" class="border chart" style="height: 98vh;"></div>
-
-
-
 {% endblock %}
 
 {% block script %}

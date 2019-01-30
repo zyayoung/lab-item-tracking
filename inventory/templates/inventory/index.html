@@ -27,90 +27,88 @@
 <div class="container">
     <p class="lead">
         {% if request.session.is_login %}
-        您好，{{ request.session.user_name }}！欢迎回来！
+        您好，{{ request.session.user_name }}！
         {% else %}
         您尚未登录，只能访问公开内容！
         {% endif %}
     </p>
     <div class="row text-center justify-content-md-center">
         <div class="col-lg-3 col-sm-6">
-            <div class="card mb-3">
-                <div class="card-body">
-                    <h5 class="card-title">物品</h5>
-                    <a href="{% url 'inventory:items' %}" class="card-link">
-                        <i class="fa fa-list-ul" aria-hidden="true"></i> 物品列表
-                    </a>
-                    <br />
-                    <a href="{% url 'inventory:add' %}" class="card-link">
-                        <i class="fa fa-plus" aria-hidden="true"></i> 添加物品
-                    </a>
-                </div>
+            <div class="card">
+                <h5 class="card-title mt-3">物品</h5>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <a href="{% url 'inventory:items' %}" class="card-link">
+                            <i class="fa fa-list-ul" aria-hidden="true"></i> 物品列表
+                        </a>
+                    </li>
+                    <li class="list-group-item">
+                        <a href="{% url 'inventory:add' %}" class="card-link">
+                            <i class="fa fa-plus" aria-hidden="true"></i> 添加物品
+                        </a>
+                    </li>
+                </ul>
             </div>
         </div>
         <div class="col-lg-3 col-sm-6">
-            <div class="card mb-3">
-                <div class="card-body">
-                    <h5 class="card-title">位置</h5>
-                    <a href="{% url 'inventory:location_root' %}" class="card-link">
-                        <i class="fa fa-list-ul" aria-hidden="true"></i> 位置列表
-                    </a>
-                    <br />
-                    {% if others_request_list_count %}
-                    <a href="{% url 'personal:locreq' %}" class="card-link">
-                        <i class="fa fa-file" aria-hidden="true"></i>
-                        <span class="red-point"> 位置申请</span>
-                    </a>
-                    {% else %}
-                    <a href="{% url 'personal:mylocreq' %}" class="card-link">
-                        <i class="fa fa-file" aria-hidden="true"></i> 位置申请
-                    </a>
-                    {% endif %}
-                </div>
+            <div class="card">
+                <h5 class="card-title mt-3">位置</h5>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <a href="{% url 'inventory:location_root' %}" class="card-link">
+                            <i class="fa fa-list-ul" aria-hidden="true"></i> 位置列表
+                        </a>
+                    </li>
+                    <li class="list-group-item">
+                        {% if others_request_list_count %}
+                        <a href="{% url 'personal:locreq' %}" class="card-link">
+                            <span class="badge badge-danger">
+                                {{ others_request_list_count }}
+                            </span>
+                            位置申请
+                        </a>
+                        {% else %}
+                        <a href="{% url 'personal:mylocreq' %}" class="card-link">
+                            <i class="fa fa-file" aria-hidden="true"></i> 位置申请
+                        </a>
+                        {% endif %}
+                    </li>
+                </ul>
             </div>
         </div>
         <div class="col-lg-3 col-sm-6">
-            <div class="card mb-3">
-                <div class="card-body">
-                    <h5 class="card-title">关于</h5>
-                    <a href="https://github.com/zyayoung/lab-item-tracking/wiki" class="card-link">
-                        <i class="fa fa-book" aria-hidden="true"></i> 使用手册
-                    </a>
-                    <br />
-                    <a href="https://github.com/zyayoung/lab-item-tracking/issues" class="card-link">
-                        <i class="fa fa-stethoscope" aria-hidden="true"></i> 反馈问题
-                    </a>
-                </div>
+            <div class="card">
+                <h5 class="card-title mt-3">关于</h5>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <a href="https://github.com/zyayoung/lab-item-tracking/wiki" class="card-link">
+                            <i class="fa fa-book" aria-hidden="true"></i> 使用手册
+                        </a>
+                    </li>
+                    <li class="list-group-item">
+                        <a href="https://github.com/zyayoung/lab-item-tracking/issues" class="card-link">
+                            <i class="fa fa-stethoscope" aria-hidden="true"></i> 反馈问题
+                        </a>
+                    </li>
+                </ul>
             </div>
         </div>
         {% if request.session.is_superadmin %}
         <div class="col-lg-3 col-sm-6">
-            <div class="card mb-3">
-                <div class="card-body">
-                    <h5 class="card-title">网站管理</h5>
-                    <a href="{% url 'admin:login_user_changelist' %}" class="card-link">
-                        <i class="fa fa-gear" aria-hidden="true"></i> 管理用户
-                    </a>
-                    <br />
-                    <a href="{% url 'traffic:userAnalyze' %}" class="card-link">
-                        <i class="fa fa-pie-chart" aria-hidden="true"></i> 用户视图
-                    </a>
-                    <br />
-                    <a href="{% url 'traffic:locationAnalyze' %}" class="card-link">
-                        <i class="fa fa-pie-chart" aria-hidden="true"></i> 位置视图
-                    </a>
-                    <br />
-                    <a href="{% url 'traffic:calender' %}" class="card-link">
-                        <i class="fa fa-calendar" aria-hidden="true"></i> 日历视图
-                    </a>
-                    <br />
-                    <a href="{% url 'traffic:performance' %}" class="card-link">
-                        <i class="fa fa-bar-chart" aria-hidden="true"></i> 性能分析
-                    </a>
-                    <br />
-                    <a href="{% url 'admin:index' %}" class="card-link">
-                        <i class="fa fa-database" aria-hidden="true"></i> 数据管理
-                    </a>
-                </div>
+            <div class="card">
+                <h5 class="card-title mt-3">管理</h5>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <a href="{% url 'traffic:userAnalyze' %}" class="card-link">
+                            <i class="fa fa-pie-chart" aria-hidden="true"></i> 图表分析
+                        </a>
+                    </li>
+                    <li class="list-group-item">
+                        <a href="{% url 'admin:index' %}" class="card-link">
+                            <i class="fa fa-database" aria-hidden="true"></i> 数据管理
+                        </a>
+                    </li>
+                </ul>
             </div>
         </div>
     </div>
