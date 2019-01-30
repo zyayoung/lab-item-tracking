@@ -22,6 +22,10 @@
             <input type="text" name="unit" class="form-control" maxlength="32" id="id_unit" value="{{ item.unit }}">
         </div>
     </div>
+    <div class="form-group form-check">
+        <input type="checkbox" name="public" class="form-check-input" id="id_public" {% if item.is_public %}checked=""{% endif %}>
+        <b>公开</b>
+    </div>
     <div class="form-group row">
         <label class="col-3 col-form-label"><b>类型</b></label>
         <div class="col-9">{{ choose_form.template }}</div>

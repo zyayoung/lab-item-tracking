@@ -63,11 +63,12 @@ class AddItemView(generic.View):
             new_item = Item.objects.create(
                 name=name,
                 quantity=0,
-                unit=unit,
                 owner=tmp_user,
                 is_public=public,
                 template=None,
             )
+            if not quantity:
+                quantity = 1
             new_item.allowed_users.add(tmp_user)
             set_quantity(new_item, quantity, tmp_user)
             message = "添加成功！"
@@ -148,6 +149,9 @@ class EditItemView(generic.View):
         user_id = request.session.get('user_id')
         tmp_user = myUser.objects.get(id=user_id)
         item = get_my_item(tmp_user, kwargs.get('item_id'))
+        if not item.del_permission(tmp_user):
+            messages.error(request, "只有创建人（" + item.owner.name + "）及其管理员可以编辑物品！")
+            return render(request, 'inventory/info.html', locals())
         choose_form = self.get_form()
         add_form = forms.AddItemForm()
         return render(request, 'inventory/edit.html', locals())
@@ -155,12 +159,16 @@ class EditItemView(generic.View):
     def post(self, request, *args, **kwargs):
         tmp_user = myUser.objects.get(id=request.session.get('user_id'))
         item = get_my_item(tmp_user, kwargs.get('item_id'))
-        message = "请检查填写的内容！"
+        if not item.del_permission(tmp_user):
+            messages.error(request, "只有创建人（" + item.owner.name + "）及其管理员可以编辑物品！")
+            return render(request, 'inventory/info.html', locals())
+        message = "请检查填写的a内容！"
         add_form = forms.AddItemForm(request.POST)
         if add_form.is_valid():
             item.name = add_form.cleaned_data['name']
             item.quantity = add_form.cleaned_data['quantity']
             item.unit = add_form.cleaned_data['unit']
+            item.is_public = add_form.cleaned_data['public']
         else:
             return render(request, 'inventory/edit.html', locals())
         choose_form = self.get_form(request.POST)

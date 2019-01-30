@@ -18,6 +18,7 @@ class AddItemForm(forms.Form):
                 'min': '0.00',
             }),
         min_value=0,
+        required=False,
     )
     unit = forms.CharField(
         label="单位",
