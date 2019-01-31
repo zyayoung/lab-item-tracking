@@ -8,6 +8,7 @@ from lab_item_tracking.urls import SSL_CERTIFICATION_URL
 class AuthMD(MiddlewareMixin):
     reg_list = [
         r"^$",
+        r"^index/$",
         r"^static/",
         r"^login/$",
         r"^register/$",
@@ -25,4 +26,4 @@ class AuthMD(MiddlewareMixin):
         if request.session.get('is_login') or re.match(reg_str, request_url):
             return
         else:
-            return render(request, 'inventory/index.html')
+            return redirect('inventory:index')
