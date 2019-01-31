@@ -8,6 +8,7 @@ from . import forms
 from django.conf import settings
 import hashlib
 import datetime
+from urllib import request, parse
 
 # Create your views here.
 
@@ -113,14 +114,19 @@ def send_email(email, code):
                     <p>此链接有效期为{2}天！</p>
                     '''.format(settings.SITE_DOMAIN, code,
                                settings.CONFIRM_DAYS)
-    msg = EmailMultiAlternatives(
-        subject,
-        text_content,
-        settings.EMAIL_HOST_USER,
-        [email],
-    )
-    msg.attach_alternative(html_content, "text/html")
-    msg.send()
+    try:
+        url = settings.EMAIL_API + '?to=' + parse.quote(email) + '&title=' + parse.quote(subject) + '&body=' + parse.quote(text_content) + '&html=' + parse.quote(html_content)
+        print(url)
+        request.urlopen(url)
+    except:
+        msg = EmailMultiAlternatives(
+            subject,
+            text_content,
+            settings.EMAIL_HOST_USER,
+            [email],
+        )
+        msg.attach_alternative(html_content, "text/html")
+        msg.send()
 
 
 def get_confirm_string(user):
