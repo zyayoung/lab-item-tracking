@@ -266,10 +266,17 @@ class EditTemplateView(generic.View):
         template = get_object_or_404(ItemTemplate, id=kwargs.get('id'))
         my_list = []
         index = 0
+        countdown = 10
         while True:
             index += 1
             if not len(request.POST.get('name_{}'.format(index), '')):
-                break
+                countdown -= 1
+                if countdown < 0:
+                    break
+                else:
+                    continue
+            else:
+                countdown = 10
             my_dict = {}
             my_dict['name'] = request.POST.get('name_{}'.format(index))
             my_dict['type'] = request.POST.get('type_{}'.format(index))

@@ -6,11 +6,6 @@
 <div class="alert alert-warning">{{ message }}</div>
 {% endif %}
 <p class="lead pull-left">物品模板编辑：{{ template }}</p>
-<span class="pull-right">
-    <button class="btn btn-outline-primary" onClick="addRow()">
-        <i class="fa fa-plus" aria-hidden="true"></i> 新建属性
-    </button>
-</span>
 <form method="post" action="">
     <table class="table table-striped" id="editTable">
         <thead>
@@ -18,11 +13,12 @@
             <th>类型</th>
             <th>必填</th>
             <th>提示信息</th>
+            <th></th>
         </thead>
         <tbody>
             {% csrf_token %}
             {% for value in template.extra_data %}
-            <tr>
+            <tr id="tr_{{ forloop.counter }}">
                 <td>
                     <input type="text" name="name_{{ forloop.counter }}" class="form-control" maxlength="128" value="{{ value.name }}">
                 </td>
@@ -44,10 +40,16 @@
                     <input type="text" name="placeholder_{{ forloop.counter }}" class="form-control" maxlength="128"
                         value="{{ value.placeholder }}">
                 </td>
+                <td>
+                    <button type="button" class="btn btn-outline-primary" onclick="del_row({{ forloop.counter }})">删除</button>
+                </td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
+    <button type="button" class="btn btn-outline-primary" onClick="addRow()">
+        <i class="fa fa-plus" aria-hidden="true"></i> 添加属性
+    </button>
     <button type="submit" class="btn btn-outline-primary">保存</button>
 </form>
 {% endblock %}
@@ -56,7 +58,7 @@
     index = {{ template.extra_data|length }}
     function addRow() {
         index++;
-        var myHtml = ['<tr>',
+        var myHtml = ['<tr id="tr_' + index + '">',
                 '    <td>',
                 '        <input type="text" name="name_' + index + '" class="form-control" maxlength="128">',
                 '    </td>',
@@ -77,8 +79,14 @@
                 '    <td>',
                 '        <input type="text" name="placeholder_' + index + '" class="form-control" maxlength="128">',
                 '    </td>',
-                '</tr>'].join("");;
-        $("#editTable").append(myHtml)
+                '    <td>',
+                '        <button type="button" class="btn btn-outline-primary" onclick="del_row(' + index + ')">删除</button>',
+                '    </td>',
+                '</tr>'].join("");
+        $("#editTable").append(myHtml);
+    };
+    function del_row(b) {
+        $('#tr_'+b).remove();
     }
 </script>
 {% endblock %}
