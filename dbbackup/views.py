@@ -1,8 +1,10 @@
 from django.shortcuts import render
 from django.http import StreamingHttpResponse
 import subprocess
+from login.utils import check_admin
 
 
+@check_admin
 def users(request):
     def file_iterator(file_name, chunk_size=512):
         with subprocess.Popen(['python', 'manage.py', 'dumpdata', 'login'], stdout=subprocess.PIPE) as f:
@@ -20,6 +22,7 @@ def users(request):
     return response
 
 
+@check_admin
 def inventory(request):
     def file_iterator(file_name, chunk_size=512):
         with subprocess.Popen(['python', 'manage.py', 'dumpdata', 'inventory'], stdout=subprocess.PIPE) as f:
@@ -37,6 +40,7 @@ def inventory(request):
     return response
 
 
+@check_admin
 def trace(request):
     def file_iterator(file_name, chunk_size=512):
         with subprocess.Popen(['python', 'manage.py', 'dumpdata', 'trace_item'], stdout=subprocess.PIPE) as f:
