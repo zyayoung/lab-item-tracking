@@ -181,10 +181,9 @@ class EditItemView(generic.View):
                 extra_data = template.extra_data
                 edit_form = forms.EditItemForm(request.POST, data=extra_data)
                 if edit_form.is_valid():
-                    for idx, (key,
-                              value) in enumerate(template.extra_data.items()):
-                        data[key] = edit_form.cleaned_data[key.replace(
-                            ' ', '_')]
+                    for dictionary in template.extra_data:
+                        data[dictionary['name']] = edit_form.cleaned_data[
+                            dictionary['name'].replace(' ', '_')]
             else:
                 template = None
             item.extra_data = data
