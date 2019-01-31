@@ -12,5 +12,11 @@ class UserAdmin(admin.ModelAdmin):
     filter_horizontal = ('staff',)
 
 
+class AllowedEmailsAdmin(admin.ModelAdmin):
+    list_display = ('email', 'real_name')
+    search_fields = ('real_name', 'email')
+
+
 admin.site.register(User, UserAdmin)
+admin.site.register(AllowedEmails, AllowedEmailsAdmin)
 admin.site.register(ConfirmString)

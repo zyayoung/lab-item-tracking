@@ -38,7 +38,9 @@ def login(request):
             try:
                 user = models.User.objects.get(name=username)
                 if settings.EMAIL_ENABLE and not user.has_confirmed:
-                    message = "该用户还未通过邮件确认！"
+                    message = "该用户还未通过邮件确认！请查看收件箱（及垃圾邮件）"
+                if settings.EMAIL_ENABLE and not models.AllowedEmails.objects.filter(email=user.email).exists():
+                    message = "该用户不在白名单中，请联系网站管理员！"
                     return render(request, 'login/login.html', locals())
                 if user.password == hash_code(password):
                     request.session['is_login'] = True
@@ -92,7 +94,7 @@ def register(request):
                 # Send confirm email
                 code = get_confirm_string(new_user)
                 send_email(email, code)
-            message = "请前往注册邮箱，进行邮件确认！"
+            message = "请前往注册邮箱，进行邮件确认！（注意检查垃圾邮件）"
             return render(request, 'login/confirm.html', locals())
             # return redirect('/login/')
         else:
