@@ -13,6 +13,11 @@
     {% if not pending %}
     <span class="pull-right">
         {% if add_loc_form %}
+        {% if location_id %}
+        <a class="btn btn-outline-primary" role="button" href="{% url 'admin:inventory_location_change' location_id %}">
+            <i class="fa fa-edit" aria-hidden="true"></i> 编辑
+        </a>
+        {% endif %}
         <a class="btn btn-outline-primary" role="button" href="#" onClick="addLocMdl()">
             <i class="fa fa-plus" aria-hidden="true"></i> 新建
         </a>

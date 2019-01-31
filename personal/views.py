@@ -27,6 +27,7 @@ class IndexView(generic.View):
 
 class UserView(generic.View):
     def get(self, request, *args, **kwargs):
+        tmp_user = myUser.objects.get(id=request.session.get('user_id'))
         if int(kwargs.get('id')) == request.session.get('user_id'):
             return redirect('personal:index')
         user = get_object_or_404(myUser, id=kwargs.get('id'))

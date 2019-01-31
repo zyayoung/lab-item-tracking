@@ -11,6 +11,11 @@
         <i class="fa fa-search" aria-hidden="true"></i>
     </button>
 </form>
+<span class="pull-right">
+    <a class="btn btn-outline-primary" role="button" href="{% url 'inventory:add' %}">
+        <i class="fa fa-plus" aria-hidden="true"></i> 新建
+    </a>
+</span>
 <p></p>
 {% if keyword %}
 <p class="lead">
