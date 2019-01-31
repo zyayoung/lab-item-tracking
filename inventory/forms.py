@@ -39,12 +39,14 @@ class EditItemForm(forms.Form):
         super(EditItemForm, self).__init__(*args)
         data = kwargs.get('data')
         if data:
-            for idx, (key, value) in enumerate(data.items()):
+            for idx, value in enumerate(data):
+                tmp_type = value.get('type', 'text').lower()
+                tmp_label = value.get('name', '属性{}'.format(idx + 1))
                 tmp_required = bool(value.get('required', False))
                 tmp_placeholder = value.get('placeholder', '')
-                if value['type'].lower() == 'int':
+                if tmp_type == 'int':
                     tmp_field = forms.IntegerField(
-                        label=key,
+                        label=tmp_label,
                         required=tmp_required,
                         widget=forms.TextInput(
                             attrs={
@@ -54,9 +56,9 @@ class EditItemForm(forms.Form):
                                 'placeholder': tmp_placeholder,
                             }),
                     )
-                elif value['type'].lower() == 'float':
+                elif tmp_type == 'float':
                     tmp_field = forms.FloatField(
-                        label=key,
+                        label=tmp_label,
                         required=tmp_required,
                         widget=forms.TextInput(
                             attrs={
@@ -65,26 +67,26 @@ class EditItemForm(forms.Form):
                                 'placeholder': tmp_placeholder,
                             }),
                     )
-                elif value['type'].lower() in ['bool', 'boolean']:
+                elif tmp_type == 'bool':
                     tmp_field = forms.BooleanField(
-                        label=key,
+                        label=tmp_label,
                         widget=forms.CheckboxInput(
                             attrs={
                                 'class': 'form-check-input position-static',
                             }),
                     )
-                else:
+                elif tmp_type == 'text':
                     tmp_field = forms.CharField(
-                        label=key,
-                        max_length=128,
+                        label=tmp_label,
                         required=tmp_required,
+                        max_length=128,
                         widget=forms.TextInput(
                             attrs={
                                 'class': 'form-control',
                                 'placeholder': tmp_placeholder,
                             }),
                     )
-                self.fields[key.replace(' ', '_')] = tmp_field
+                self.fields[tmp_label.replace(' ', '_')] = tmp_field
 
 
 class ChooseTemplateForm(forms.Form):

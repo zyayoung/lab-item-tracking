@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block title %}物品模板详情：{{ template }} {% endblock %}
+{% block content %}
+{% if message %}
+<div class="alert alert-warning">{{ message }}</div>
+{% endif %}
+<p class="lead">物品模板详情：{{ template }}</p>
+<table class="table table-striped">
+    <thead>
+        <th>属性名称</th>
+        <th>类型</th>
+        <th>必填</th>
+        <th>提示信息</th>
+    </thead>
+    <tbody>
+        {% for value in template.extra_data %}
+        <tr>
+            <td>{{ value.name }}</td>
+            <td>{{ value.type }}</td>
+            <td>{% if value.required %}是{% else %}否{% endif %}</td>
+            <td>{{ value.placeholder }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

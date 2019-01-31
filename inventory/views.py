@@ -128,8 +128,8 @@ def template_ajax(request, *args, **kwargs):
     if template_id != 0:
         template = ItemTemplate.objects.get(id=template_id)
         extra_data = template.extra_data
-        data = extra_data.get('data', {})
         edit_form = forms.EditItemForm(*args, data=extra_data)
+        print(edit_form)
     return render(request, 'inventory/editajax.html', locals())
 
 
@@ -149,7 +149,8 @@ class EditItemView(generic.View):
         tmp_user = myUser.objects.get(id=user_id)
         item = get_my_item(tmp_user, kwargs.get('item_id'))
         if not item.del_permission(tmp_user):
-            messages.error(request, "只有创建人（" + item.owner.name + "）及其管理员可以编辑物品！")
+            messages.error(request,
+                           "只有创建人（{}）及其管理员可以编辑物品！".foramt(item.owner.name))
             return render(request, 'inventory/info.html', locals())
         choose_form = self.get_form()
         add_form = forms.AddItemForm()
@@ -159,7 +160,8 @@ class EditItemView(generic.View):
         tmp_user = myUser.objects.get(id=request.session.get('user_id'))
         item = get_my_item(tmp_user, kwargs.get('item_id'))
         if not item.del_permission(tmp_user):
-            messages.error(request, "只有创建人（" + item.owner.name + "）及其管理员可以编辑物品！")
+            messages.error(request,
+                           "只有创建人（{}）及其管理员可以编辑物品！".foramt(item.owner.name))
             return render(request, 'inventory/info.html', locals())
         message = "请检查填写的a内容！"
         add_form = forms.AddItemForm(request.POST)
@@ -192,6 +194,38 @@ class EditItemView(generic.View):
         item.save()
         message = "修改成功！"
         return redirect('inventory:item', item.id)
+
+
+class TemplatesView(generic.View):
+    def get(self, request, *args, **kwargs):
+        tmp_user = myUser.objects.get(id=request.session.get('user_id'))
+        if not tmp_user.is_superadmin:
+            raise Http404()
+        template_list = ItemTemplate.objects.all()
+        keyword = request.GET.get('q')
+        if keyword:
+            keyword_iri = quote(keyword)
+            template_list = template_list.filter(name__contains=keyword)
+        paginator = Paginator(template_list, OBJ_PER_PAGE)
+        page = request.GET.get('page', 1)
+        try:
+            template_list = paginator.page(page)
+        except EmptyPage:
+            template_list = paginator.page(paginator.num_pages)
+        return render(request, 'inventory/templates.html', locals())
+
+
+class TemplateView(generic.View):
+    def dispatch(self, request, *args, **kwargs):
+        tmp_user = myUser.objects.get(id=request.session.get('user_id'))
+        if not tmp_user.is_superadmin:
+            raise Http404()
+        return super(TemplateView, self).dispatch(request, *args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        import json
+        template = get_object_or_404(ItemTemplate, id=kwargs.get('id'))
+        return render(request, 'inventory/template.html', locals())
 
 
 class LocationView(generic.View):
@@ -258,8 +292,8 @@ class LocationView(generic.View):
             path = add_loc_form.cleaned_data['name']
             public = add_loc_form.cleaned_data['public']
             if Location.objects.filter(
-                path=path,
-                parent=loc_now,
+                    path=path,
+                    parent=loc_now,
             ).exists():
                 self.message = "不能重复添加！"
                 return self.get(request, *args, **kwargs)

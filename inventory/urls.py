@@ -12,6 +12,8 @@ urlpatterns = [
     url(r'^item/(?P<item_id>\d+)/edit/$',
         views.EditItemView.as_view(),
         name='edit'),
+    url(r'^templates/$', views.TemplatesView.as_view(), name='templates'),
+    url(r'^template/(?P<id>\d+)/$', views.TemplateView.as_view(), name='template'),
     url(r'^template/ajax/$',
         views.template_ajax,
         name='templateAjax'),
