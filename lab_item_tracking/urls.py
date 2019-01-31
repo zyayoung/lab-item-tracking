@@ -22,7 +22,6 @@ from login import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    url(r'^admin/uwsgi/', include('django_uwsgi.urls')),
     url(r'^static/(?P<path>.*)$', serve,
         {'document_root': settings.STATIC_ROOT}, name='static'),
     url(r'^captcha/', include('captcha.urls')),
