@@ -20,7 +20,7 @@
         margin-right: -8px;
     }
 
-    .section{
+    .section {
         margin-bottom: 30px;
     }
 </style>
@@ -46,6 +46,13 @@
                             <i class="fa fa-list-ul" aria-hidden="true"></i> 物品列表
                         </a>
                     </li>
+                    {% if request.session.is_superadmin %}
+                    <li class="list-group-item">
+                        <a href="{% url 'inventory:templates' %}" class="card-link">
+                            <i class="fa fa-list-ul" aria-hidden="true"></i> 模板列表
+                        </a>
+                    </li>
+                    {% endif %}
                     <li class="list-group-item">
                         <a href="{% url 'inventory:add' %}" class="card-link">
                             <i class="fa fa-plus" aria-hidden="true"></i> 添加物品
