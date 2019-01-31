@@ -19,6 +19,7 @@ from django.conf.urls import url
 from django.conf import settings
 from django.views.static import serve
 from django.http import HttpResponse
+import dbbackup.urls
 
 
 SSL_CERTIFICATION_URL = r'^\.well-known/pki-validation/fileauth.txt$'
@@ -39,5 +40,6 @@ urlpatterns = [
     url(r'^', include('personal.urls')),
     url(r'^', include('traffic.urls')),
     url(r'^silk/', include('silk.urls', namespace='silk')),
+    url(r'^dbbackup/', include('dbbackup.urls', namespace='dbbackup')),
     url(SSL_CERTIFICATION_URL, ssl_certification)
 ]

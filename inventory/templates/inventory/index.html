@@ -46,7 +46,7 @@
                             <i class="fa fa-list-ul" aria-hidden="true"></i> 物品列表
                         </a>
                     </li>
-                    {% if request.session.is_superadmin %}
+                    {% if tmp_user.is_superadmin %}
                     <li class="list-group-item">
                         <a href="{% url 'inventory:templates' %}" class="card-link">
                             <i class="fa fa-list-ul" aria-hidden="true"></i> 模板列表
@@ -104,7 +104,7 @@
                 </ul>
             </div>
         </div>
-        {% if request.session.is_superadmin %}
+        {% if tmp_user.is_superadmin %}
         <div class="col-lg-3 col-sm-6 section">
             <div class="card">
                 <h5 class="card-title mt-3">管理</h5>
@@ -124,12 +124,76 @@
                             <i class="fa fa-database" aria-hidden="true"></i> 数据管理
                         </a>
                     </li>
+                    <li class="list-group-item">
+                        <a href="#" class="card-link" onclick="cfm()">
+                            <i class="fa fa-download" aria-hidden="true"></i> 数据备份
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>
     </div>
     {% endif %}
 </div>
+{% if tmp_user.is_superadmin %}
+<div class="modal fade" id="cfmModal" tabindex="-1" role="dialog" aria-labelledby="cfmModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="cfmModalTitle">
+                    <i class="fa fa-info" aria-hidden="true"></i> 提示信息
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p id="modalNotice"></p>
+            </div>
+            <div class="modal-footer" id="actions">
+                <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-outline-primary" onClick="batch_download()">确定</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+{% block script %}
+{% if tmp_user.is_superadmin %}
+<script>
+function cfm() {
+    $('#modalNotice').html('您确认要备份数据库吗？（该过程可能需要数十分钟）');
+    $('#actions').html(
+        '<button type="button" class="btn btn-outline-secondary" data-dismiss="modal">取消</button>\n' +
+        '<button type="button" class="btn btn-outline-primary" onClick="batch_download()">确定</button>'
+    );
+    $('#cfmModal').modal();
+}
+function batch_download()
+{
+var tmp_array = [
+    "{% url 'dbbackup:inventorybk' %}",
+    "{% url 'dbbackup:tracebk' %}",
+    "{% url 'dbbackup:usersbk' %}",
+];
 
+//download
+$("iframe").remove();
+window.ids_array = tmp_array;
+download();
+$('#modalNotice').html('请耐心等待全部'+(tmp_array.length+1)+'个文件下载完成');
+$('#actions').html('<button type="button" class="btn btn-outline-primary" data-dismiss="modal">确定</button>')
+}
 
+function download()
+{
+if(window.ids_array.length > 0)
+{
+$("body").append('<iframe src="'+window.ids_array.pop()+'" style="VISIBILITY: hidden"></iframe>');
+setTimeout(download, 1);
+}
+}
+</script>
+{% endif %}
 {% endblock %}
