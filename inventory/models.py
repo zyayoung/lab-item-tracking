@@ -61,10 +61,8 @@ class ItemTemplate(models.Model):
 
 class Item(models.Model):
     name = models.CharField(max_length=128, verbose_name="名称")
-    quantity = models.DecimalField(
+    quantity = models.FloatField(
         default=0,
-        max_digits=10,
-        decimal_places=2,
         blank=True,
         verbose_name="数量",
     )

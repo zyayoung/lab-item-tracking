@@ -28,10 +28,8 @@ class ItemLog(models.Model):
         null=True,
         on_delete=models.SET_NULL,
     )
-    quantity_from = models.DecimalField(
+    quantity_from = models.FloatField(
         default=0,
-        max_digits=10,
-        decimal_places=2,
         blank=True,
         verbose_name="操作前数量",
     )
@@ -43,10 +41,8 @@ class ItemLog(models.Model):
         null=True,
         on_delete=models.SET_NULL,
     )
-    quantity_to = models.DecimalField(
+    quantity_to = models.FloatField(
         default=0,
-        max_digits=10,
-        decimal_places=2,
         blank=True,
         verbose_name="操作后数量",
     )
