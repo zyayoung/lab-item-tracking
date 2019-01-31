@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block title %}物品模板编辑：{{ template }} {% endblock %}
+{% block content %}
+{% if message %}
+<div class="alert alert-warning">{{ message }}</div>
+{% endif %}
+<p class="lead pull-left">物品模板编辑：{{ template }}</p>
+<span class="pull-right">
+    <button class="btn btn-outline-primary" onClick="addRow()">
+        <i class="fa fa-plus" aria-hidden="true"></i> 新建属性
+    </button>
+</span>
+<form method="post" action="">
+    <table class="table table-striped" id="editTable">
+        <thead>
+            <th>属性名称</th>
+            <th>类型</th>
+            <th>必填</th>
+            <th>提示信息</th>
+        </thead>
+        <tbody>
+            {% csrf_token %}
+            {% for value in template.extra_data %}
+            <tr>
+                <td>
+                    <input type="text" name="name_{{ forloop.counter }}" class="form-control" maxlength="128" value="{{ value.name }}">
+                </td>
+                <td>
+                    <select name="type_{{ forloop.counter }}" class="form-control">
+                        <option value="int" {% if value.type == "int" %} selected="selected" {% endif %}>int</option>
+                        <option value="float" {% if value.type == "float" %} selected="selected" {% endif %}>float</option>
+                        <option value="bool" {% if value.type == "bool" %} selected="selected" {% endif %}>bool</option>
+                        <option value="text" {% if value.type == "text" %} selected="selected" {% endif %}>text</option>
+                    </select>
+                </td>
+                <td>
+                    <select name="required_{{ forloop.counter }}" class="form-control">
+                        <option value="1" {% if value.required %} selected="selected" {% endif %}>是</option>
+                        <option value="0" {% if not value.required %} selected="selected" {% endif %}>否</option>
+                    </select>
+                </td>
+                <td>
+                    <input type="text" name="placeholder_{{ forloop.counter }}" class="form-control" maxlength="128"
+                        value="{{ value.placeholder }}">
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <button type="submit" class="btn btn-outline-primary">保存</button>
+</form>
+{% endblock %}
+{% block script %}
+<script>
+    index = {{ template.extra_data|length }}
+    function addRow() {
+        index++;
+        var myHtml = ['<tr>',
+                '    <td>',
+                '        <input type="text" name="name_' + index + '" class="form-control" maxlength="128">',
+                '    </td>',
+                '    <td>',
+                '        <select name="type_' + index + '" class="form-control">',
+                '            <option value="int" selected="selected">int</option>',
+                '            <option value="float">float</option>',
+                '            <option value="bool">bool</option>',
+                '            <option value="text">text</option>',
+                '        </select>',
+                '    </td>',
+                '    <td>',
+                '        <select name="required_' + index + '" class="form-control">',
+                '            <option value="1" selected="selected">是</option>',
+                '            <option value="0">否</option>',
+                '        </select>',
+                '    </td>',
+                '    <td>',
+                '        <input type="text" name="placeholder_' + index + '" class="form-control" maxlength="128">',
+                '    </td>',
+                '</tr>'].join("");;
+        $("#editTable").append(myHtml)
+    }
+</script>
+{% endblock %}

@@ -89,6 +89,33 @@ class EditItemForm(forms.Form):
                 self.fields[tmp_label.replace(' ', '_')] = tmp_field
 
 
+class AddTemplateForm(forms.Form):
+    name = forms.CharField(
+        label="名称",
+        max_length=64,
+        widget=forms.TextInput(attrs={'class': 'form-control'}),
+    )
+
+class EditTemplateForm(forms.Form):
+    name = forms.CharField(
+        max_length=128,
+        widget=forms.TextInput(attrs={'class': 'form-control'}),
+    )
+    var_type = forms.CharField(
+        required=False,
+        widget=forms.Select(attrs={'class': 'form-control'}),
+    )
+    required = forms.BooleanField(
+        required=False,
+        widget=forms.CheckboxInput(),
+    )
+    placeholder = forms.CharField(
+        max_length=128,
+        required=False,
+        widget=forms.TextInput(attrs={'class': 'form-control'}),
+    )
+
+
 class ChooseTemplateForm(forms.Form):
     template = forms.ChoiceField(
         label="类型",

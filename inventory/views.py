@@ -162,7 +162,7 @@ class EditItemView(generic.View):
             messages.error(request,
                            "只有创建人（{}）及其管理员可以编辑物品！".foramt(item.owner.name))
             return render(request, 'inventory/info.html', locals())
-        message = "请检查填写的a内容！"
+        message = "请检查填写的内容！"
         add_form = forms.AddItemForm(request.POST)
         if add_form.is_valid():
             item.name = add_form.cleaned_data['name']
@@ -221,9 +221,76 @@ class TemplateView(generic.View):
         return super(TemplateView, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
-        import json
         template = get_object_or_404(ItemTemplate, id=kwargs.get('id'))
         return render(request, 'inventory/template.html', locals())
+
+
+class AddTemplateView(generic.View):
+    def dispatch(self, request, *args, **kwargs):
+        tmp_user = myUser.objects.get(id=request.session.get('user_id'))
+        if not tmp_user.is_superadmin:
+            raise Http404()
+        return super(AddTemplateView, self).dispatch(request, *args, **kwargs)
+
+    def get(self, request):
+        add_form = forms.AddTemplateForm()
+        return render(request, 'inventory/template_add.html', locals())
+
+    def post(self, request):
+        add_form = forms.AddTemplateForm(request.POST)
+        message = "请检查填写的内容！"
+        if add_form.is_valid():
+            name = add_form.cleaned_data['name']
+            new_template = ItemTemplate.objects.create(name=name)
+            new_template.save()
+            message = "添加成功！"
+            return redirect('inventory:template_edit', new_template.id)
+        else:
+            return render(request, 'inventory/template_add.html', locals())
+
+
+class EditTemplateView(generic.View):
+    def dispatch(self, request, *args, **kwargs):
+        tmp_user = myUser.objects.get(id=request.session.get('user_id'))
+        if not tmp_user.is_superadmin:
+            raise Http404()
+        return super(EditTemplateView, self).dispatch(request, *args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        template = get_object_or_404(ItemTemplate, id=kwargs.get('id'))
+        edit_form = forms.EditTemplateForm()
+        return render(request, 'inventory/template_edit.html', locals())
+
+    def post(self, request, *args, **kwargs):
+        message = "请检查填写的内容！"
+        template = get_object_or_404(ItemTemplate, id=kwargs.get('id'))
+        my_list = []
+        index = 0
+        while True:
+            index += 1
+            if not len(request.POST.get('name_{}'.format(index), '')):
+                break
+            my_dict = {}
+            my_dict['name'] = request.POST.get('name_{}'.format(index))
+            my_dict['type'] = request.POST.get('type_{}'.format(index))
+            my_dict['required'] = bool(
+                int(request.POST.get('required_{}'.format(index))))
+            my_dict['placeholder'] = request.POST.get(
+                'placeholder_{}'.format(index), '')
+            my_list.append(my_dict)
+        template.extra_data = my_list
+        template.save()
+        message = "保存成功"
+        return self.get(request, *args, **kwargs)
+
+
+def del_template(request, template_id):
+    tmp_user = myUser.objects.get(id=request.session.get('user_id'))
+    if not tmp_user.is_superadmin:
+        raise Http404()
+    template = get_object_or_404(ItemTemplate, id=template_id)
+    template.delete()
+    return redirect('inventory:templates')
 
 
 class LocationView(generic.View):
