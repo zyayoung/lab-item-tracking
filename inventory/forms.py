@@ -64,6 +64,7 @@ class EditItemForm(forms.Form):
                             attrs={
                                 'class': 'form-control',
                                 'type': 'number',
+                                'step': '1e-12',
                                 'placeholder': tmp_placeholder,
                             }),
                     )
