@@ -11,7 +11,6 @@ from inventory.models import Item, Location, LocationPermissionApplication, Item
 from login.models import User as myUser
 from personal.utils import get_others_request_list
 from urllib.parse import quote
-from traffic.utils import build_loc_tree
 
 OBJ_PER_PAGE = 50
 
