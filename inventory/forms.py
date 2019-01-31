@@ -7,15 +7,15 @@ class AddItemForm(forms.Form):
         max_length=128,
         widget=forms.TextInput(attrs={'class': 'form-control'}),
     )
-    quantity = forms.DecimalField(
+    quantity = forms.FloatField(
         label="数量",
         widget=forms.TextInput(
             attrs={
                 'class': 'form-control',
                 'type': 'number',
-                'step': '0.01',
+                'min': '1e-12',
+                'step': '1e-12',
                 'value': '1',
-                'min': '0.00',
             }),
         min_value=0,
         required=False,
@@ -116,15 +116,15 @@ class AddLocationForm(forms.Form):
 
 
 class UseItemForm(forms.Form):
-    quantity = forms.DecimalField(
+    quantity = forms.FloatField(
         label="使用数量",
         widget=forms.TextInput(
             attrs={
                 'class': 'form-control',
                 'type': 'number',
-                'step': '0.01',
-                'min': '0.01',
-                'value': '1',
+                'min': '1e-12',
+                'step': '1e-12',
+                'value': '0.5',
             }),
     )
 

@@ -1,19 +1,20 @@
 {% extends "base.html" %}
 {% load staticfiles %}
-{% block title %}{{ item }}操作记录{% endblock %}
+{% block title %}{{ user.name }}操作记录{% endblock %}
 {% block content %}
-<p class="lead">{{ item }}操作记录：</p>
+<p class="lead">{{ user.name }}操作记录：</p>
 <table class="table table-striped table-sm">
     <thead>
+        <th>物品</th>
         <th>调整</th>
         <th>自</th>
         <th>至</th>
         <th class="d-none d-md-table-cell">时间</th>
-        <th class="d-none d-sm-table-cell">操作人</th>
     </thead>
     <tbody>
         {% for log in logs %}
         <tr>
+            <td><a href="{% url 'inventory:item' log.item.id %}">{{ log.item }}</a></td>
             <td>{{ log.operation }}</td>
             {% if log.operation == '位置' %}
             <td>
@@ -39,11 +40,6 @@
             <td>{{ log.to }}</td>
             {% endif %}
             <td class="d-none d-md-table-cell">{{ log.time }}</td>
-            <td class="d-none d-sm-table-cell">
-                <a href="{% url 'personal:user' log.operator.id %}">
-                    {{ log.operator }}
-                </a>
-            </td>
         </tr>
         {% endfor %}
     </tbody>
@@ -59,7 +55,7 @@ TableExport(document.getElementsByTagName("table"), {
   headers: true,                      // (Boolean), display table headers (th or td elements) in the <thead>, (default: true)
   footers: true,                      // (Boolean), display table footers (th or td elements) in the <tfoot>, (default: false)
   formats: ["xlsx"],                   // (String[]), filetype(s) for the export, (default: ['xlsx', 'csv', 'txt'])
-  filename: "{{ item }}操作记录" + myDate.getFullYear() + myDate.getMonth() + myDate.getDate(),                     // (id, String), filename for the downloaded file, (default: 'id')
+  filename: "{{ user }}操作记录" + myDate.getFullYear() + myDate.getMonth() + myDate.getDate(),                     // (id, String), filename for the downloaded file, (default: 'id')
   bootstrap: true,                   // (Boolean), style buttons using bootstrap, (default: true)
   exportButtons: true,                // (Boolean), automatically generate the built-in export buttons for each of the specified formats (default: true)
   position: "top",                 // (top, bottom), position of the caption element relative to table, (default: 'bottom')
@@ -67,7 +63,7 @@ TableExport(document.getElementsByTagName("table"), {
   ignoreCols: null,                   // (Number, Number[]), column indices to exclude from the exported file(s) (default: null)
   trimWhitespace: true,               // (Boolean), remove all leading/trailing newlines, spaces, and tabs from cell text in the exported file(s) (default: false)
   RTL: false,                         // (Boolean), set direction of the worksheet to right-to-left (default: false)
-  sheetname: "{{ item }}"                     // (id, String), sheet name for the exported spreadsheet, (default: 'id')
+  sheetname: "{{ user }}"                     // (id, String), sheet name for the exported spreadsheet, (default: 'id')
 });
 </script>
 {% endblock %}
