@@ -58,12 +58,13 @@
             success: function (arg) {
                 $('#innerform').html(arg);
                 Object.keys(data).forEach(function (key) {
+                    console.log('#id_' + key.replace(' ', '_'));
                     if (data[key] === True)
-                        $('#id_' + key.replace(' ', '_')).prop("checked", true);
+                        $('#id_' + key.replace(/ /g, '_')).prop("checked", true);
                     else if (data[key] === False)
-                        $('#id_' + key.replace(' ', '_')).prop("checked", false);
+                        $('#id_' + key.replace(/ /g, '_')).prop("checked", false);
                     else
-                        $('#id_' + key.replace(' ', '_')).val(data[key]);
+                        $('#id_' + key.replace(/ /g, '_')).val(data[key]);
                 });
             }
         });
