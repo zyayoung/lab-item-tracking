@@ -129,7 +129,6 @@ def template_ajax(request, *args, **kwargs):
         template = ItemTemplate.objects.get(id=template_id)
         extra_data = template.extra_data
         edit_form = forms.EditItemForm(*args, data=extra_data)
-        print(edit_form)
     return render(request, 'inventory/editajax.html', locals())
 
 
