@@ -4,6 +4,3 @@ django-simple-captcha
 django-silk
 numpy
 psycopg2-binary
-django-extensions
-django-werkzeug-debugger-runserver
-pyOpenSSL
