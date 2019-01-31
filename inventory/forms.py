@@ -71,6 +71,7 @@ class EditItemForm(forms.Form):
                 elif tmp_type == 'bool':
                     tmp_field = forms.BooleanField(
                         label=tmp_label,
+                        required=tmp_required,
                         widget=forms.CheckboxInput(
                             attrs={
                                 'class': 'form-check-input position-static',
