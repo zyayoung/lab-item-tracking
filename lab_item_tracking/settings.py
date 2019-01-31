@@ -151,6 +151,7 @@ SILKY_PYTHON_PROFILER_RESULT_PATH = os.path.join(BASE_DIR, 'logs')
 
 # Email model
 EMAIL_ENABLE = False
+EMAIL_WHITELIST_ENABLE = False
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.sina.com'
 EMAIL_PORT = 25
