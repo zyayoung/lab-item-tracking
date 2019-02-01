@@ -1,33 +1,7 @@
 {% extends "base.html" %}
 
 {% block title %} 实验室物品管理 {% endblock %}
-
-{% block css %}
-<style>
-    .red-point {
-        position: relative;
-    }
-
-    .red-point::before {
-        content: " ";
-        border: 3px solid red;
-        /*设置红色*/
-        border-radius: 3px;
-        /*设置圆角*/
-        position: absolute;
-        z-index: 1000;
-        right: 0;
-        margin-right: -8px;
-    }
-
-    .section {
-        margin-bottom: 30px;
-    }
-</style>
-{% endblock %}
-
 {% block content %}
-
 <div class="container">
     <p class="lead">
         {% if request.session.is_login %}
@@ -37,8 +11,8 @@
         {% endif %}
     </p>
     <div class="row text-center justify-content-md-center">
-        <div class="col-lg-3 col-sm-6 section">
-            <div class="card">
+        <div class="col-lg-3 col-sm-6 section mb-3">
+            <div class="card mb-3">
                 <h5 class="card-title mt-3">物品</h5>
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item">
@@ -47,24 +21,29 @@
                         </a>
                     </li>
                     <li class="list-group-item">
+                        <a href="{% url 'inventory:add' %}" class="card-link">
+                            <i class="fa fa-plus" aria-hidden="true"></i> 新建物品
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="card">
+                <h5 class="card-title mt-3">属性</h5>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
                         <a href="{% url 'inventory:properties' %}" class="card-link">
                             <i class="fa fa-list-ul" aria-hidden="true"></i> 属性列表
                         </a>
                     </li>
                     <li class="list-group-item">
-                        <a href="{% url 'inventory:add' %}" class="card-link">
-                            <i class="fa fa-plus" aria-hidden="true"></i> 添加物品
-                        </a>
-                    </li>
-                    <li class="list-group-item">
                         <a href="{% url 'inventory:add_property' %}" class="card-link">
-                            <i class="fa fa-plus" aria-hidden="true"></i> 添加属性
+                            <i class="fa fa-plus" aria-hidden="true"></i> 新建属性
                         </a>
                     </li>
                 </ul>
             </div>
         </div>
-        <div class="col-lg-3 col-sm-6 section">
+        <div class="col-lg-3 col-sm-6 section mb-3">
             <div class="card">
                 <h5 class="card-title mt-3">位置</h5>
                 <ul class="list-group list-group-flush">
@@ -90,7 +69,7 @@
                 </ul>
             </div>
         </div>
-        <div class="col-lg-3 col-sm-6 section">
+        <div class="col-lg-3 col-sm-6 section mb-3">
             <div class="card">
                 <h5 class="card-title mt-3">关于</h5>
                 <ul class="list-group list-group-flush">
@@ -108,7 +87,7 @@
             </div>
         </div>
         {% if tmp_user.is_superadmin %}
-        <div class="col-lg-3 col-sm-6 section">
+        <div class="col-lg-3 col-sm-6 section mb-3">
             <div class="card">
                 <h5 class="card-title mt-3">管理</h5>
                 <ul class="list-group list-group-flush">
@@ -170,38 +149,36 @@
 {% block script %}
 {% if tmp_user.is_superadmin %}
 <script>
-function cfm() {
-    $('#modalNotice').html('您确认要备份数据库吗？（该过程可能需要数分钟）');
-    $('#actions').html(
-        '<button type="button" class="btn btn-outline-secondary" data-dismiss="modal">取消</button>\n' +
-        '<button type="button" class="btn btn-outline-primary" onClick="batch_download()">确定</button>'
-    );
-    $('#cfmModal').modal();
-}
-function batch_download()
-{
-var tmp_array = [
-    "{% url 'dbbackup:inventorybk' %}",
-    "{% url 'dbbackup:tracebk' %}",
-    "{% url 'dbbackup:usersbk' %}",
-];
+    function cfm() {
+        $('#modalNotice').html('您确认要备份数据库吗？（该过程可能需要数分钟）');
+        $('#actions').html(
+            '<button type="button" class="btn btn-outline-secondary" data-dismiss="modal">取消</button>\n' +
+            '<button type="button" class="btn btn-outline-primary" onClick="batch_download()">确定</button>'
+        );
+        $('#cfmModal').modal();
+    }
 
-//download
-$("iframe").remove();
-window.ids_array = tmp_array;
-download();
-$('#modalNotice').html('请耐心等待全部'+(tmp_array.length+1)+'个文件下载完成');
-$('#actions').html('<button type="button" class="btn btn-outline-primary" data-dismiss="modal">确定</button>')
-}
+    function batch_download() {
+        var tmp_array = [
+            "{% url 'dbbackup:inventorybk' %}",
+            "{% url 'dbbackup:tracebk' %}",
+            "{% url 'dbbackup:usersbk' %}",
+        ];
 
-function download()
-{
-if(window.ids_array.length > 0)
-{
-$("body").append('<iframe src="'+window.ids_array.pop()+'" style="VISIBILITY: hidden"></iframe>');
-setTimeout(download, 1);
-}
-}
+        //download
+        $("iframe").remove();
+        window.ids_array = tmp_array;
+        download();
+        $('#modalNotice').html('请耐心等待全部' + (tmp_array.length + 1) + '个文件下载完成');
+        $('#actions').html('<button type="button" class="btn btn-outline-primary" data-dismiss="modal">确定</button>')
+    }
+
+    function download() {
+        if (window.ids_array.length > 0) {
+            $("body").append('<iframe src="' + window.ids_array.pop() + '" style="VISIBILITY: hidden"></iframe>');
+            setTimeout(download, 1);
+        }
+    }
 </script>
 {% endif %}
 {% endblock %}

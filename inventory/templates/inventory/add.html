@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load staticfiles %}
-{% block title %}添加{{ self.name }}{% endblock %}
+{% block title %}新建{{ self.name }}{% endblock %}
 {% block css %}{% endblock %}
 {% block content %}
 <div class="container">
@@ -10,7 +10,7 @@
             <div class="alert alert-warning">{{ message }}</div>
             {% endif %}
             {% csrf_token %}
-            <h2 class="text-center">添加{{ self.name }}</h2>
+            <h2 class="text-center">新建{{ self.name }}</h2>
             <div class="form-group">
                 <b>{{ add_form.name.label_tag }}</b>
                 {{ add_form.name}}

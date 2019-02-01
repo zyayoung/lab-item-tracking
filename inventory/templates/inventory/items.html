@@ -13,7 +13,8 @@
 </form>
 <span class="pull-right">
     <a class="btn btn-outline-primary" role="button" href="{% if is_property %}{% url 'inventory:add_property' %}{% else %}{% url 'inventory:add' %}{% endif %}">
-        <i class="fa fa-plus" aria-hidden="true"></i> 新建
+        <i class="fa fa-plus" aria-hidden="true"></i>
+        <span class="d-none d-md-inline">新建</span>
     </a>
 </span>
 <p></p>
