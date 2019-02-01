@@ -50,18 +50,3 @@ def set_location(item, location, user):
         log.save()
         item.location = location
         item.save()
-
-
-def set_quantity(item, quantity, user):
-    if quantity != item.quantity:
-        log = ItemLog.objects.create(
-            item=item,
-            operator=user,
-            location_from=item.location,
-            location_to=item.location,
-            quantity_from=item.quantity,
-            quantity_to=quantity,
-        )
-        log.save()
-        item.quantity = quantity
-        item.save()

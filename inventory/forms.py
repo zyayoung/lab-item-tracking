@@ -2,29 +2,12 @@ from django import forms
 from .models import Item
 from .utils import get_my_list
 
+
 class AddItemForm(forms.Form):
     name = forms.CharField(
         label="名称",
         max_length=128,
-        widget=forms.TextInput(attrs={'class': 'form-control'}),
-    )
-    quantity = forms.FloatField(
-        label="数量",
-        widget=forms.TextInput(
-            attrs={
-                'class': 'form-control',
-                'type': 'number',
-                'min': '1e-12',
-                'step': '1e-12',
-                'value': '1',
-            }),
-        min_value=0,
-        required=False,
-    )
-    unit = forms.CharField(
-        label="单位",
-        max_length=32,
-        required=False,
+        required = False,
         widget=forms.TextInput(attrs={'class': 'form-control'}),
     )
     public = forms.BooleanField(
@@ -95,7 +78,8 @@ class EditItemForm(forms.Form):
                     tmp_field = forms.ChoiceField(
                         label=tmp_label,
                         required=tmp_required,
-                        choices=get_my_list(user, objects).values_list('id', 'name'),
+                        choices=get_my_list(user, objects).values_list(
+                            'id', 'name'),
                         widget=forms.Select(attrs={'class': 'form-control'}),
                     )
                 self.fields[tmp_label.replace(' ', '_')] = tmp_field
@@ -138,7 +122,7 @@ class ChooseTemplateForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         super(ChooseTemplateForm, self).__init__(*args)
-        self.fields["template"].choices = kwargs.get('choices', [(0, '--')])
+        self.fields["template"].choices = kwargs.get('choices')
 
 
 class AddLocationForm(forms.Form):
@@ -152,20 +136,6 @@ class AddLocationForm(forms.Form):
         required=False,
         widget=forms.CheckboxInput(attrs={'class': 'form-check-input'}),
         initial=True,
-    )
-
-
-class UseItemForm(forms.Form):
-    quantity = forms.FloatField(
-        label="使用数量",
-        widget=forms.TextInput(
-            attrs={
-                'class': 'form-control',
-                'type': 'number',
-                'min': '1e-12',
-                'step': '1e-12',
-                'value': '0.5',
-            }),
     )
 
 

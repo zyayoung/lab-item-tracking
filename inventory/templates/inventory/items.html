@@ -29,7 +29,6 @@
         <th>名称</th>
         {% if not is_property %}
         <th>位置</th>
-        <th class="d-none d-sm-table-cell">数量</th>
         {% endif %}
         <th>类型</th>
         <th class="d-none d-md-table-cell">所有者</th>
@@ -46,7 +45,6 @@
                 未放入
                 {% endif %}
             </td>
-            <td class="d-none d-sm-table-cell">{{ item.quantity }} {% if item.unit %}{{ item.unit }}{% endif %}</td>
             {% endif %}
             <td>{% if item.template %}{{ item.template }}{% endif %}</td>
             <td class="d-none d-md-table-cell">

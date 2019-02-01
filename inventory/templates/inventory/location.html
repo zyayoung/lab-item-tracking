@@ -107,14 +107,12 @@
 <table class="table table-striped table-sm">
     <thead>
         <th>名称</th>
-        <th>数量</th>
         <th>类型</th>
     </thead>
     <tbody>
         {% for item in item_list %}
         <tr>
             <td><a href="{% url 'inventory:item' item.id %}">{{ item }}</a></td>
-            <td>{{ item.quantity }} {% if item.unit %}{{ item.unit }}{% endif %}</td>
             <td>{% if item.template %}{{ item.template }}{% endif %}</td>
         </tr>
         {% endfor %}

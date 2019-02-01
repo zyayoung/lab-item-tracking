@@ -14,12 +14,6 @@
         </tr>
         {% if not item.is_property %}
         <tr class="row mx-0">
-            <th class="col-3">数量</th>
-            <td class="col-9">
-                {{ item.quantity }} {% if item.unit %}{{ item.unit }}{% endif %}
-            </td>
-        </tr>
-        <tr class="row mx-0">
             <th class="col-3">位置</th>
             <td class="col-9">
                 {% if item.location %}
@@ -92,7 +86,6 @@
     </tbody>
 </table>
 {% if not item.is_property %}
-<a class="btn btn-outline-primary" role="button" href="#" onClick="useItem()">使用</a>
 {% if item.location %}
 <a class="btn btn-outline-primary" role="button" href="{% url 'inventory:location' item.location.id %}?pending={{ item.id }}">移动</a>
 <a class="btn btn-outline-primary" role="button" href="#" onclick="cfm('{% url 'inventory:put' item.id 0 %}', '{{ item }}', '取出')">取出</a>
@@ -107,33 +100,6 @@
 {% elif unlink_permission %}
 <a class="btn btn-outline-primary" role="button" href="#" onClick="cfm('{% url 'inventory:unlink' item.id %}', '{{ item }}', '取消关联')">取关</a>
 {% endif %}
-<div class="modal fade" id="useItemModal" tabindex="-1" role="dialog" aria-labelledby="useItemModalTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <form class="form-change" action="./?action=item" method="post">
-                {% csrf_token %}
-                <div class="modal-header">
-                    <h5 class="modal-title" id="useItemModal">
-                        使用物品
-                    </h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="form-group">
-                        {{ use_item_form.quantity.label_tag }}
-                        {{ use_item_form.quantity}}
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">取消</button>
-                    <button type="submit" class="btn btn-outline-primary">确认</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
 <div class="modal fade" id="cfmModal" tabindex="-1" role="dialog" aria-labelledby="cfmModalTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
@@ -165,10 +131,6 @@
     function toggleSelect() {
         $('#userArea').toggle();
         $('#selectForm').toggle();
-    }
-
-    function useItem() {
-        $('#useItemModal').modal();
     }
 
     function cfm(url, item, action) {

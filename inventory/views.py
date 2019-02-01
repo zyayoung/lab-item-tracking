@@ -31,7 +31,8 @@ class ItemsView(generic.View):
         is_property = 'prop' in request.path
         name = "属性" if is_property else "物品"
         tmp_user = myUser.objects.get(id=request.session.get('user_id'))
-        item_list = get_my_list(tmp_user, Item.objects.filter(is_property=is_property))
+        item_list = get_my_list(tmp_user,
+                                Item.objects.filter(is_property=is_property))
         keyword = request.GET.get('q')
         if keyword:
             keyword_iri = quote(keyword)
@@ -47,26 +48,31 @@ class ItemsView(generic.View):
 
 class AddItemView(generic.View):
     def get_form(self, *args, **kwargs):
-        return forms.AddItemForm(*args)
+        _templates = ItemTemplate.objects.all()
+        choices = []
+        if _templates.exists():
+            choices.extend([(t.id, t.name) for t in _templates.all()])
+        return forms.ChooseTemplateForm(*args, choices=choices)
 
     def get(self, request):
+        action = "新建"
         is_property = 'prop' in request.path
         name = "属性" if is_property else "物品"
-        add_form = self.get_form()
-        return render(request, 'inventory/add.html', locals())
+        choose_form = self.get_form()
+        add_form = forms.AddItemForm()
+        return render(request, 'inventory/edit.html', locals())
 
     def post(self, request):
+        action = "新建"
         is_property = 'prop' in request.path
         name = "属性" if is_property else "物品"
-        add_form = self.get_form(request.POST)
         message = "请检查填写的内容！"
+        add_form = forms.AddItemForm(request.POST)
         if add_form.is_valid():
             tmp_user = myUser.objects.get(id=request.session.get('user_id'))
             name = add_form.cleaned_data['name']
-            quantity = add_form.cleaned_data['quantity']
-            unit = add_form.cleaned_data['unit']
             public = add_form.cleaned_data['public']
-            new_item = Item.objects.create(
+            item = Item.objects.create(
                 name=name,
                 quantity=0,
                 owner=tmp_user,
@@ -74,14 +80,30 @@ class AddItemView(generic.View):
                 template=None,
                 is_property=is_property,
             )
-            new_item.allowed_users.add(tmp_user)
-            if not is_property:
-                quantity = quantity if quantity else 1
-                set_quantity(new_item, quantity, tmp_user)
-            message = "新建成功！"
-            return redirect('inventory:edit', new_item.id)
+            item.allowed_users.add(tmp_user)
         else:
-            return render(request, 'inventory/add.html', locals())
+            return render(request, 'inventory/edit.html', locals())
+        choose_form = self.get_form(request.POST)
+        if choose_form.is_valid():
+            data = {}
+            template_id = int(choose_form.cleaned_data['template'])
+            template = ItemTemplate.objects.get(id=template_id)
+            extra_data = template.extra_data
+            edit_form = forms.EditItemForm(
+                request.POST, data=extra_data, user=tmp_user)
+            if edit_form.is_valid():
+                for dictionary in template.extra_data:
+                    data[dictionary['name']] = edit_form.cleaned_data[
+                        dictionary['name'].replace(' ', '_')]
+            item.extra_data = data
+            item.template = template
+            if not len(name.strip()):
+                item.name = "未命名 {}-{}".format(template.name, item.id)
+        else:
+            return render(request, 'inventory/edit.html', locals())
+        item.save()
+        message = "新建成功！"
+        return redirect('inventory:item', item.id)
 
 
 class ItemView(generic.View):
@@ -99,7 +121,6 @@ class ItemView(generic.View):
 
     def get(self, request, *args, **kwargs):
         message = self.message
-        use_item_form = forms.UseItemForm()
         item = self.item
         tmp_user = self.tmp_user
         all_users = self.all_users
@@ -111,11 +132,16 @@ class ItemView(generic.View):
                     data_name = data['name']
                     item_keys.remove(data_name)
                     if item.extra_data[data['name']]:
-                        if data['type'] not in ['bool', 'int', 'float', 'text']:
+                        if data['type'] not in [
+                                'bool', 'int', 'float', 'text'
+                        ]:
                             try:
                                 extra_info.append((data_name, {
-                                    'data': get_my_item(tmp_user, item.extra_data[data_name]),
-                                    'type': 'link',
+                                    'data':
+                                    get_my_item(tmp_user,
+                                                item.extra_data[data_name]),
+                                    'type':
+                                    'link',
                                 }))
                             except Http404:
                                 extra_info.append((data_name, {
@@ -124,8 +150,10 @@ class ItemView(generic.View):
                                 }))
                         else:
                             extra_info.append((data_name, {
-                                'data': item.extra_data[data_name],
-                                'type': 'plain',
+                                'data':
+                                item.extra_data[data_name],
+                                'type':
+                                'plain',
                             }))
                     elif data['required']:
                         extra_info.append((data['name'], {
@@ -151,18 +179,7 @@ class ItemView(generic.View):
     def post(self, request, *args, **kwargs):
         item = self.item
         action = request.GET['action']
-        use_item_form = forms.UseItemForm(request.POST)
-        if action == 'item' and use_item_form.is_valid():
-            tmp_user = self.tmp_user
-            quantity = float(use_item_form.cleaned_data['quantity'])
-            if 0 < quantity < self.item.quantity:
-                set_quantity(self.item,
-                             float(self.item.quantity) - quantity,
-                             self.tmp_user)
-                self.message = "使用成功！"
-            else:
-                self.message = "使用数量有误！"
-        elif action == 'user':
+        if action == 'user':
             item.allowed_users.clear()
             item.allowed_users.add(item.owner)
             for user_id in request.POST.getlist('share'):
@@ -189,7 +206,7 @@ class EditItemView(generic.View):
 
     def get_form(self, *args, **kwargs):
         _templates = ItemTemplate.objects.all()
-        choices = [(0, '--')]
+        choices = []
         if _templates.exists():
             choices.extend([(t.id, t.name) for t in _templates.all()])
         return forms.ChooseTemplateForm(*args, choices=choices)
@@ -197,6 +214,7 @@ class EditItemView(generic.View):
     def get(self, request, *args, **kwargs):
         user_id = request.session.get('user_id')
         tmp_user = myUser.objects.get(id=user_id)
+        action = "编辑"
         item = get_my_item(tmp_user, kwargs.get('item_id'))
         if not item.del_permission(tmp_user):
             messages.error(request,
@@ -209,6 +227,7 @@ class EditItemView(generic.View):
     def post(self, request, *args, **kwargs):
         tmp_user = myUser.objects.get(id=request.session.get('user_id'))
         item = get_my_item(tmp_user, kwargs.get('item_id'))
+        action = "编辑"
         if not item.del_permission(tmp_user):
             messages.error(request,
                            "只有创建人（{}）及其管理员可以编辑物品！".foramt(item.owner.name))
@@ -217,9 +236,6 @@ class EditItemView(generic.View):
         add_form = forms.AddItemForm(request.POST)
         if add_form.is_valid():
             item.name = add_form.cleaned_data['name']
-            if not item.is_property:
-                item.quantity = add_form.cleaned_data['quantity']
-                item.unit = add_form.cleaned_data['unit']
             item.is_public = add_form.cleaned_data['public']
         else:
             return render(request, 'inventory/edit.html', locals())
@@ -230,7 +246,8 @@ class EditItemView(generic.View):
             if template_id != 0:
                 template = ItemTemplate.objects.get(id=template_id)
                 extra_data = template.extra_data
-                edit_form = forms.EditItemForm(request.POST, data=extra_data, user=tmp_user)
+                edit_form = forms.EditItemForm(
+                    request.POST, data=extra_data, user=tmp_user)
                 if edit_form.is_valid():
                     for dictionary in template.extra_data:
                         data[dictionary['name']] = edit_form.cleaned_data[
@@ -312,12 +329,16 @@ class EditTemplateView(generic.View):
         template = get_object_or_404(ItemTemplate, id=kwargs.get('id'))
         edit_form = forms.EditTemplateForm()
         choices = ["text", "float", "int", "bool"]
-        choices.extend([name[0] for name in ItemTemplate.objects.all().values_list('name')])
+        choices.extend([
+            name[0] for name in ItemTemplate.objects.all().values_list('name')
+        ])
         return render(request, 'inventory/template_edit.html', locals())
 
     def post(self, request, *args, **kwargs):
         choices = ["text", "float", "int", "bool"]
-        choices.extend([name[0] for name in ItemTemplate.objects.all().values_list('name')])
+        choices.extend([
+            name[0] for name in ItemTemplate.objects.all().values_list('name')
+        ])
         message = "请检查填写的内容！"
         template = get_object_or_404(ItemTemplate, id=kwargs.get('id'))
         my_list = []
@@ -330,13 +351,19 @@ class EditTemplateView(generic.View):
             if not request.POST.get('name_{}'.format(index)):
                 continue
             if not request.POST.get('type_{}'.format(index), '') in choices:
-                messages = "无此类型：" + request.POST.get('type_{}'.format(index), '')
-                return render(request, 'inventory/template_edit.html', locals())
+                messages = "无此类型：" + request.POST.get('type_{}'.format(index),
+                                                      '')
+                return render(request, 'inventory/template_edit.html',
+                              locals())
             my_list.append({
-                'name': request.POST.get('name_{}'.format(index)),
-                'type': request.POST.get('type_{}'.format(index), ''),
-                'required': bool(int(request.POST.get('required_{}'.format(index), 0))),
-                'placeholder': request.POST.get('placeholder_{}'.format(index), '')
+                'name':
+                request.POST.get('name_{}'.format(index)),
+                'type':
+                request.POST.get('type_{}'.format(index), ''),
+                'required':
+                bool(int(request.POST.get('required_{}'.format(index), 0))),
+                'placeholder':
+                request.POST.get('placeholder_{}'.format(index), '')
             })
         template.extra_data = my_list
         template.save()
@@ -382,7 +409,8 @@ class LocationView(generic.View):
                 loc_now_str = loc_now.__str__()
             except Http404:
                 return redirect('inventory:applyloc', location_id)
-            all_items = Item.objects.filter(location=loc_now, is_property=False)
+            all_items = Item.objects.filter(
+                location=loc_now, is_property=False)
             all_locs = loc_now.location_children.all()
             item_list = get_my_list(tmp_user, all_items)
             paginator = Paginator(item_list, OBJ_PER_PAGE)
@@ -457,8 +485,8 @@ def del_item(request, item_id):
     item.allowed_users.clear()
     item.is_public = False
     set_location(item, None, tmp_user)
-    set_quantity(item, 0, tmp_user)
-    return redirect('inventory:properties') if item.is_property else redirect('inventory:items')
+    return redirect('inventory:properties') if item.is_property else redirect(
+        'inventory:items')
 
 
 def unlink_item(request, item_id):
@@ -483,7 +511,8 @@ class AddItem2LocView(generic.View):
         user_id = request.session.get('user_id')
         tmp_user = myUser.objects.get(id=user_id)
         location = get_my_loc(tmp_user, kwargs.get('id'))
-        item_list = get_my_list(tmp_user, Item.objects.filter(location=None, is_property=False))
+        item_list = get_my_list(
+            tmp_user, Item.objects.filter(location=None, is_property=False))
         paginator = Paginator(item_list, OBJ_PER_PAGE)
         page = request.GET.get('page')
         try:
@@ -492,35 +521,7 @@ class AddItem2LocView(generic.View):
             item_list = paginator.page(1)
         except EmptyPage:
             item_list = paginator.page(paginator.num_pages)
-        add_form = forms.AddItemForm()
         return render(request, 'inventory/additem2loc.html', locals())
-
-    def post(self, request, *args, **kwargs):
-        add_form = forms.AddItemForm(request.POST)
-        message = "请检查填写的内容！"
-        if add_form.is_valid():
-            tmp_user = myUser.objects.get(id=request.session.get('user_id'))
-            location = get_my_loc(tmp_user, kwargs.get('id'))
-            name = add_form.cleaned_data['name']
-            quantity = add_form.cleaned_data['quantity']
-            unit = add_form.cleaned_data['unit']
-            public = add_form.cleaned_data['public']
-            new_item = Item.objects.create(
-                name=name,
-                quantity=0,
-                owner=tmp_user,
-                is_public=public,
-                template=None,
-            )
-            if not quantity:
-                quantity = 1
-            new_item.allowed_users.add(tmp_user)
-            set_quantity(new_item, quantity, tmp_user)
-            set_location(new_item, location, tmp_user)
-            message = "存入成功！"
-            return redirect('inventory:edit', new_item.id)
-        else:
-            return self.get(request, *args, **kwargs)
 
 
 class Apply4Loc(generic.View):
