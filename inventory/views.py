@@ -269,9 +269,13 @@ class EditTemplateView(generic.View):
     def get(self, request, *args, **kwargs):
         template = get_object_or_404(ItemTemplate, id=kwargs.get('id'))
         edit_form = forms.EditTemplateForm()
+        choices = ["float", "int", "bool", "text"]
+        choices.extend([name[0] for name in ItemTemplate.objects.all().values_list('name')])
         return render(request, 'inventory/template_edit.html', locals())
 
     def post(self, request, *args, **kwargs):
+        choices = ["float", "int", "bool", "text"]
+        choices.extend([name[0] for name in ItemTemplate.objects.all().values_list('name')])
         message = "请检查填写的内容！"
         template = get_object_or_404(ItemTemplate, id=kwargs.get('id'))
         my_list = []
@@ -283,6 +287,9 @@ class EditTemplateView(generic.View):
                 continue
             if not request.POST.get('name_{}'.format(index)):
                 continue
+            if not request.POST.get('type_{}'.format(index), '') in choices:
+                messages = "无此类型：" + request.POST.get('type_{}'.format(index), '')
+                return render(request, 'inventory/template_edit.html', locals())
             my_list.append({
                 'name': request.POST.get('name_{}'.format(index)),
                 'type': request.POST.get('type_{}'.format(index), ''),
