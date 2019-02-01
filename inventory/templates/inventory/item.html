@@ -42,6 +42,8 @@
             <a href="{% url 'inventory:item' value.data.id %}">{{ value.data }}</a>
             {% elif value.type == 'warning' %}
             <span class="text-warning">{{ value.data }}</span>
+            {% elif value.type == 'extra' %}
+            <span class="text-muted">{{ value.data }}</span>
             {% else %}
             {{ value.data }}
             {% endif %}

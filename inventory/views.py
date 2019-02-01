@@ -104,26 +104,45 @@ class ItemView(generic.View):
         tmp_user = self.tmp_user
         all_users = self.all_users
         extra_info = {}
-        item_keys = item.extra_data.keys()
-        for data in item.template.extra_data:
-            if data['name'] in item_keys:
-                data_name = data['name']
-                if data['type'] not in ['bool', 'int', 'float', 'text']:
-                    try:
-                        extra_info[data_name] = {
-                            'data': get_my_item(tmp_user, item.extra_data[data_name]),
-                            'type': 'link',
-                        }
-                    except Http404:
-                        extra_info[data_name] = {
-                            'data': '您没有访问此物品的权限',
-                            'type': 'warning',
-                        }
-                else:
+        item_keys = list(item.extra_data.keys())
+        if item.template:
+            for data in item.template.extra_data:
+                if data['name'] in item_keys:
+                    data_name = data['name']
+                    item_keys.remove(data_name)
+                    if data['type'] not in ['bool', 'int', 'float', 'text']:
+                        try:
+                            extra_info[data_name] = {
+                                'data': get_my_item(tmp_user, item.extra_data[data_name]),
+                                'type': 'link',
+                            }
+                        except Http404:
+                            extra_info[data_name] = {
+                                'data': '您没有访问此物品的权限',
+                                'type': 'warning',
+                            }
+                    else:
+                        if item.extra_data[data_name]:
+                            extra_info[data_name] = {
+                                'data': item.extra_data[data_name],
+                                'type': 'plain',
+                            }
+                        elif data['required']:
+                            extra_info[data_name] = {
+                                'data': '缺失必填属性',
+                                'type': 'warning',
+                            }
+                elif data['required']:
                     extra_info[data_name] = {
-                        'data': item.extra_data[data_name],
-                        'type': 'plain',
+                        'data': '缺失必填属性',
+                        'type': 'warning',
                     }
+        for key in item_keys:
+            extra_info[key] = {
+                'data': item.extra_data[key],
+                'type': 'extra'
+            }
+        print(extra_info)
         del_permission = item.del_permission(tmp_user)
         unlink_permission = item.unlink_permission(tmp_user)
         return render(request, 'inventory/item.html', locals())
