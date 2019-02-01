@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 {% load staticfiles %}
-{% block title %}物品列表{% endblock %}
+{% block title %}{{ name }}列表{% endblock %}
 {% block content %}
 <span class="lead">
-    物品：
+    {{ name }}：
 </span>
 <form class="form-inline pull-right" method="get" action="">
     <input class="form-control mr-sm-2" name="q" type="search" placeholder="搜索">
@@ -12,7 +12,7 @@
     </button>
 </form>
 <span class="pull-right">
-    <a class="btn btn-outline-primary" role="button" href="{% url 'inventory:add' %}">
+    <a class="btn btn-outline-primary" role="button" href="{% if is_property %}{% url 'inventory:add_property' %}{% else %}{% url 'inventory:add' %}{% endif %}">
         <i class="fa fa-plus" aria-hidden="true"></i> 新建
     </a>
 </span>
@@ -26,8 +26,10 @@
 <table class="table table-striped table-sm">
     <thead>
         <th>名称</th>
+        {% if not is_property %}
         <th>位置</th>
         <th class="d-none d-sm-table-cell">数量</th>
+        {% endif %}
         <th>类型</th>
         <th class="d-none d-md-table-cell">所有者</th>
     </thead>
@@ -35,6 +37,7 @@
         {% for item in item_list %}
         <tr>
             <td><a href="{% url 'inventory:item' item.id %}">{{ item }}</a></td>
+            {% if not is_property %}
             <td>
                 {% if item.location %}
                 <a href="{% url 'inventory:location' item.location.id %}">{{ item.location }}</a>
@@ -43,6 +46,7 @@
                 {% endif %}
             </td>
             <td class="d-none d-sm-table-cell">{{ item.quantity }} {% if item.unit %}{{ item.unit }}{% endif %}</td>
+            {% endif %}
             <td>{% if item.template %}{{ item.template }}{% endif %}</td>
             <td class="d-none d-md-table-cell">
                 <a href="{% url 'personal:user' item.owner.id %}">
@@ -99,6 +103,6 @@
     </ul>
 </nav>
 {% else %}
-<p class="lead">没有符合条件的物品</p>
+<p class="lead">没有符合条件的{{ name }}</p>
 {% endif %}
 {% endblock %}

@@ -15,6 +15,8 @@ urlpatterns = [
     url(r'^item/(?P<item_id>\d+)/del/$', views.del_item, name='delete'),
     url(r'^item/(?P<item_id>\d+)/unlink/$', views.unlink_item, name='unlink'),
     url(r'^item/add/$', views.AddItemView.as_view(), name='add'),
+    url(r'^property/add/$', views.AddPropertyView.as_view(), name='add_property'),
+    url(r'^properties/$', views.ItemsView.as_view(), name='properties'),
     url(r'^templates/$', views.TemplatesView.as_view(), name='templates'),
     url(r'^template/(?P<id>\d+)/$',
         views.TemplateView.as_view(),

@@ -98,6 +98,7 @@ class Item(models.Model):
         related_name="user_item",
     )
     is_public = models.BooleanField(default=False, verbose_name='公开')
+    is_property = models.BooleanField(default=False, verbose_name='非物品')
     allowed_users = models.ManyToManyField(
         myUser,
         blank=True,

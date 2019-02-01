@@ -12,6 +12,7 @@
             <input type="text" name="name" class="form-control" maxlength="128" required="" id="id_name" value="{{ item.name }}">
         </div>
     </div>
+    {% if not item.is_property %}
     <div class="form-group row">
         <label class="col-3 col-form-label"><b>数量</b></label>
         <div class="col-3">
@@ -22,6 +23,7 @@
             <input type="text" name="unit" class="form-control" maxlength="32" id="id_unit" value="{{ item.unit }}">
         </div>
     </div>
+    {% endif %}
     <div class="form-group row">
         <div class="col-3"><b>公开</b></div>
         <div class="col-9">

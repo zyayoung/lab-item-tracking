@@ -28,8 +28,10 @@ class IndexView(generic.View):
 
 class ItemsView(generic.View):
     def get(self, request, *args, **kwargs):
+        is_property = 'prop' in request.path
+        name = "属性" if is_property else "物品"
         tmp_user = myUser.objects.get(id=request.session.get('user_id'))
-        item_list = get_my_list(tmp_user, Item.objects.all())
+        item_list = get_my_list(tmp_user, Item.objects.filter(is_property=is_property))
         keyword = request.GET.get('q')
         if keyword:
             keyword_iri = quote(keyword)
@@ -44,6 +46,8 @@ class ItemsView(generic.View):
 
 
 class AddItemView(generic.View):
+    name = "物品"
+
     def get_form(self, *args, **kwargs):
         return forms.AddItemForm(*args)
 
@@ -66,11 +70,45 @@ class AddItemView(generic.View):
                 owner=tmp_user,
                 is_public=public,
                 template=None,
+                is_property=False,
             )
             if not quantity:
                 quantity = 1
             new_item.allowed_users.add(tmp_user)
             set_quantity(new_item, quantity, tmp_user)
+            message = "添加成功！"
+            return redirect('inventory:edit', new_item.id)
+        else:
+            return render(request, 'inventory/add.html', locals())
+
+
+class AddPropertyView(generic.View):
+    name = "属性"
+
+    def get_form(self, *args, **kwargs):
+        return forms.AddItemForm(*args)
+
+    def get(self, request):
+        add_form = self.get_form()
+        return render(request, 'inventory/add.html', locals())
+
+    def post(self, request):
+        add_form = self.get_form(request.POST)
+        message = "请检查填写的内容！"
+        if add_form.is_valid():
+            tmp_user = myUser.objects.get(id=request.session.get('user_id'))
+            name = add_form.cleaned_data['name']
+            quantity = add_form.cleaned_data['quantity']
+            unit = add_form.cleaned_data['unit']
+            public = add_form.cleaned_data['public']
+            new_item = Item.objects.create(
+                name=name,
+                owner=tmp_user,
+                is_public=public,
+                template=None,
+                is_property=True,
+            )
+            new_item.allowed_users.add(tmp_user)
             message = "添加成功！"
             return redirect('inventory:edit', new_item.id)
         else:
@@ -167,8 +205,9 @@ class EditItemView(generic.View):
         add_form = forms.AddItemForm(request.POST)
         if add_form.is_valid():
             item.name = add_form.cleaned_data['name']
-            item.quantity = add_form.cleaned_data['quantity']
-            item.unit = add_form.cleaned_data['unit']
+            if not item.is_property:
+                item.quantity = add_form.cleaned_data['quantity']
+                item.unit = add_form.cleaned_data['unit']
             item.is_public = add_form.cleaned_data['public']
         else:
             return render(request, 'inventory/edit.html', locals())
@@ -324,7 +363,7 @@ class LocationView(generic.View):
                 loc_now_str = loc_now.__str__()
             except Http404:
                 return redirect('inventory:applyloc', location_id)
-            all_items = Item.objects.filter(location=loc_now)
+            all_items = Item.objects.filter(location=loc_now, is_property=False)
             all_locs = loc_now.location_children.all()
             item_list = get_my_list(tmp_user, all_items)
             paginator = Paginator(item_list, OBJ_PER_PAGE)
@@ -425,7 +464,7 @@ class AddItem2LocView(generic.View):
         user_id = request.session.get('user_id')
         tmp_user = myUser.objects.get(id=user_id)
         location = get_my_loc(tmp_user, kwargs.get('id'))
-        item_list = get_my_list(tmp_user, Item.objects.filter(location=None))
+        item_list = get_my_list(tmp_user, Item.objects.filter(location=None, is_property=False))
         paginator = Paginator(item_list, OBJ_PER_PAGE)
         page = request.GET.get('page')
         try:
@@ -462,7 +501,7 @@ class AddItem2LocView(generic.View):
             message = "添加成功！"
             return redirect('inventory:edit', new_item.id)
         else:
-            return render(request, 'inventory/add.html', locals())
+            return self.get(request, *args, **kwargs)
 
 
 class Apply4Loc(generic.View):

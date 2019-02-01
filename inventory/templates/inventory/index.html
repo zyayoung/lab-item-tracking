@@ -46,16 +46,19 @@
                             <i class="fa fa-list-ul" aria-hidden="true"></i> 物品列表
                         </a>
                     </li>
-                    {% if tmp_user.is_superadmin %}
                     <li class="list-group-item">
-                        <a href="{% url 'inventory:templates' %}" class="card-link">
-                            <i class="fa fa-list-ul" aria-hidden="true"></i> 模板列表
+                        <a href="{% url 'inventory:properties' %}" class="card-link">
+                            <i class="fa fa-list-ul" aria-hidden="true"></i> 属性列表
                         </a>
                     </li>
-                    {% endif %}
                     <li class="list-group-item">
                         <a href="{% url 'inventory:add' %}" class="card-link">
                             <i class="fa fa-plus" aria-hidden="true"></i> 添加物品
+                        </a>
+                    </li>
+                    <li class="list-group-item">
+                        <a href="{% url 'inventory:add_property' %}" class="card-link">
+                            <i class="fa fa-plus" aria-hidden="true"></i> 添加属性
                         </a>
                     </li>
                 </ul>
@@ -109,6 +112,11 @@
             <div class="card">
                 <h5 class="card-title mt-3">管理</h5>
                 <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <a href="{% url 'inventory:templates' %}" class="card-link">
+                            <i class="fa fa-list-ul" aria-hidden="true"></i> 模板配置
+                        </a>
+                    </li>
                     <li class="list-group-item">
                         <a href="{% url 'traffic:userAnalyze' %}" class="card-link">
                             <i class="fa fa-pie-chart" aria-hidden="true"></i> 图表分析
