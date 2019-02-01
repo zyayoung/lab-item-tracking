@@ -18,7 +18,16 @@ from django.urls import path, include
 from django.conf.urls import url
 from django.conf import settings
 from django.views.static import serve
-from login import views
+from django.http import HttpResponse
+import dbbackup.urls
+
+
+SSL_CERTIFICATION_URL = r'^\.well-known/pki-validation/fileauth.txt$'
+
+
+def ssl_certification(request):
+    return HttpResponse('2019013000530848et5a8jwh9esmj3s5b1ez3dr94x1pj3n9l5jzmczx61yklhr9')
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -30,5 +39,7 @@ urlpatterns = [
     url(r'^', include('trace_item.urls')),
     url(r'^', include('personal.urls')),
     url(r'^', include('traffic.urls')),
-    url(r'^silk/', include('silk.urls', namespace='silk'))
+    url(r'^silk/', include('silk.urls', namespace='silk')),
+    url(r'^dbbackup/', include('dbbackup.urls', namespace='dbbackup')),
+    url(SSL_CERTIFICATION_URL, ssl_certification)
 ]

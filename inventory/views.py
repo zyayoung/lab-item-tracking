@@ -6,12 +6,12 @@ from django.contrib import messages
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from inventory.utils import *
 from inventory import forms
+import re
 
-from inventory.models import Item, Location, LocationPermissionApplication
+from inventory.models import Item, Location, LocationPermissionApplication, ItemTemplate
 from login.models import User as myUser
 from personal.utils import get_others_request_list
 from urllib.parse import quote
-from traffic.utils import build_loc_tree
 
 OBJ_PER_PAGE = 50
 
@@ -21,7 +21,8 @@ class IndexView(generic.View):
         user_id = request.session.get('user_id')
         if user_id:
             tmp_user = myUser.objects.get(id=user_id)
-            others_request_list_count = get_others_request_list(tmp_user).filter(approved=False, rejected=False).count()
+            others_request_list_count = get_others_request_list(
+                tmp_user).filter(closed=False).count()
         return render(request, 'inventory/index.html', locals())
 
 
@@ -43,12 +44,15 @@ class ItemsView(generic.View):
 
 
 class AddItemView(generic.View):
+    def get_form(self, *args, **kwargs):
+        return forms.AddItemForm(*args)
+
     def get(self, request):
-        add_form = forms.AddItemForm()
+        add_form = self.get_form()
         return render(request, 'inventory/add.html', locals())
 
     def post(self, request):
-        add_form = forms.AddItemForm(request.POST)
+        add_form = self.get_form(request.POST)
         message = "请检查填写的内容！"
         if add_form.is_valid():
             tmp_user = myUser.objects.get(id=request.session.get('user_id'))
@@ -59,14 +63,16 @@ class AddItemView(generic.View):
             new_item = Item.objects.create(
                 name=name,
                 quantity=0,
-                unit=unit,
                 owner=tmp_user,
                 is_public=public,
+                template=None,
             )
+            if not quantity:
+                quantity = 1
             new_item.allowed_users.add(tmp_user)
             set_quantity(new_item, quantity, tmp_user)
             message = "添加成功！"
-            return redirect('inventory:item', new_item.id)
+            return redirect('inventory:edit', new_item.id)
         else:
             return render(request, 'inventory/add.html', locals())
 
@@ -102,7 +108,9 @@ class ItemView(generic.View):
             tmp_user = self.tmp_user
             quantity = float(use_item_form.cleaned_data['quantity'])
             if 0 < quantity < self.item.quantity:
-                set_quantity(self.item, float(self.item.quantity) - quantity, self.tmp_user)
+                set_quantity(self.item,
+                             float(self.item.quantity) - quantity,
+                             self.tmp_user)
                 self.message = "使用成功！"
             else:
                 self.message = "使用数量有误！"
@@ -116,18 +124,200 @@ class ItemView(generic.View):
         return self.get(request, *args, **kwargs)
 
 
-class LocationView(generic.View):
+def template_ajax(request, *args, **kwargs):
+    template_id = int(request.POST.get('id', 0))
+    if template_id != 0:
+        template = ItemTemplate.objects.get(id=template_id)
+        extra_data = template.extra_data
+        edit_form = forms.EditItemForm(*args, data=extra_data)
+    return render(request, 'inventory/editajax.html', locals())
+
+
+class EditItemView(generic.View):
+    tmp_user = None
+    item = None
+
+    def get_form(self, *args, **kwargs):
+        _templates = ItemTemplate.objects.all()
+        choices = [(0, '--')]
+        if _templates.exists():
+            choices.extend([(t.id, t.name) for t in _templates.all()])
+        return forms.ChooseTemplateForm(*args, choices=choices)
+
     def get(self, request, *args, **kwargs):
         user_id = request.session.get('user_id')
         tmp_user = myUser.objects.get(id=user_id)
-        location_id = kwargs.get('id')
+        item = get_my_item(tmp_user, kwargs.get('item_id'))
+        if not item.del_permission(tmp_user):
+            messages.error(request,
+                           "只有创建人（{}）及其管理员可以编辑物品！".foramt(item.owner.name))
+            return render(request, 'inventory/info.html', locals())
+        choose_form = self.get_form()
+        add_form = forms.AddItemForm()
+        return render(request, 'inventory/edit.html', locals())
+
+    def post(self, request, *args, **kwargs):
+        tmp_user = myUser.objects.get(id=request.session.get('user_id'))
+        item = get_my_item(tmp_user, kwargs.get('item_id'))
+        if not item.del_permission(tmp_user):
+            messages.error(request,
+                           "只有创建人（{}）及其管理员可以编辑物品！".foramt(item.owner.name))
+            return render(request, 'inventory/info.html', locals())
+        message = "请检查填写的内容！"
+        add_form = forms.AddItemForm(request.POST)
+        if add_form.is_valid():
+            item.name = add_form.cleaned_data['name']
+            item.quantity = add_form.cleaned_data['quantity']
+            item.unit = add_form.cleaned_data['unit']
+            item.is_public = add_form.cleaned_data['public']
+        else:
+            return render(request, 'inventory/edit.html', locals())
+        choose_form = self.get_form(request.POST)
+        if choose_form.is_valid():
+            data = {}
+            template_id = int(choose_form.cleaned_data['template'])
+            if template_id != 0:
+                template = ItemTemplate.objects.get(id=template_id)
+                extra_data = template.extra_data
+                edit_form = forms.EditItemForm(request.POST, data=extra_data)
+                if edit_form.is_valid():
+                    for dictionary in template.extra_data:
+                        data[dictionary['name']] = edit_form.cleaned_data[
+                            dictionary['name'].replace(' ', '_')]
+            else:
+                template = None
+            item.extra_data = data
+            item.template = template
+        else:
+            return render(request, 'inventory/edit.html', locals())
+        item.save()
+        message = "修改成功！"
+        return redirect('inventory:item', item.id)
+
+
+class TemplatesView(generic.View):
+    def get(self, request, *args, **kwargs):
+        tmp_user = myUser.objects.get(id=request.session.get('user_id'))
+        if not tmp_user.is_superadmin:
+            raise Http404()
+        template_list = ItemTemplate.objects.all()
+        keyword = request.GET.get('q')
+        if keyword:
+            keyword_iri = quote(keyword)
+            template_list = template_list.filter(name__contains=keyword)
+        paginator = Paginator(template_list, OBJ_PER_PAGE)
+        page = request.GET.get('page', 1)
+        try:
+            template_list = paginator.page(page)
+        except EmptyPage:
+            template_list = paginator.page(paginator.num_pages)
+        return render(request, 'inventory/templates.html', locals())
+
+
+class TemplateView(generic.View):
+    def dispatch(self, request, *args, **kwargs):
+        tmp_user = myUser.objects.get(id=request.session.get('user_id'))
+        if not tmp_user.is_superadmin:
+            raise Http404()
+        return super(TemplateView, self).dispatch(request, *args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        template = get_object_or_404(ItemTemplate, id=kwargs.get('id'))
+        return render(request, 'inventory/template.html', locals())
+
+
+class AddTemplateView(generic.View):
+    def dispatch(self, request, *args, **kwargs):
+        tmp_user = myUser.objects.get(id=request.session.get('user_id'))
+        if not tmp_user.is_superadmin:
+            raise Http404()
+        return super(AddTemplateView, self).dispatch(request, *args, **kwargs)
+
+    def get(self, request):
+        add_form = forms.AddTemplateForm()
+        return render(request, 'inventory/template_add.html', locals())
+
+    def post(self, request):
+        add_form = forms.AddTemplateForm(request.POST)
+        message = "请检查填写的内容！"
+        if add_form.is_valid():
+            name = add_form.cleaned_data['name']
+            new_template = ItemTemplate.objects.create(name=name)
+            new_template.save()
+            message = "添加成功！"
+            return redirect('inventory:template_edit', new_template.id)
+        else:
+            return render(request, 'inventory/template_add.html', locals())
+
+
+class EditTemplateView(generic.View):
+    def dispatch(self, request, *args, **kwargs):
+        tmp_user = myUser.objects.get(id=request.session.get('user_id'))
+        if not tmp_user.is_superadmin:
+            raise Http404()
+        return super(EditTemplateView, self).dispatch(request, *args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        template = get_object_or_404(ItemTemplate, id=kwargs.get('id'))
+        edit_form = forms.EditTemplateForm()
+        return render(request, 'inventory/template_edit.html', locals())
+
+    def post(self, request, *args, **kwargs):
+        message = "请检查填写的内容！"
+        template = get_object_or_404(ItemTemplate, id=kwargs.get('id'))
+        my_list = []
+        for key in request.POST.keys():
+            index = re.findall(r"^name_(\d+)$", key)
+            if index:
+                index = int(index[0])
+            else:
+                continue
+            if not request.POST.get('name_{}'.format(index)):
+                continue
+            my_list.append({
+                'name': request.POST.get('name_{}'.format(index)),
+                'type': request.POST.get('type_{}'.format(index), ''),
+                'required': bool(int(request.POST.get('required_{}'.format(index), 0))),
+                'placeholder': request.POST.get('placeholder_{}'.format(index), '')
+            })
+        template.extra_data = my_list
+        template.save()
+        message = "保存成功"
+        return redirect('inventory:template', template.id)
+
+
+def del_template(request, template_id):
+    tmp_user = myUser.objects.get(id=request.session.get('user_id'))
+    if not tmp_user.is_superadmin:
+        raise Http404()
+    template = get_object_or_404(ItemTemplate, id=template_id)
+    template.delete()
+    return redirect('inventory:templates')
+
+
+class LocationView(generic.View):
+    tmp_user = None
+    location_id = None
+    message = None
+
+    def dispatch(self, request, *args, **kwargs):
+        user_id = request.session.get('user_id')
+        self.tmp_user = myUser.objects.get(id=user_id)
+        self.location_id = kwargs.get('id')
+        return super(LocationView, self).dispatch(request, *args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        message = self.message
+        tmp_user = self.tmp_user
+        location_id = self.location_id
         QRCode = "http://qr.liantu.com/api.php?text={0}".format(
             quote(request.build_absolute_uri()))
+        if tmp_user.is_superadmin:
+            add_loc_form = forms.AddLocationForm()
         if 'pending' in request.GET.keys():
             pending = get_my_item(tmp_user, request.GET['pending'])
         else:
             pending = None
-        # root directory
         if location_id:
             try:
                 loc_now = get_my_loc(tmp_user, location_id)
@@ -145,6 +335,7 @@ class LocationView(generic.View):
                 item_list = paginator.page(1)
             except EmptyPage:
                 item_list = paginator.page(paginator.num_pages)
+        # root directory
         else:
             loc_now = None
             loc_now_str = 'root'
@@ -155,6 +346,32 @@ class LocationView(generic.View):
         # Fancy charts
         # loc_node, item_count = build_loc_tree(loc_now, count=False, user=tmp_user, depth=2, link=True)
         return render(request, 'inventory/location.html', locals())
+
+    def post(self, request, *args, **kwargs):
+        tmp_user = self.tmp_user
+        location_id = self.location_id
+        if not tmp_user.is_superadmin:
+            raise Http404()
+        add_loc_form = forms.AddLocationForm(request.POST)
+        if add_loc_form.is_valid():
+            loc_now = get_my_loc(tmp_user,
+                                 location_id) if location_id else None
+            path = add_loc_form.cleaned_data['name']
+            public = add_loc_form.cleaned_data['public']
+            if Location.objects.filter(
+                    path=path,
+                    parent=loc_now,
+            ).exists():
+                self.message = "不能重复添加！"
+                return self.get(request, *args, **kwargs)
+            new_location = Location.objects.create(
+                path=path,
+                parent=loc_now,
+                is_public=public,
+            )
+            new_location.save()
+            self.message = "新建成功！"
+            return self.get(request, *args, **kwargs)
 
 
 def put_item_to_location(request, item_id, location_id):
@@ -217,7 +434,35 @@ class AddItem2LocView(generic.View):
             item_list = paginator.page(1)
         except EmptyPage:
             item_list = paginator.page(paginator.num_pages)
+        add_form = forms.AddItemForm()
         return render(request, 'inventory/additem2loc.html', locals())
+
+    def post(self, request, *args, **kwargs):
+        add_form = forms.AddItemForm(request.POST)
+        message = "请检查填写的内容！"
+        if add_form.is_valid():
+            tmp_user = myUser.objects.get(id=request.session.get('user_id'))
+            location = get_my_loc(tmp_user, kwargs.get('id'))
+            name = add_form.cleaned_data['name']
+            quantity = add_form.cleaned_data['quantity']
+            unit = add_form.cleaned_data['unit']
+            public = add_form.cleaned_data['public']
+            new_item = Item.objects.create(
+                name=name,
+                quantity=0,
+                owner=tmp_user,
+                is_public=public,
+                template=None,
+            )
+            if not quantity:
+                quantity = 1
+            new_item.allowed_users.add(tmp_user)
+            set_quantity(new_item, quantity, tmp_user)
+            set_location(new_item, location, tmp_user)
+            message = "添加成功！"
+            return redirect('inventory:edit', new_item.id)
+        else:
+            return render(request, 'inventory/add.html', locals())
 
 
 class Apply4Loc(generic.View):
@@ -245,10 +490,9 @@ class Apply4Loc(generic.View):
             message = "请检查填写的内容！"
             if apply_form.is_valid():
                 if LocationPermissionApplication.objects.filter(
-                    applicant=tmp_user,
-                    location=loc,
-                    approved=False,
-                    rejected=False,
+                        applicant=tmp_user,
+                        location=loc,
+                        closed=False,
                 ).exists():
                     message = "请勿重复提交"
                 else:
@@ -259,7 +503,8 @@ class Apply4Loc(generic.View):
                     )
                     new_form.save()
                     message = "提交成功"
-                return render(request, 'inventory/location_apply.html', locals())
+                return render(request, 'inventory/location_apply.html',
+                              locals())
             else:
                 return self.get(request)
         return redirect('inventory:location', loc_id)

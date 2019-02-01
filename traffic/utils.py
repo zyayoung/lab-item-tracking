@@ -1,8 +1,9 @@
 import re
 import django.urls.resolvers
-from django.shortcuts import redirect, resolve_url
+from django.shortcuts import resolve_url
 from inventory.models import Item, Location
 from inventory.utils import get_my_list
+from login.utils import check_admin
 
 ban_list = ['app_list']
 
@@ -25,17 +26,6 @@ def show_urls(url_list, depth=0):
 
 def wash_regex(r):
     return re.sub(r'\?P<.+?>', '', r)
-
-
-def check_admin(func):
-    def inner(*args, **kwargs):
-        request = args[1]
-        if not request.session.get('is_superadmin', False):
-            return redirect('inventory:index')
-        return func(*args, **kwargs)
-
-    return inner
-
 
 # def display(locations, tot_count, user=None, cnt=True):
 #     res_list = []

@@ -7,10 +7,8 @@ class Traffic(models.Model):
         max_length=128,
         verbose_name="URL",
     )
-    response_time = models.DecimalField(
+    response_time = models.FloatField(
         default=0,
-        max_digits=8,
-        decimal_places=2,
         verbose_name="Response Time",
     )
     datetime = models.DateTimeField(
@@ -21,9 +19,7 @@ class Traffic(models.Model):
         max_length=16,
         verbose_name="IP",
     )
-    user_agent = models.CharField(
-        max_length=256,
-        null=True,
+    user_agent = models.TextField(
         default="unknown",
         verbose_name="User-Agent",
     )

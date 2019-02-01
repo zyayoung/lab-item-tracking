@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block title %}编辑物品{% endblock %}
+{% block css %}{% endblock %}
+{% block content %}
+<p class="lead">编辑物品：</p>
+<form class="form-add" action="" method="post">
+    {% csrf_token %}
+    <div class="form-group row">
+        <label class="col-3 col-form-label"><b>名称</b></label>
+        <div class="col-9">
+            <input type="text" name="name" class="form-control" maxlength="128" required="" id="id_name" value="{{ item.name }}">
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-3 col-form-label"><b>数量</b></label>
+        <div class="col-3">
+            <input type="number" name="quantity" class="form-control" min="1e-12" step="1e-12" required="" id="id_quantity" value="{{ item.quantity }}">
+        </div>
+        <label class="col-3 col-form-label"><b>单位</b></label>
+        <div class="col-3">
+            <input type="text" name="unit" class="form-control" maxlength="32" id="id_unit" value="{{ item.unit }}">
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-3"><b>公开</b></div>
+        <div class="col-9">
+            <div class="form-check">
+                <input type="checkbox" name="public" class="form-check-input" id="id_public" {% if item.is_public %}checked=""{% endif %}>
+            </div>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-3 col-form-label"><b>类型</b></label>
+        <div class="col-9">{{ choose_form.template }}</div>
+    </div>
+    <div id="innerform">
+    </div>
+    <button type="submit" class="btn btn-outline-primary">提交</button>
+</form>
+{% endblock %}
+{% block script %}
+<script>
+    False = false;
+    True = true;
+    None = null;
+    data = {{ item.extra_data | safe }};
+
+    function ajaxSubmit() {
+        var id = $.trim($('#id_template').val());
+        $.ajax({
+            url: '{% url "inventory:templateAjax" %}',
+            type: 'POST',
+            data: {
+                'csrfmiddlewaretoken': '{{ csrf_token }}',
+                'id': Number(id),
+            },
+            success: function (arg) {
+                $('#innerform').html(arg);
+                Object.keys(data).forEach(function (key) {
+                    console.log('#id_' + key.replace(' ', '_'));
+                    if (data[key] === True)
+                        $('#id_' + key.replace(/ /g, '_')).prop("checked", true);
+                    else if (data[key] === False)
+                        $('#id_' + key.replace(/ /g, '_')).prop("checked", false);
+                    else
+                        $('#id_' + key.replace(/ /g, '_')).val(data[key]);
+                });
+            }
+        });
+    };
+    $('#id_template').change(function () {
+        ajaxSubmit()
+    });
+    $(function () {
+        $('#id_template').val({{ item.template.id }});
+        ajaxSubmit();
+    });
+</script>
+{% endblock %}

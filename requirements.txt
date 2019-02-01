@@ -3,4 +3,6 @@ django
 django-simple-captcha
 django-silk
 numpy
-psycopg2
+psycopg2-binary
+flask
+flask_mail

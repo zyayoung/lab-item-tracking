@@ -29,6 +29,16 @@
             </td>
         </tr>
         <tr class="row mx-0">
+            <th class="col-3">类型</th>
+            <td class="col-9">{{ item.template }}</td>
+        </tr>
+        {% for key, value in item.extra_data.items %}
+        <tr class="row mx-0">
+            <th class="col-3">{{ key }}</th>
+            <td class="col-9">{{ value }}</td>
+        </tr>
+        {% endfor %}
+        <tr class="row mx-0">
             <th class="col-3">所有者</th>
             <td class="col-9">
                 <a href="{% url 'personal:user' item.owner.id %}">
@@ -67,10 +77,6 @@
                 {% endif %}
             </td>
         </tr>
-        <tr class="row mx-0">
-            <th class="col-3">属性</th>
-            <td class="col-9">{{ item.attribute }}</td>
-        </tr>
     </tbody>
 </table>
 
@@ -84,6 +90,7 @@
 {% endif %}
 {% if del_permission %}
 <a class="btn btn-outline-primary" role="button" href="#" onClick="cfm('{% url 'inventory:delete' item.id %}', '{{ item }}', '删除')">删除</a>
+<a class="btn btn-outline-primary" href="{% url 'inventory:edit' item.id %}">编辑</a>
 {% elif unlink_permission %}
 <a class="btn btn-outline-primary" role="button" href="#" onClick="cfm('{% url 'inventory:unlink' item.id %}', '{{ item }}', '取消关联')">取关</a>
 {% endif %}
@@ -108,7 +115,6 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <input type="hidden" id="cfmUrl" />
                     <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">取消</button>
                     <button type="submit" class="btn btn-outline-primary">确认</button>
                 </div>

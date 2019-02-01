@@ -5,6 +5,7 @@ from __future__ import unicode_literals
 from django.contrib.auth.models import User
 from django.utils import timezone
 from django.db import models
+from django.contrib.postgres.fields import JSONField
 from login.models import User as myUser
 import datetime
 
@@ -44,17 +45,43 @@ class Location(models.Model):
         verbose_name_plural = verbose_name
 
 
+class ItemTemplate(models.Model):
+    name = models.CharField(max_length=64, unique=True, verbose_name="模块名称")
+    extra_data = JSONField(default=dict, blank=True, verbose_name="扩展数据")
+    create_time = models.DateTimeField("create_time", auto_now_add=True)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        ordering = ['-create_time']
+        verbose_name = "模块配置"
+        verbose_name_plural = verbose_name
+
+
 class Item(models.Model):
     name = models.CharField(max_length=128, verbose_name="名称")
-    quantity = models.DecimalField(
+    quantity = models.FloatField(
         default=0,
-        max_digits=10,
-        decimal_places=2,
         blank=True,
         verbose_name="数量",
     )
-    unit = models.CharField(max_length=32, default='', blank=True, verbose_name="单位")
+    unit = models.CharField(
+        max_length=32,
+        default='',
+        blank=True,
+        verbose_name="单位",
+    )
     attribute = models.TextField(blank=True, verbose_name="属性")
+    template = models.ForeignKey(
+        ItemTemplate,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        verbose_name="扩展数据模板",
+        related_name="itemtemplate_instance",
+    )
+    extra_data = JSONField(default=dict, blank=True, verbose_name="扩展数据")
     location = models.ForeignKey(
         Location,
         null=True,
@@ -79,7 +106,8 @@ class Item(models.Model):
     update_time = models.DateTimeField("update_time", auto_now=True)
 
     def __str__(self):
-        return "{0}".format(self.name) + ("（已删除）" if not self.allowed_users.exists() else "")
+        return "{0}".format(
+            self.name) + ("（已删除）" if not self.allowed_users.exists() else "")
 
     def del_permission(self, tmp_user):
         return self.owner == tmp_user or \
@@ -120,6 +148,7 @@ class LocationPermissionApplication(models.Model):
     )
     approved = models.BooleanField(default=False, verbose_name='是否同意')
     rejected = models.BooleanField(default=False, verbose_name='是否拒绝')
+    closed = models.BooleanField(default=False, verbose_name='是否拒绝')
     time = models.DateTimeField(auto_now=True, verbose_name='申请时间')
     auditor = models.ForeignKey(
         myUser,
@@ -130,13 +159,25 @@ class LocationPermissionApplication(models.Model):
         related_name='user_audit',
     )
 
-    def closed(self):
-        return self.approved or self.rejected
+    def approve(self):
+        self.approved = True
+        self.closed = True
+        
+        # recursively permit
+        loc = self.location
+        while loc:
+            loc.allowed_users.add(self.applicant)
+            loc.save()
+            loc = loc.parent
+
+    def reject(self):
+        self.rejected = True
+        self.closed = True
 
     def __str__(self):
         return "{1} | {0}".format(self.applicant, self.location)
 
     class Meta:
-        ordering = ['-time']
+        ordering = ['closed', 'id']
         verbose_name = "位置申请"
         verbose_name_plural = verbose_name

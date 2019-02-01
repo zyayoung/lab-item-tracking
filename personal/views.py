@@ -13,7 +13,8 @@ from inventory.utils import get_my_loc
 from login.models import User as myUser
 from inventory.models import LocationPermissionApplication as LocPmsnApp
 
-OBJ_PER_PAGE = 30
+OBJ_PER_PAGE = 50
+
 
 class IndexView(generic.View):
     def get(self, request, *args, **kwargs):
@@ -26,6 +27,7 @@ class IndexView(generic.View):
 
 class UserView(generic.View):
     def get(self, request, *args, **kwargs):
+        tmp_user = myUser.objects.get(id=request.session.get('user_id'))
         if int(kwargs.get('id')) == request.session.get('user_id'):
             return redirect('personal:index')
         user = get_object_or_404(myUser, id=kwargs.get('id'))
@@ -41,7 +43,7 @@ class LocReqView(generic.View):
         if not tmp_user.is_superadmin and not tmp_user.staff.exists():
             return redirect('personal:mylocreq')
         others_request_list = get_others_request_list(tmp_user)
-        others_request_list_count = others_request_list.filter(approved=False, rejected=False).count()
+        others_request_list_count = others_request_list.filter(closed=False).count()
         paginator = Paginator(others_request_list, OBJ_PER_PAGE)
         page = request.GET.get('page')
         try:
@@ -56,7 +58,7 @@ class LocReqView(generic.View):
 class MyLocReqView(generic.View):
     def get(self, request, *args, **kwargs):
         tmp_user = myUser.objects.get(id=request.session.get('user_id'))
-        others_request_list_count = get_others_request_list(tmp_user).filter(approved=False, rejected=False).count()
+        others_request_list_count = get_others_request_list(tmp_user).filter(closed=False).count()
         my_request_list = get_my_request_list(tmp_user)
         paginator = Paginator(my_request_list, OBJ_PER_PAGE)
         page = request.GET.get('page')
@@ -82,15 +84,9 @@ def ajax_submit(request):
     except Http404:
         return JsonResponse(re_dict)
     if result == 1:
-        req.approved = True
-        # recursively permit
-        loc = req.location
-        while loc:
-            loc.allowed_users.add(req.applicant)
-            loc.save()
-            loc = loc.parent
+        req.approve()
     elif result == 0:
-        req.rejected = True
+        req.reject()
     req.auditor = tmp_user
     req.save()
     re_dict = {'status': 0}

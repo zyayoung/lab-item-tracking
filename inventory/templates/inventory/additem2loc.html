@@ -3,22 +3,27 @@
 {% block title %}添加物品{% endblock %}
 {% block content %}
 {% if item_list %}
-<p class="lead">添加物品到{{ location }}：</p>
+<p class="lead pull-left">添加物品到{{ location }}：</p>
+<span class="pull-right">
+    <a class="btn btn-outline-primary" role="button" href="#" onClick="addItemMdl()">
+        <i class="fa fa-plus" aria-hidden="true"></i> 新建
+    </a>
+</span>
 <table class="table table-striped table-sm">
     <thead>
         <th>名称</th>
-        <th>数量</th>
-        <th>属性</th>
-        <th>所有者</th>
+        <th class="d-none d-sm-table-cell">数量</th>
+        <th>类型</th>
+        <th class="d-none d-md-table-cell">所有者</th>
         <th></th>
     </thead>
     <tbody>
         {% for item in item_list %}
         <tr>
             <td><a href="{% url 'inventory:item' item.id %}">{{ item }}</a></td>
-            <td>{{ item.quantity }} {% if item.unit %}{{ item.unit }}{% endif %}</td>
-            <td>{{ item.attribute }}</td>
-            <td>{{ item.owner }}</td>
+            <td class="d-none d-sm-table-cell">{{ item.quantity }} {% if item.unit %}{{ item.unit }}{% endif %}</td>
+            <td>{% if item.template %}{{ item.template }}{% endif %}</td>
+            <td class="d-none d-md-table-cell">{{ item.owner }}</td>
             <td>
                 <a class="btn btn-outline-primary btn-sm" href="#" onClick="cfm('{% url 'inventory:put' item.id location.id %}', '{{ item }}', '{{ location }}')"
                     role="button">
@@ -99,6 +104,40 @@
         </div>
     </div>
 </div>
+
+
+<div class="modal fade" id="addItemModal" tabindex="-1" role="dialog" aria-labelledby="addLocModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <form class="form-change" action="" method="post">
+                {% csrf_token %}
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addLocModalTitle">
+                        <i class="fa fa-plus" aria-hidden="true"></i> 添加物品
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                    <div class="form-group">
+                        <b>{{ add_form.name.label_tag }}</b>
+                        {{ add_form.name}}
+                    </div>
+                    <div class="form-group form-check">
+                        {{ add_form.public }}
+                        <b>{{ add_form.public.label }}</b>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">取消</button>
+                        <button type="submit" class="btn btn-outline-primary">下一步</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 {% endblock %}
 {% block script %}
 <script>
@@ -111,6 +150,10 @@
     function urlSubmit() {
         var url = $.trim($("#url").val());
         window.location.href = url;
+    }
+
+    function addItemMdl(url) {
+        $('#addItemModal').modal();
     }
 </script>
 {% endblock %}
