@@ -1,4 +1,5 @@
 from django import forms
+from .models import Item
 
 
 class AddItemForm(forms.Form):
@@ -88,6 +89,13 @@ class EditItemForm(forms.Form):
                                 'placeholder': tmp_placeholder,
                             }),
                     )
+                else:
+                     tmp_field = forms.ChoiceField(
+                        label=tmp_label,
+                        required=tmp_required,
+                        choices=Item.objects.filter(template__name=tmp_type).values_list('id', 'name'),
+                        widget=forms.Select(attrs={'class': 'form-control'}),
+                    )
                 self.fields[tmp_label.replace(' ', '_')] = tmp_field
 
 
@@ -97,6 +105,7 @@ class AddTemplateForm(forms.Form):
         max_length=64,
         widget=forms.TextInput(attrs={'class': 'form-control'}),
     )
+
 
 class EditTemplateForm(forms.Form):
     name = forms.CharField(

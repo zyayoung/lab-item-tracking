@@ -34,10 +34,14 @@
             <th class="col-3">类型</th>
             <td class="col-9">{{ item.template }}</td>
         </tr>
-        {% for key, value in item.extra_data.items %}
+        {% for key, value in extra_info.items %}
         <tr class="row mx-0">
             <th class="col-3">{{ key }}</th>
-            <td class="col-9">{{ value }}</td>
+            {% if value.type != 'plain' %}
+            <td class="col-9"><a href="{% url 'inventory:item' value.data.id %}">{{ value.data }}</a></td>
+            {% else %}
+            <td class="col-9">{{ value.data }}</td>
+            {% endif %}
         </tr>
         {% endfor %}
         <tr class="row mx-0">
