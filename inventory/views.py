@@ -235,7 +235,7 @@ class EditItemView(generic.View):
             if template_id != 0:
                 template = ItemTemplate.objects.get(id=template_id)
                 extra_data = template.extra_data
-                edit_form = forms.EditItemForm(request.POST, data=extra_data)
+                edit_form = forms.EditItemForm(request.POST, data=extra_data, user=tmp_user)
                 if edit_form.is_valid():
                     for dictionary in template.extra_data:
                         data[dictionary['name']] = edit_form.cleaned_data[
@@ -463,7 +463,7 @@ def del_item(request, item_id):
     item.is_public = False
     set_location(item, None, tmp_user)
     set_quantity(item, 0, tmp_user)
-    return redirect('inventory:items')
+    return redirect('inventory:properties') if item.is_property else redirect('inventory:items')
 
 
 def unlink_item(request, item_id):
