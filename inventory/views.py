@@ -79,7 +79,7 @@ class AddItemView(generic.View):
             if not is_property:
                 quantity = quantity if quantity else 1
                 set_quantity(new_item, quantity, tmp_user)
-            message = "添加成功！"
+            message = "新建成功！"
             return redirect('inventory:edit', new_item.id)
         else:
             return render(request, 'inventory/add.html', locals())
@@ -253,7 +253,7 @@ class AddTemplateView(generic.View):
             name = add_form.cleaned_data['name']
             new_template = ItemTemplate.objects.create(name=name)
             new_template.save()
-            message = "添加成功！"
+            message = "新建成功！"
             return redirect('inventory:template_edit', new_template.id)
         else:
             return render(request, 'inventory/template_add.html', locals())
@@ -378,7 +378,7 @@ class LocationView(generic.View):
                     path=path,
                     parent=loc_now,
             ).exists():
-                self.message = "不能重复添加！"
+                self.message = "路径名称重复！"
                 return self.get(request, *args, **kwargs)
             new_location = Location.objects.create(
                 path=path,
@@ -475,7 +475,7 @@ class AddItem2LocView(generic.View):
             new_item.allowed_users.add(tmp_user)
             set_quantity(new_item, quantity, tmp_user)
             set_location(new_item, location, tmp_user)
-            message = "添加成功！"
+            message = "存入成功！"
             return redirect('inventory:edit', new_item.id)
         else:
             return self.get(request, *args, **kwargs)

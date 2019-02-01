@@ -19,7 +19,8 @@
         </a>
         {% endif %}
         <a class="btn btn-outline-primary" role="button" href="#" onClick="addLocMdl()">
-            <i class="fa fa-plus" aria-hidden="true"></i> 新建
+            <i class="fa fa-plus" aria-hidden="true"></i>
+            <span class="d-none d-md-inline">新建</span>
         </a>
         {% endif %}
         <a class="btn btn-outline-primary" role="button" href="#" onClick="qrcodeMdl('{{ QRCode }}')">
@@ -88,7 +89,7 @@
     <span class="pull-right">
         {% if not pending %}
         <a class="btn btn-outline-primary" role="button" href="{% url 'inventory:additem2loc' location_id %}">
-            <i class="fa fa-plus" aria-hidden="true"></i> 添加
+            <i class="fa fa-archive" aria-hidden="true"></i> 存入
         </a>
         {% if loc_now_str != 'root' %}
         <a class="btn btn-outline-primary" role="button" href="{% url 'trace_item:traceLoc' loc_now.id %}">
@@ -218,7 +219,7 @@
                 {% csrf_token %}
                 <div class="modal-header">
                     <h5 class="modal-title" id="addLocModalTitle">
-                        <i class="fa fa-plus" aria-hidden="true"></i> 添加位置
+                        <i class="fa fa-plus" aria-hidden="true"></i> 新建路径
                     </h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>

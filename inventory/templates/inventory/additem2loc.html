@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 {% load staticfiles %}
-{% block title %}添加物品{% endblock %}
+{% block title %}存入物品{% endblock %}
 {% block content %}
 {% if item_list %}
-<p class="lead pull-left">添加物品到{{ location }}：</p>
+<p class="lead pull-left">存入物品到{{ location }}：</p>
 <span class="pull-right">
     <a class="btn btn-outline-primary" role="button" href="#" onClick="addItemMdl()">
         <i class="fa fa-plus" aria-hidden="true"></i> 新建
@@ -27,7 +27,7 @@
             <td>
                 <a class="btn btn-outline-primary btn-sm" href="#" onClick="cfm('{% url 'inventory:put' item.id location.id %}', '{{ item }}', '{{ location }}')"
                     role="button">
-                    <i class="fa fa-plus" aria-hidden="true"></i> 添加
+                    <i class="fa fa-archive" aria-hidden="true"></i> 存入
                 </a>
             </td>
         </tr>
@@ -113,7 +113,7 @@
                 {% csrf_token %}
                 <div class="modal-header">
                     <h5 class="modal-title" id="addLocModalTitle">
-                        <i class="fa fa-plus" aria-hidden="true"></i> 添加物品
+                        <i class="fa fa-plus" aria-hidden="true"></i> 新建物品
                     </h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
