@@ -50,24 +50,13 @@
 </table>
 {% endblock %}
 {% block script %}
-<script src="https://cdn.bootcss.com/xlsx/0.14.1/xlsx.full.min.js"></script>
-<script src="https://cdn.bootcss.com/FileSaver.js/2014-11-29/FileSaver.min.js"></script>
-</script><script src="https://cdn.bootcss.com/TableExport/5.2.0/js/tableexport.min.js"></script>
+<script src="{% static '/js/tableExport.min.js' %}"></script>
 <script>
-var myDate = new Date();
-TableExport(document.getElementsByTagName("table"), {
-  headers: true,                      // (Boolean), display table headers (th or td elements) in the <thead>, (default: true)
-  footers: true,                      // (Boolean), display table footers (th or td elements) in the <tfoot>, (default: false)
-  formats: ["xlsx"],                   // (String[]), filetype(s) for the export, (default: ['xlsx', 'csv', 'txt'])
-  filename: "{{ item }}操作记录" + myDate.getFullYear() + myDate.getMonth() + myDate.getDate(),                     // (id, String), filename for the downloaded file, (default: 'id')
-  bootstrap: true,                   // (Boolean), style buttons using bootstrap, (default: true)
-  exportButtons: true,                // (Boolean), automatically generate the built-in export buttons for each of the specified formats (default: true)
-  position: "top",                 // (top, bottom), position of the caption element relative to table, (default: 'bottom')
-  ignoreRows: null,                   // (Number, Number[]), row indices to exclude from the exported file(s) (default: null)
-  ignoreCols: null,                   // (Number, Number[]), column indices to exclude from the exported file(s) (default: null)
-  trimWhitespace: true,               // (Boolean), remove all leading/trailing newlines, spaces, and tabs from cell text in the exported file(s) (default: false)
-  RTL: false,                         // (Boolean), set direction of the worksheet to right-to-left (default: false)
-  sheetname: "{{ item }}"                     // (id, String), sheet name for the exported spreadsheet, (default: 'id')
-});
+    function exportAll(type) {
+        $('.table').tableExport({
+            filename: '{{ item.name }}操作记录_%YY%-%MM%-%DD%',
+            format: type
+        });
+    }
 </script>
 {% endblock %}
