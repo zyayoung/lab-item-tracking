@@ -1,17 +1,18 @@
 {% extends "base.html" %}
 {% load staticfiles %}
-{% block title %}物品详情：{{ item }} {% endblock %}
+{% block title %}{% if item.is_property %}属性{% else %}物品{% endif %}详情：{{ item }} {% endblock %}
 {% block content %}
 {% if message %}
 <div class="alert alert-warning">{{ message }}</div>
 {% endif %}
-<p class="lead">物品详情：</p>
+<p class="lead">{% if item.is_property %}属性{% else %}物品{% endif %}详情：</p>
 <table class="table table-striped row mx-0">
     <tbody class="w-100">
         <tr class="row mx-0">
             <th class="col-3">名称</th>
             <td class="col-9">{{ item }}</td>
         </tr>
+        {% if not item.is_property %}
         <tr class="row mx-0">
             <th class="col-3">数量</th>
             <td class="col-9">
@@ -28,6 +29,7 @@
                 {% endif %}
             </td>
         </tr>
+        {% endif %}
         <tr class="row mx-0">
             <th class="col-3">类型</th>
             <td class="col-9">{{ item.template }}</td>
@@ -79,14 +81,15 @@
         </tr>
     </tbody>
 </table>
-
+{% if not item.is_property %}
 <a class="btn btn-outline-primary" role="button" href="#" onClick="useItem()">使用</a>
-<!-- <a class="btn btn-outline-primary" role="button" href="{% url 'admin:inventory_item_change' item.id %}">编辑物品</a> -->
 {% if item.location %}
 <a class="btn btn-outline-primary" role="button" href="{% url 'inventory:location' item.location.id %}?pending={{ item.id }}">移动</a>
 <a class="btn btn-outline-primary" role="button" href="#" onclick="cfm('{% url 'inventory:put' item.id 0 %}', '{{ item }}', '取出')">取出</a>
 {% else %}
 <a class="btn btn-outline-primary" role="button" href="{% url 'inventory:location_root' %}?pending={{ item.id }}">存入</a>
+{% endif %}
+<a class="btn btn-outline-primary" href="{% url 'trace_item:traceItem' item.id %}">追踪</a>
 {% endif %}
 {% if del_permission %}
 <a class="btn btn-outline-primary" role="button" href="#" onClick="cfm('{% url 'inventory:delete' item.id %}', '{{ item }}', '删除')">删除</a>
@@ -94,7 +97,6 @@
 {% elif unlink_permission %}
 <a class="btn btn-outline-primary" role="button" href="#" onClick="cfm('{% url 'inventory:unlink' item.id %}', '{{ item }}', '取消关联')">取关</a>
 {% endif %}
-<a class="btn btn-outline-primary" href="{% url 'trace_item:traceItem' item.id %}">追踪</a>
 <div class="modal fade" id="useItemModal" tabindex="-1" role="dialog" aria-labelledby="useItemModalTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
