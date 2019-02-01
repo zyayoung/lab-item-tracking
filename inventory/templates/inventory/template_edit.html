@@ -17,6 +17,27 @@
         </thead>
         <tbody>
             {% csrf_token %}
+            <tr id="tr_{{ forloop.counter }}">
+                <td>
+                    <input type="text" class="form-control" disabled value="名称">
+                </td>
+                <td>
+                    <select class="form-control" disabled>
+                        <option selected="selected">text</option>
+                    </select>
+                </td>
+                <td>
+                    <select class="form-control" disabled>
+                        <option selected="selected">是</option>
+                    </select>
+                </td>
+                <td>
+                    <input type="text" class="form-control" disabled value="">
+                </td>
+                <td>
+                    <button type="button" class="btn text-muted" disabled>删除</button>
+                </td>
+            </tr>
             {% for value in template.extra_data %}
             <tr id="tr_{{ forloop.counter }}">
                 <td>
