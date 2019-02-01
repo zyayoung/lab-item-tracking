@@ -1,9 +1,9 @@
 {% extends 'base.html' %}
 {% load staticfiles %}
-{% block title %}编辑物品{% endblock %}
+{% block title %}编辑{% if item.is_property %}属性{% else %}物品{% endif %}{% endblock %}
 {% block css %}{% endblock %}
 {% block content %}
-<p class="lead">编辑物品：</p>
+<p class="lead">编辑{% if item.is_property %}属性{% else %}物品{% endif %}：</p>
 <form class="form-add" action="" method="post">
     {% csrf_token %}
     <div class="form-group row">
