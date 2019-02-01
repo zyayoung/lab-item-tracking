@@ -34,8 +34,9 @@
         <tr>
             <td><a href="{% url 'inventory:template' template.id %}">{{ template }}</a></td>
             <td>
+                名称
                 {% for value in template.extra_data %}
-                {{ value.name }}
+                | {{ value.name }}
                 {% endfor %}
             </td>
         </tr>
