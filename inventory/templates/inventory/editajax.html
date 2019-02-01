@@ -1,7 +1,7 @@
 {% for field in edit_form %}
 {% if field.data == False or field.data == True %}
 <div class="form-group row">
-    <div class="col-3"><b>{{ field.label }}</b></div>
+    <div class="col-3">{{ field.label }}</div>
     <div class="col-9">
         <div class="form-check">
             {{ field }}
@@ -10,7 +10,14 @@
 </div>
 {% else %}
 <div class="form-group row">
-    <label class="col-3 col-form-label"><b>{{ field.label }}</b></label>
+    {{ field.required }}
+    <label class="col-3 col-form-label">
+        {% if field.field.required %}
+        <b>{{ field.label }}</b>
+        {% else %}
+        {{ field.label }}
+        {% endif %}
+    </label>
     <div class="col-9">
         {{ field }}
     </div>
