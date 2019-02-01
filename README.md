@@ -5,7 +5,6 @@
 ## Deploy
 
 ```bash
-python manage.py makemigrations
 python manage.py migrate
 python manage.py createsuperuser
 python manage.py runserver
@@ -35,11 +34,11 @@ python manage.py runserver
     - [x] QR Code
 - Items
     - [x] Add
-    - [ ] Attr
+    - [x] Attr
     - [x] Location
     - [x] Owner
     - [x] Share (link & unlink)
-    - [ ] Edit
+    - [x] Edit
     - [x] Delete
 - Trace
     - [x] Location
@@ -52,26 +51,3 @@ python manage.py runserver
     - [x] Private item
     - [x] Secret location
     - [x] Apply for permission
-
-## Modular item managing system
-
-```json
-{
-    "name": "",
-    "category": "",
-    "attr":
-        [{
-        "name": "",
-        "category": "",
-        "item": ""
-        }]
-    }
-}
-"""
-Attr Description:
-    Contain a list of tuples (name, category, item):
-        name:     name of the item
-        category: type(category) of the item. Including number, string, other categories, etc.
-        item:     related information (ForeighKey)
-"""
-```
