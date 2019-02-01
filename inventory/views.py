@@ -46,16 +46,19 @@ class ItemsView(generic.View):
 
 
 class AddItemView(generic.View):
-    name = "物品"
 
     def get_form(self, *args, **kwargs):
         return forms.AddItemForm(*args)
 
     def get(self, request):
+        is_property = 'prop' in request.path
+        name = "属性" if is_property else "物品"
         add_form = self.get_form()
         return render(request, 'inventory/add.html', locals())
 
     def post(self, request):
+        is_property = 'prop' in request.path
+        name = "属性" if is_property else "物品"
         add_form = self.get_form(request.POST)
         message = "请检查填写的内容！"
         if add_form.is_valid():
@@ -70,45 +73,12 @@ class AddItemView(generic.View):
                 owner=tmp_user,
                 is_public=public,
                 template=None,
-                is_property=False,
-            )
-            if not quantity:
-                quantity = 1
-            new_item.allowed_users.add(tmp_user)
-            set_quantity(new_item, quantity, tmp_user)
-            message = "添加成功！"
-            return redirect('inventory:edit', new_item.id)
-        else:
-            return render(request, 'inventory/add.html', locals())
-
-
-class AddPropertyView(generic.View):
-    name = "属性"
-
-    def get_form(self, *args, **kwargs):
-        return forms.AddItemForm(*args)
-
-    def get(self, request):
-        add_form = self.get_form()
-        return render(request, 'inventory/add.html', locals())
-
-    def post(self, request):
-        add_form = self.get_form(request.POST)
-        message = "请检查填写的内容！"
-        if add_form.is_valid():
-            tmp_user = myUser.objects.get(id=request.session.get('user_id'))
-            name = add_form.cleaned_data['name']
-            quantity = add_form.cleaned_data['quantity']
-            unit = add_form.cleaned_data['unit']
-            public = add_form.cleaned_data['public']
-            new_item = Item.objects.create(
-                name=name,
-                owner=tmp_user,
-                is_public=public,
-                template=None,
-                is_property=True,
+                is_property=is_property,
             )
             new_item.allowed_users.add(tmp_user)
+            if not is_property:
+                quantity = quantity if quantity else 1
+                set_quantity(new_item, quantity, tmp_user)
             message = "添加成功！"
             return redirect('inventory:edit', new_item.id)
         else:
