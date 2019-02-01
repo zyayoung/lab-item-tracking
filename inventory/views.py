@@ -6,6 +6,7 @@ from django.contrib import messages
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from inventory.utils import *
 from inventory import forms
+import re
 
 from inventory.models import Item, Location, LocationPermissionApplication, ItemTemplate
 from login.models import User as myUser
@@ -265,30 +266,24 @@ class EditTemplateView(generic.View):
         message = "请检查填写的内容！"
         template = get_object_or_404(ItemTemplate, id=kwargs.get('id'))
         my_list = []
-        index = 0
-        countdown = 10
-        while True:
-            index += 1
-            if not len(request.POST.get('name_{}'.format(index), '')):
-                countdown -= 1
-                if countdown < 0:
-                    break
-                else:
-                    continue
+        for key in request.POST.keys():
+            index = re.findall(r"^name_(\d+)$", key)
+            if index:
+                index = int(index[0])
             else:
-                countdown = 10
-            my_dict = {}
-            my_dict['name'] = request.POST.get('name_{}'.format(index))
-            my_dict['type'] = request.POST.get('type_{}'.format(index))
-            my_dict['required'] = bool(
-                int(request.POST.get('required_{}'.format(index))))
-            my_dict['placeholder'] = request.POST.get(
-                'placeholder_{}'.format(index), '')
-            my_list.append(my_dict)
+                continue
+            if not request.POST.get('name_{}'.format(index)):
+                continue
+            my_list.append({
+                'name': request.POST.get('name_{}'.format(index)),
+                'type': request.POST.get('type_{}'.format(index), ''),
+                'required': bool(int(request.POST.get('required_{}'.format(index), 0))),
+                'placeholder': request.POST.get('placeholder_{}'.format(index), '')
+            })
         template.extra_data = my_list
         template.save()
         message = "保存成功"
-        return self.get(request, *args, **kwargs)
+        return redirect('inventory:template', template.id)
 
 
 def del_template(request, template_id):
