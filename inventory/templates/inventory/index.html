@@ -163,7 +163,7 @@
 {% if tmp_user.is_superadmin %}
 <script>
 function cfm() {
-    $('#modalNotice').html('您确认要备份数据库吗？（该过程可能需要数十分钟）');
+    $('#modalNotice').html('您确认要备份数据库吗？（该过程可能需要数分钟）');
     $('#actions').html(
         '<button type="button" class="btn btn-outline-secondary" data-dismiss="modal">取消</button>\n' +
         '<button type="button" class="btn btn-outline-primary" onClick="batch_download()">确定</button>'

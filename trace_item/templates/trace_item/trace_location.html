@@ -2,7 +2,20 @@
 {% load staticfiles %}
 {% block title %}{{ loc }}操作记录{% endblock %}
 {% block content %}
-<p class="lead">{{ loc }}操作记录：</p>
+<span class="lead">{{ loc }}操作记录：</span>
+<div class="pull-right">
+    <button class="btn btn-outline-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
+        aria-haspopup="true" aria-expanded="false">
+        导出为...
+    </button>
+    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+        <a class="dropdown-item" href="javascript://" onclick="exportAll('csv');">CSV</a>
+        <a class="dropdown-item" href="javascript://" onclick="exportAll('txt');">TXT</a>
+        <a class="dropdown-item" href="javascript://" onclick="exportAll('xls');">XLS</a>
+        <a class="dropdown-item" href="javascript://" onclick="exportAll('sql');">SQL</a>
+        <a class="dropdown-item" href="javascript://" onclick="exportAll('json');">JSON </a>
+    </div>
+</div>
 <table class="table table-striped table-sm">
     <thead>
         <th>操作</th>
