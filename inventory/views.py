@@ -326,12 +326,12 @@ class EditTemplateView(generic.View):
         message = "请检查填写的内容！"
         template = get_object_or_404(ItemTemplate, id=kwargs.get('id'))
         my_list = []
+        idx_list = []
         for key in request.POST.keys():
             index = re.findall(r"^name_(\d+)$", key)
             if index:
-                index = int(index[0])
-            else:
-                continue
+                idx_list.append(int(index[0]))
+        for index in sorted(idx_list):
             if not request.POST.get('name_{}'.format(index)):
                 continue
             if not request.POST.get('type_{}'.format(index), '') in choices:
