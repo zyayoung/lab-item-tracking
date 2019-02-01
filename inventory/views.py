@@ -138,10 +138,16 @@ class ItemView(generic.View):
                         'type': 'warning',
                     }
         for key in item_keys:
-            extra_info[key] = {
-                'data': item.extra_data[key],
-                'type': 'extra'
-            }
+            if item.extra_data[key]:
+                extra_info[key] = {
+                    'data': item.extra_data[key],
+                    'type': 'extra'
+                }
+            else:
+                extra_info[key] = {
+                    'data': '--',
+                    'type': 'extra'
+                }
         print(extra_info)
         del_permission = item.del_permission(tmp_user)
         unlink_permission = item.unlink_permission(tmp_user)
@@ -310,12 +316,12 @@ class EditTemplateView(generic.View):
     def get(self, request, *args, **kwargs):
         template = get_object_or_404(ItemTemplate, id=kwargs.get('id'))
         edit_form = forms.EditTemplateForm()
-        choices = ["float", "int", "bool", "text"]
+        choices = ["text", "float", "int", "bool"]
         choices.extend([name[0] for name in ItemTemplate.objects.all().values_list('name')])
         return render(request, 'inventory/template_edit.html', locals())
 
     def post(self, request, *args, **kwargs):
-        choices = ["float", "int", "bool", "text"]
+        choices = ["text", "float", "int", "bool"]
         choices.extend([name[0] for name in ItemTemplate.objects.all().values_list('name')])
         message = "请检查填写的内容！"
         template = get_object_or_404(ItemTemplate, id=kwargs.get('id'))
