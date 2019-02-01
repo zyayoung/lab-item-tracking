@@ -46,7 +46,6 @@ class ItemsView(generic.View):
 
 
 class AddItemView(generic.View):
-
     def get_form(self, *args, **kwargs):
         return forms.AddItemForm(*args)
 
@@ -110,16 +109,21 @@ class ItemView(generic.View):
             if data['name'] in item_keys:
                 data_name = data['name']
                 if data['type'] not in ['bool', 'int', 'float', 'text']:
-                    extra_info[data_name] = {
-                        'data': Item.objects.get(id=item.extra_data[data_name]),
-                        'type': 'link',
-                    }
+                    try:
+                        extra_info[data_name] = {
+                            'data': get_my_item(tmp_user, item.extra_data[data_name]),
+                            'type': 'link',
+                        }
+                    except Http404:
+                        extra_info[data_name] = {
+                            'data': '您没有访问此物品的权限',
+                            'type': 'warning',
+                        }
                 else:
                     extra_info[data_name] = {
                         'data': item.extra_data[data_name],
                         'type': 'plain',
                     }
-        print(extra_info)
         del_permission = item.del_permission(tmp_user)
         unlink_permission = item.unlink_permission(tmp_user)
         return render(request, 'inventory/item.html', locals())
@@ -149,11 +153,13 @@ class ItemView(generic.View):
 
 
 def template_ajax(request, *args, **kwargs):
+    user_id = request.session.get('user_id')
+    tmp_user = myUser.objects.get(id=user_id)
     template_id = int(request.POST.get('id', 0))
     if template_id != 0:
         template = ItemTemplate.objects.get(id=template_id)
         extra_data = template.extra_data
-        edit_form = forms.EditItemForm(*args, data=extra_data)
+        edit_form = forms.EditItemForm(*args, data=extra_data, user=tmp_user)
     return render(request, 'inventory/editajax.html', locals())
 
 

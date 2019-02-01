@@ -1,6 +1,6 @@
 from django import forms
 from .models import Item
-
+from .utils import get_my_list
 
 class AddItemForm(forms.Form):
     name = forms.CharField(
@@ -39,6 +39,7 @@ class EditItemForm(forms.Form):
     def __init__(self, *args, **kwargs):
         super(EditItemForm, self).__init__(*args)
         data = kwargs.get('data')
+        user = kwargs.get('user')
         if data:
             for idx, value in enumerate(data):
                 tmp_type = value.get('type', 'text').lower()
@@ -90,10 +91,11 @@ class EditItemForm(forms.Form):
                             }),
                     )
                 else:
-                     tmp_field = forms.ChoiceField(
+                    objects = Item.objects.filter(template__name=tmp_type)
+                    tmp_field = forms.ChoiceField(
                         label=tmp_label,
                         required=tmp_required,
-                        choices=Item.objects.filter(template__name=tmp_type).values_list('id', 'name'),
+                        choices=get_my_list(user, objects).values_list('id', 'name'),
                         widget=forms.Select(attrs={'class': 'form-control'}),
                     )
                 self.fields[tmp_label.replace(' ', '_')] = tmp_field

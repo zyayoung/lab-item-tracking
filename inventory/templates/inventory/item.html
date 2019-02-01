@@ -37,11 +37,15 @@
         {% for key, value in extra_info.items %}
         <tr class="row mx-0">
             <th class="col-3">{{ key }}</th>
-            {% if value.type != 'plain' %}
-            <td class="col-9"><a href="{% url 'inventory:item' value.data.id %}">{{ value.data }}</a></td>
+            <td class="col-9">
+            {% if value.type == 'link' %}
+            <a href="{% url 'inventory:item' value.data.id %}">{{ value.data }}</a>
+            {% elif value.type == 'warning' %}
+            <span class="text-warning">{{ value.data }}</span>
             {% else %}
-            <td class="col-9">{{ value.data }}</td>
+            {{ value.data }}
             {% endif %}
+            </td>
         </tr>
         {% endfor %}
         <tr class="row mx-0">

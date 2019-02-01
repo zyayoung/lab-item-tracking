@@ -82,6 +82,7 @@ class Item(models.Model):
         related_name="itemtemplate_instance",
     )
     extra_data = JSONField(default=dict, blank=True, verbose_name="扩展数据")
+    # related_items = JSONField(default=dict, blank=True, verbose_name="关联物品")
     location = models.ForeignKey(
         Location,
         null=True,
