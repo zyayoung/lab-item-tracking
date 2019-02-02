@@ -98,8 +98,7 @@ class Item(models.Model):
     update_time = models.DateTimeField("update_time", auto_now=True)
 
     def __str__(self):
-        return "{0}".format(
-            self.name) + ("（已删除）" if not self.allowed_users.exists() else "")
+        return self.name
 
     def del_permission(self, tmp_user):
         return self.owner == tmp_user or \
