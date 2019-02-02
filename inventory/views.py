@@ -81,8 +81,7 @@ class AddItemView(generic.View):
             item.allowed_users.add(tmp_user)
         else:
             return render(request, 'inventory/edit.html', locals())
-        choose_form = forms.ChooseTemplateForm(
-            request.POST)
+        choose_form = forms.ChooseTemplateForm(request.POST)
         if choose_form.is_valid():
             data = {}
             template_id = int(choose_form.cleaned_data['template'])
@@ -104,7 +103,8 @@ class AddItemView(generic.View):
         message = "新建成功！"
         if request.POST.get('is_popup', False):
             select_id = request.POST.get('select_id', '')
-            return render(request, 'inventory/fill_form_in_parent.html', locals())
+            return render(request, 'inventory/fill_form_in_parent.html',
+                          locals())
         return redirect('inventory:item', item.id)
 
 
@@ -223,6 +223,7 @@ class EditItemView(generic.View):
         item = get_my_item(tmp_user, kwargs.get('item_id'))
         template_id = item.template.id
         is_property = item.template.is_property
+        is_edit = True
         name = "属性" if is_property else "物品"
         action = "编辑"
         if not item.del_permission(tmp_user):
@@ -250,8 +251,7 @@ class EditItemView(generic.View):
             item.is_public = add_form.cleaned_data['public']
         else:
             return render(request, 'inventory/edit.html', locals())
-        choose_form = forms.ChooseTemplateForm(
-            request.POST)
+        choose_form = forms.ChooseTemplateForm(request.POST)
         if choose_form.is_valid():
             data = {}
             template_id = int(choose_form.cleaned_data['template'])
@@ -270,7 +270,22 @@ class EditItemView(generic.View):
             item.template = template
         else:
             return render(request, 'inventory/edit.html', locals())
-        item.save()
+        if 'save_as_new' in request.POST:
+            new_item = Item.objects.create(
+                name=item.name,
+                attribute=item.attribute,
+                template=item.template,
+                extra_data=item.extra_data,
+                related_items=item.related_items,
+                location=None,
+                owner=item.owner,
+                is_public=item.is_public,
+            )
+            for user in item.allowed_users.all():
+                new_item.allowed_users.add(user)
+            new_item.save()
+        else:
+            item.save()
         message = "修改成功！"
         return redirect('inventory:item', item.id)
 
