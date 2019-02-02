@@ -1,6 +1,6 @@
 from django.shortcuts import get_object_or_404
 from django.http import Http404
-from inventory.models import Item, Location
+from inventory.models import Item, Location, ItemTemplate
 from trace_item.models import ItemLog
 
 
@@ -47,3 +47,20 @@ def set_location(item, location, user):
         log.save()
         item.location = location
         item.save()
+
+
+def get_export_keys(template, visited=[], include_links=True):
+    visited = visited.copy()
+    visited.append(template)
+    keys = [template.key_name]
+    for item in template.extra_data:
+        if item['type'] in ['text', 'int', 'float', 'bool']:
+            keys.append(item['name'])
+        else:
+            inner_template = ItemTemplate.objects.get(name=item['type'])
+            if include_links:
+                for name in get_export_keys(inner_template, visited, inner_template not in visited):
+                    keys.append(item['name']+'__'+name)
+            else:
+                keys.append(item['name'] + '__' + inner_template.key_name)
+    return keys
