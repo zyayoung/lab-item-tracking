@@ -16,7 +16,7 @@
         </div>
     </div>
     <div class="form-group row">
-        <label class="col-3 col-form-label">类型</label>
+        <label class="col-3 col-form-label"><b>类型</b></label>
         <div class="col-9">{{ choose_form.template }}</div>
     </div>
     <div id="innerform">
@@ -26,7 +26,10 @@
         <input name="template" value="{{ template_id }}" hidden>
         <input name="select_id" value="{{ select_id }}" hidden>
     {% endif %}
-    <button type="submit" class="btn btn-outline-primary">提交</button>
+    <button type="submit" class="btn btn-outline-primary">保存</button>
+    {% if is_edit %}
+    <button type="submit" class="btn btn-outline-primary" name="save_as_new">另存为新</button>
+    {% endif %}
 </form>
 {% endblock %}
 {% block script %}
