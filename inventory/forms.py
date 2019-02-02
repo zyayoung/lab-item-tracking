@@ -75,12 +75,15 @@ class EditItemForm(forms.Form):
                     )
                 else:
                     objects = Item.objects.filter(template__name=tmp_type)
+                    attrs = {'class': 'form-control'}
+                    if tmp_required:
+                        attrs['required'] = ''
                     tmp_field = forms.ChoiceField(
                         label=tmp_label,
                         required=tmp_required,
                         choices=get_my_list(user, objects).values_list(
                             'id', 'name'),
-                        widget=forms.Select(attrs={'class': 'form-control'}),
+                        widget=forms.Select(attrs=attrs),
                     )
                     if not tmp_required:
                         tmp_field.choices.insert(0, [0, '--'])
