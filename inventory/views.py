@@ -49,14 +49,9 @@ class ItemsView(generic.View):
 class AddItemView(generic.View):
     def get(self, request):
         action = "新建"
-        if 'template' in request.GET.keys(
-        ) and 'select_id' in request.GET.keys():
-            try:
-                template = ItemTemplate.objects.get(
-                    name=request.GET.get('template', ''))
-                select_id = request.GET.get('select_id', '')
-            except:
-                raise Http404()
+        if 'template' in request.GET.keys() and 'select_id' in request.GET.keys():
+            template = get_object_or_404(ItemTemplate, name=request.GET.get('template', ''))
+            select_id = request.GET.get('select_id', '')
             is_popup = True
             is_property = template.is_property
             template_id = template.id
@@ -135,6 +130,7 @@ class ItemView(generic.View):
         item_keys = list(item.extra_data.keys())
         if item.template:
             for data in item.template.extra_data:
+                filled = False
                 if data['name'] in item_keys:
                     data_name = data['name']
                     item_keys.remove(data_name)
@@ -170,7 +166,9 @@ class ItemView(generic.View):
                                 'type':
                                 'plain',
                             }))
-                    elif data['required']:
+                        filled = True
+                if not filled:
+                    if data['required']:
                         extra_info.append((data['name'], {
                             'data': '缺失必填属性',
                             'type': 'warning',
