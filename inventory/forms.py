@@ -1,6 +1,8 @@
 from django import forms
 from .models import Item, ItemTemplate
 from .utils import get_my_list
+from django.template.loader import render_to_string
+import re
 
 
 class AddItemForm(forms.Form):
@@ -16,6 +18,25 @@ class AddItemForm(forms.Form):
         widget=forms.CheckboxInput(attrs={'class': 'form-check-input'}),
         initial=True,
     )
+
+
+class SelectWithAdd(forms.Select):
+    def __init__(self, *args, **kwargs):
+        self.template = kwargs.get('template')
+        kwargs.pop('template')
+        super(SelectWithAdd, self).__init__(*args, **kwargs)
+
+    def render(self, name, *args, **kwargs):
+        select = super(SelectWithAdd, self).render(name, *args, **kwargs)
+        select_with_add = render_to_string(
+            "inventory/select_with_add.html",
+            {
+                'select': select,
+                'name': name,
+                'template_name': self.template,
+            }
+        )
+        return select_with_add
 
 
 class EditItemForm(forms.Form):
@@ -83,7 +104,7 @@ class EditItemForm(forms.Form):
                         required=tmp_required,
                         choices=get_my_list(user, objects).values_list(
                             'id', 'name'),
-                        widget=forms.Select(attrs=attrs),
+                        widget=SelectWithAdd(attrs=attrs, template=tmp_type),
                     )
                     if not tmp_required:
                         tmp_field.choices.insert(0, [0, '--'])

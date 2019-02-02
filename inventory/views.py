@@ -49,7 +49,17 @@ class ItemsView(generic.View):
 class AddItemView(generic.View):
     def get(self, request):
         action = "新建"
-        is_property = 'prop' in request.path
+        if 'template' in request.GET.keys() and 'select_id' in request.GET.keys():
+            try:
+                template = ItemTemplate.objects.get(name=request.GET.get('template', ''))
+                select_id = request.GET.get('select_id', '')
+            except:
+                raise Http404()
+            is_popup = True
+            is_property = template.is_property
+            template_id = template.id
+        else:
+            is_property = 'prop' in request.path
         name = "物品属性" if is_property else "物品"
         choose_form = forms.ChooseTemplateForm(is_property=is_property)
         add_form = forms.AddItemForm()
@@ -75,7 +85,7 @@ class AddItemView(generic.View):
         else:
             return render(request, 'inventory/edit.html', locals())
         choose_form = forms.ChooseTemplateForm(
-            request.POST, is_property=is_property)
+            request.POST)
         if choose_form.is_valid():
             data = {}
             template_id = int(choose_form.cleaned_data['template'])
@@ -95,6 +105,9 @@ class AddItemView(generic.View):
             return render(request, 'inventory/edit.html', locals())
         item.save()
         message = "新建成功！"
+        if request.POST.get('is_popup', False):
+            select_id = request.POST.get('select_id', '')
+            return render(request, 'inventory/fill_form_in_parent.html', locals())
         return redirect('inventory:item', item.id)
 
 
@@ -208,12 +221,13 @@ class EditItemView(generic.View):
         user_id = request.session.get('user_id')
         tmp_user = myUser.objects.get(id=user_id)
         item = get_my_item(tmp_user, kwargs.get('item_id'))
+        template_id = item.template.id
         is_property = item.template.is_property
         name = "属性" if is_property else "物品"
         action = "编辑"
         if not item.del_permission(tmp_user):
             messages.error(request,
-                           "只有创建人（{}）及其管理员可以编辑物品！".foramt(item.owner.name))
+                           "只有创建人（{}）及其管理员可以编辑物品！".format(item.owner.name))
             return render(request, 'inventory/info.html', locals())
         choose_form = forms.ChooseTemplateForm(is_property=is_property)
         add_form = forms.AddItemForm()
@@ -227,7 +241,7 @@ class EditItemView(generic.View):
         action = "编辑"
         if not item.del_permission(tmp_user):
             messages.error(request,
-                           "只有创建人（{}）及其管理员可以编辑物品！".foramt(item.owner.name))
+                           "只有创建人（{}）及其管理员可以编辑物品！".format(item.owner.name))
             return render(request, 'inventory/info.html', locals())
         message = "请检查填写的内容！"
         add_form = forms.AddItemForm(request.POST)
@@ -237,7 +251,7 @@ class EditItemView(generic.View):
         else:
             return render(request, 'inventory/edit.html', locals())
         choose_form = forms.ChooseTemplateForm(
-            request.POST, is_property=is_property)
+            request.POST)
         if choose_form.is_valid():
             data = {}
             template_id = int(choose_form.cleaned_data['template'])

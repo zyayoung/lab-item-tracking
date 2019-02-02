@@ -6,6 +6,7 @@ app_name = 'inventory'
 
 urlpatterns = [
     url(r'^$', views.IndexView.as_view(), name='index'),
+    url(r'^add/(?P<name>.+)/$', views.AddItemView.as_view(), name='add_popup'),
     url(r'^index/$', views.IndexView.as_view(), name='index'),
     url(r'^items/$', views.ItemsView.as_view(), name='items'),
     url(r'^item/(?P<id>\d+)/$', views.ItemView.as_view(), name='item'),

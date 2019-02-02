@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>redirect</title>
+</head>
+<body>
+<option id="new_option{{ item.id }}" value="{{ item.id }}">{{ item.name }}</option>
+<script>
+let node=document.getElementById("new_option{{ item.id }}");
+window.opener.document.getElementById('{{ select_id }}').append(node);
+window.opener.document.getElementById('{{ select_id }}').value={{ item.id }};
+window.close();
+</script>
+</body>
+</html>

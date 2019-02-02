@@ -4,7 +4,7 @@
 {% block css %}{% endblock %}
 {% block content %}
 <p class="lead">{{ action }}{{ name }}：</p>
-<form class="form-add" action="" method="post">
+<form class="form-add" action="" method="post" id="main_form">
     {% csrf_token %}
     <div class="form-group row">
         <div class="col-3">{{ add_form.public.label }}</div>
@@ -21,6 +21,11 @@
     </div>
     <div id="innerform">
     </div>
+    <input name="is_popup" type="checkbox" {% if is_popup %}checked{% endif %} hidden>
+    {% if is_popup %}
+        <input name="template" value="{{ template_id }}" hidden>
+        <input name="select_id" value="{{ select_id }}" hidden>
+    {% endif %}
     <button type="submit" class="btn btn-outline-primary">提交</button>
 </form>
 {% endblock %}
@@ -30,7 +35,10 @@
     True = true;
     None = null;
     data = {% if item.extra_data %}{{ item.extra_data | safe }}{% else %}{}{% endif %};
-
+    {% if is_popup %}
+    $("#site_header").remove();
+    $('#id_template').attr('disabled', 'true');
+    {% endif %}
     function ajaxSubmit() {
         var id = $.trim($('#id_template').val());
         $.ajax({
@@ -55,11 +63,16 @@
         });
     }
     $('#id_template').change(function () {
-        ajaxSubmit()
-    });
-    $(function () {
-        $('#id_template').val({{ item.template.id }});
         ajaxSubmit();
     });
+    $(function () {
+        {% if template_id %}
+            $('#id_template').val({{ template_id }});
+        {% endif %}
+        ajaxSubmit();
+    });
+    function popup(n, t) {
+        window.open('{% url 'inventory:add' %}'+'?template='+encodeURI(t)+'&select_id='+encodeURI(n), Math.random().toString(32).substr(2), 'height=500,width=800,resizable=yes,scrollbars=yes');
+    }
 </script>
 {% endblock %}
