@@ -49,6 +49,7 @@ class ItemTemplate(models.Model):
     name = models.CharField(max_length=64, unique=True, verbose_name="模块名称")
     key_name = models.CharField(max_length=32, default='名称', verbose_name="关键字段名称")
     extra_data = JSONField(default=dict, blank=True, verbose_name="扩展数据")
+    is_property = models.BooleanField(default=False, verbose_name='不可存入')
     create_time = models.DateTimeField("create_time", auto_now_add=True)
 
     def __str__(self):
@@ -89,7 +90,6 @@ class Item(models.Model):
         related_name="user_item",
     )
     is_public = models.BooleanField(default=False, verbose_name='公开')
-    is_property = models.BooleanField(default=False, verbose_name='非物品')
     allowed_users = models.ManyToManyField(
         myUser,
         blank=True,

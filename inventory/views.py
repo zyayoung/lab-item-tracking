@@ -32,7 +32,7 @@ class ItemsView(generic.View):
         name = "属性" if is_property else "物品"
         tmp_user = myUser.objects.get(id=request.session.get('user_id'))
         item_list = get_my_list(tmp_user,
-                                Item.objects.filter(is_property=is_property))
+                                Item.objects.filter(template__is_property=is_property))
         keyword = request.GET.get('q')
         if keyword:
             keyword_iri = quote(keyword)
@@ -77,7 +77,6 @@ class AddItemView(generic.View):
                 owner=tmp_user,
                 is_public=public,
                 template=None,
-                is_property=is_property,
             )
             item.allowed_users.add(tmp_user)
         else:
@@ -343,6 +342,7 @@ class EditTemplateView(generic.View):
         my_list = []
         idx_list = []
         template.key_name = request.POST.get('key_name', '名称')
+        template.is_property = request.POST.get('is_property', False)
         for key in request.POST.keys():
             index = re.findall(r"^name_(\d+)$", key)
             if index:
@@ -410,7 +410,7 @@ class LocationView(generic.View):
             except Http404:
                 return redirect('inventory:applyloc', location_id)
             all_items = Item.objects.filter(
-                location=loc_now, is_property=False)
+                location=loc_now, template__is_property=False)
             all_locs = loc_now.location_children.all()
             item_list = get_my_list(tmp_user, all_items)
             paginator = Paginator(item_list, OBJ_PER_PAGE)
@@ -485,7 +485,7 @@ def del_item(request, item_id):
     item.allowed_users.clear()
     item.is_public = False
     set_location(item, None, tmp_user)
-    return redirect('inventory:properties') if item.is_property else redirect(
+    return redirect('inventory:properties') if item.template.is_properity else redirect(
         'inventory:items')
 
 
@@ -512,7 +512,7 @@ class AddItem2LocView(generic.View):
         tmp_user = myUser.objects.get(id=user_id)
         location = get_my_loc(tmp_user, kwargs.get('id'))
         item_list = get_my_list(
-            tmp_user, Item.objects.filter(location=None, is_property=False))
+            tmp_user, Item.objects.filter(location=None, template__is_property=False))
         paginator = Paginator(item_list, OBJ_PER_PAGE)
         page = request.GET.get('page')
         try:

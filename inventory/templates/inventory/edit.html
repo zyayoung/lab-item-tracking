@@ -1,9 +1,9 @@
 {% extends 'base.html' %}
 {% load staticfiles %}
-{% block title %}{{ action }}{% if item.is_property %}属性{% else %}物品{% endif %}{% endblock %}
+{% block title %}{{ action }}{% if item.template.is_properity %}属性{% else %}物品{% endif %}{% endblock %}
 {% block css %}{% endblock %}
 {% block content %}
-<p class="lead">{{ action }}{% if item.is_property %}属性{% else %}物品{% endif %}：</p>
+<p class="lead">{{ action }}{% if item.template.is_properity %}属性{% else %}物品{% endif %}：</p>
 <form class="form-add" action="" method="post">
     {% csrf_token %}
     <div class="form-group row">

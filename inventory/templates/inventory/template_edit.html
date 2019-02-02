@@ -7,6 +7,10 @@
 {% endif %}
 <p class="lead pull-left">物品模板编辑：{{ template }}</p>
 <form method="post" action="">
+    <select name="is_property" class="form-control pull-right" style="width: 80px">
+        <option value="1" {% if template.is_property %} selected="selected" {% endif %}>物品</option>
+        <option value="0" {% if not template.is_property %} selected="selected" {% endif %}>属性</option>
+    </select>
     <table class="table table-striped" id="editTable">
         <thead>
             <th>属性名称</th>

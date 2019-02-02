@@ -30,7 +30,7 @@ def wash_regex(r):
 
 def build_loc_tree(location=None, count=False, user=None, depth=1000, link=False):
     ret = {'name': location.path if location else 'root'}
-    tot_count = Item.objects.filter(location=location, is_property=False).count() if location and count else 0
+    tot_count = Item.objects.filter(location=location).count() if location and count else 0
     children = []
     if depth:
         _children = location.location_children.all() if location else Location.objects.filter(parent=None)
