@@ -130,6 +130,7 @@ class ItemView(generic.View):
         item_keys = list(item.extra_data.keys())
         if item.template:
             for data in item.template.extra_data:
+                filled = False
                 if data['name'] in item_keys:
                     data_name = data['name']
                     item_keys.remove(data_name)
@@ -165,7 +166,9 @@ class ItemView(generic.View):
                                 'type':
                                 'plain',
                             }))
-                    elif data['required']:
+                        filled = True
+                if not filled:
+                    if data['required']:
                         extra_info.append((data['name'], {
                             'data': '缺失必填属性',
                             'type': 'warning',
