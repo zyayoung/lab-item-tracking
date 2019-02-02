@@ -475,7 +475,7 @@ def del_item(request, item_id):
     item.is_public = False
     set_location(item, None, tmp_user)
     return redirect(
-        'inventory:properties') if item.template.is_properity else redirect(
+        'inventory:properties') if item.template.is_property else redirect(
             'inventory:items')
 
 

@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 {% load staticfiles %}
-{% block title %}{% if item.template.is_properity %}属性{% else %}物品{% endif %}详情：{{ item }} {% endblock %}
+{% block title %}{% if item.template.is_property %}属性{% else %}物品{% endif %}详情：{{ item }} {% endblock %}
 {% block content %}
 {% if message %}
 <div class="alert alert-warning">{{ message }}</div>
 {% endif %}
-<p class="lead">{% if item.template.is_properity %}属性{% else %}物品{% endif %}详情：</p>
+<p class="lead">{% if item.template.is_property %}属性{% else %}物品{% endif %}详情：</p>
 <table class="table table-striped row mx-0">
     <tbody class="w-100">
     {% if item.template %}
@@ -47,7 +47,7 @@
             </td>
         </tr>
         {% endfor %}
-        {% if not item.template.is_properity %}
+        {% if not item.template.is_property %}
         <tr class="row mx-0">
             <th class="col-3">位置</th>
             <td class="col-9">
@@ -100,7 +100,7 @@
         </tr>
     </tbody>
 </table>
-{% if not item.template.is_properity %}
+{% if not item.template.is_property %}
 {% if item.location %}
 <a class="btn btn-outline-primary" role="button" href="{% url 'inventory:location' item.location.id %}?pending={{ item.id }}">移动</a>
 <a class="btn btn-outline-primary" role="button" href="#" onclick="cfm('{% url 'inventory:put' item.id 0 %}', '{{ item }}', '取出')">取出</a>
