@@ -50,11 +50,8 @@ class AddItemView(generic.View):
     def get(self, request):
         action = "新建"
         if 'template' in request.GET.keys() and 'select_id' in request.GET.keys():
-            try:
-                template = ItemTemplate.objects.get(name=request.GET.get('template', ''))
-                select_id = request.GET.get('select_id', '')
-            except:
-                raise Http404()
+            template = get_object_or_404(ItemTemplate, name=request.GET.get('template', ''))
+            select_id = request.GET.get('select_id', '')
             is_popup = True
             is_property = template.is_property
             template_id = template.id
