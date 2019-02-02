@@ -68,7 +68,7 @@ def get_export_values(template, item, visited=[], include_links=True):
     for ext_data in template.extra_data:
         int_data = item.extra_data[ext_data['name']] if item and ext_data['name'] in item.extra_data.keys() else ''
         if ext_data['type'] not in ['text', 'int', 'float', 'bool'] and not include_links:
-            if item and int_data != "0":
+            if item and int_data not in ["0", ""]:
                 keys.append(Item.objects.get(id=int_data).name)
             else:
                 keys.append('')
