@@ -59,13 +59,38 @@
         </div>
     </div>
 </div>
-<p class="lead">拟导出数据：</p>
 {% endif %}
-{% for key in export_keys %}
-    <div>{{ key }}</div>
-{% endfor %}
+<p class="lead">拟导出数据：</p>
+<div class="pull-right">
+    <button class="btn btn-outline-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
+        aria-haspopup="true" aria-expanded="false">
+        导出为...
+    </button>
+    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+        <a class="dropdown-item" href="javascript://" onclick="exportAll('csv');">CSV</a>
+        <a class="dropdown-item" href="javascript://" onclick="exportAll('txt');">TXT</a>
+        <a class="dropdown-item" href="javascript://" onclick="exportAll('xls');">XLS</a>
+        <a class="dropdown-item" href="javascript://" onclick="exportAll('sql');">SQL</a>
+        <a class="dropdown-item" href="javascript://" onclick="exportAll('json');">JSON </a>
+    </div>
+</div>
+<table class="table table-striped" id="export_data">
+    <thead>
+        {% for key in export_keys %}
+        <th>{{ key }}</th>
+        {% endfor %}
+    </thead>
+    <tbody>
+        {% for obj in full_info %}
+            <tr>
+            {% for value in obj %}
+                <td>{{ value }}</td>
+            {% endfor %}
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
 {% endblock %}
-
 {% block script %}
 <script>
     function cfm(url, item) {
@@ -77,6 +102,15 @@
     function urlSubmit() {
         var url = $.trim($("#cfmUrl").val());
         window.location.href = url;
+    }
+</script>
+<script src="{% static '/js/tableExport.min.js' %}"></script>
+<script>
+    function exportAll(type) {
+        $('#export_data').tableExport({
+            filename: '{{ user.name }}操作记录_%YY%-%MM%-%DD%',
+            format: type
+        });
     }
 </script>
 {% endblock %}

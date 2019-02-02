@@ -52,11 +52,29 @@ def set_location(item, location, user):
 def get_export_keys(template, visited=[], include_links=True):
     visited.append(template)
     keys = [template.key_name]
-    for item in template.extra_data:
-        if item['type'] in ['text', 'int', 'float', 'bool'] or not include_links:
-            keys.append(item['name'])
+    for ext_data in template.extra_data:
+        if ext_data['type'] in ['text', 'int', 'float', 'bool'] or not include_links:
+            keys.append(ext_data['name'])
         elif include_links:
-            inner_template = ItemTemplate.objects.get(name=item['type'])
-            for name in get_export_keys(inner_template, visited.copy(), inner_template not in visited):
-                keys.append(item['name']+'__'+name)
+            inner_template = ItemTemplate.objects.get(name=ext_data['type'])
+            for key in get_export_keys(inner_template, visited.copy(), inner_template not in visited):
+                keys.append(ext_data['name']+'__'+key)
+    return keys
+
+
+def get_export_values(template, item, visited=[], include_links=True):
+    visited.append(template)
+    keys = [item.name if item else '']
+    for ext_data in template.extra_data:
+        int_data = item.extra_data[ext_data['name']] if item and ext_data['name'] in item.extra_data.keys() else ''
+        if ext_data['type'] in ['text', 'int', 'float', 'bool'] or not include_links:
+            keys.append(int_data)
+        elif include_links:
+            inner_template = ItemTemplate.objects.get(name=ext_data['type'])
+            try:
+                inner_item = Item.objects.get(id=int_data) if int_data else None
+            except Item.DoesNotExist:
+                inner_item = None
+            for value in get_export_values(inner_template, inner_item, visited.copy(), inner_template not in visited):
+                keys.append(value)
     return keys
