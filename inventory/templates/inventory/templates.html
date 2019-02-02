@@ -35,8 +35,8 @@
     <tbody>
         {% for template in template_list %}
         <tr class="row">
-            <td class="col-2"><a href="{% url 'inventory:template' template.id %}">{{ template }}</a></td>
-            <td class="col-2">{% if template.is_property %}是{% else %}否{% endif %}</td>
+            <td class="col-2"><a href="{% if tmp_user.is_superadmin %}{% url 'inventory:template_edit' template.id %}{% else %}{% url 'inventory:template' template.id %}{% endif %}">{{ template }}</a></td>
+            <td class="col-2">{% if template.is_property %}否{% else %}是{% endif %}</td>
             <td class="col-8">
                 {{ template.key_name }}
                 {% for value in template.extra_data %}

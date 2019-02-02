@@ -47,18 +47,11 @@ class ItemsView(generic.View):
 
 
 class AddItemView(generic.View):
-    def get_form(self, *args, **kwargs):
-        _templates = ItemTemplate.objects.all()
-        choices = []
-        if _templates.exists():
-            choices.extend([(t.id, t.name) for t in _templates.all()])
-        return forms.ChooseTemplateForm(*args, choices=choices)
-
     def get(self, request):
         action = "新建"
         is_property = 'prop' in request.path
         name = "属性" if is_property else "物品"
-        choose_form = self.get_form()
+        choose_form = forms.ChooseTemplateForm(is_property=is_property)
         add_form = forms.AddItemForm()
         return render(request, 'inventory/edit.html', locals())
 
@@ -81,7 +74,7 @@ class AddItemView(generic.View):
             item.allowed_users.add(tmp_user)
         else:
             return render(request, 'inventory/edit.html', locals())
-        choose_form = self.get_form(request.POST)
+        choose_form = forms.ChooseTemplateForm(request.POST, is_property=is_property)
         if choose_form.is_valid():
             data = {}
             template_id = int(choose_form.cleaned_data['template'])
@@ -202,29 +195,26 @@ class EditItemView(generic.View):
     tmp_user = None
     item = None
 
-    def get_form(self, *args, **kwargs):
-        _templates = ItemTemplate.objects.all()
-        choices = []
-        if _templates.exists():
-            choices.extend([(t.id, t.name) for t in _templates.all()])
-        return forms.ChooseTemplateForm(*args, choices=choices)
-
     def get(self, request, *args, **kwargs):
         user_id = request.session.get('user_id')
         tmp_user = myUser.objects.get(id=user_id)
-        action = "编辑"
         item = get_my_item(tmp_user, kwargs.get('item_id'))
+        is_property = item.template.is_property
+        name = "属性" if is_property else "物品"
+        action = "编辑"
         if not item.del_permission(tmp_user):
             messages.error(request,
                            "只有创建人（{}）及其管理员可以编辑物品！".foramt(item.owner.name))
             return render(request, 'inventory/info.html', locals())
-        choose_form = self.get_form()
+        choose_form = forms.ChooseTemplateForm(is_property=is_property)
         add_form = forms.AddItemForm()
         return render(request, 'inventory/edit.html', locals())
 
     def post(self, request, *args, **kwargs):
         tmp_user = myUser.objects.get(id=request.session.get('user_id'))
         item = get_my_item(tmp_user, kwargs.get('item_id'))
+        is_property = item.template.is_property
+        name = "属性" if is_property else "物品"
         action = "编辑"
         if not item.del_permission(tmp_user):
             messages.error(request,
@@ -237,7 +227,7 @@ class EditItemView(generic.View):
             item.is_public = add_form.cleaned_data['public']
         else:
             return render(request, 'inventory/edit.html', locals())
-        choose_form = self.get_form(request.POST)
+        choose_form = forms.ChooseTemplateForm(request.POST, is_property=is_property)
         if choose_form.is_valid():
             data = {}
             template_id = int(choose_form.cleaned_data['template'])
@@ -368,7 +358,7 @@ class EditTemplateView(generic.View):
         template.extra_data = my_list
         template.save()
         message = "保存成功"
-        return redirect('inventory:template', template.id)
+        return redirect('inventory:templates')
 
 
 def del_template(request, template_id):

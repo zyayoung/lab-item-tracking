@@ -2,7 +2,6 @@ from django.shortcuts import get_object_or_404
 from django.http import Http404
 from inventory.models import Item, Location
 from trace_item.models import ItemLog
-from silk.profiling.profiler import silk_profile
 
 
 def get_my_item(user_now, item_id):

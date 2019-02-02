@@ -1,5 +1,5 @@
 from django import forms
-from .models import Item
+from .models import Item, ItemTemplate
 from .utils import get_my_list
 
 
@@ -122,7 +122,13 @@ class ChooseTemplateForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         super(ChooseTemplateForm, self).__init__(*args)
-        self.fields["template"].choices = kwargs.get('choices')
+        if 'is_property' in kwargs.keys():
+            choices = ItemTemplate.objects.filter(
+                is_property=kwargs.get('is_property')
+            ).values_list('id', 'name')
+        else:
+            choices = ItemTemplate.objects.all().values_list('id', 'name')
+        self.fields["template"].choices = choices
 
 
 class AddLocationForm(forms.Form):
