@@ -29,7 +29,7 @@ class IndexView(generic.View):
 class ItemsView(generic.View):
     def get(self, request, *args, **kwargs):
         is_property = 'prop' in request.path
-        name = "属性" if is_property else "物品"
+        name = "物品属性" if is_property else "物品"
         tmp_user = myUser.objects.get(id=request.session.get('user_id'))
         item_list = get_my_list(
             tmp_user, Item.objects.filter(template__is_property=is_property))

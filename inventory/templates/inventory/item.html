@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 {% load staticfiles %}
-{% block title %}{% if item.template.is_property %}属性{% else %}物品{% endif %}详情：{{ item }} {% endblock %}
+{% block title %}物品{% if item.template.is_property %}属性{% endif %}详情：{{ item }} {% endblock %}
 {% block content %}
 {% if message %}
 <div class="alert alert-warning">{{ message }}</div>
 {% endif %}
-<p class="lead">{% if item.template.is_property %}属性{% else %}物品{% endif %}详情：</p>
+<p class="lead">物品{% if item.template.is_property %}属性{% endif %}详情：</p>
 <table class="table table-striped row mx-0">
     <tbody class="w-100">
     {% if item.template %}
