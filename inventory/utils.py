@@ -50,17 +50,13 @@ def set_location(item, location, user):
 
 
 def get_export_keys(template, visited=[], include_links=True):
-    visited = visited.copy()
     visited.append(template)
     keys = [template.key_name]
     for item in template.extra_data:
-        if item['type'] in ['text', 'int', 'float', 'bool']:
+        if item['type'] in ['text', 'int', 'float', 'bool'] or not include_links:
             keys.append(item['name'])
-        else:
+        elif include_links:
             inner_template = ItemTemplate.objects.get(name=item['type'])
-            if include_links:
-                for name in get_export_keys(inner_template, visited, inner_template not in visited):
-                    keys.append(item['name']+'__'+name)
-            else:
-                keys.append(item['name'] + '__' + inner_template.key_name)
+            for name in get_export_keys(inner_template, visited.copy(), inner_template not in visited):
+                keys.append(item['name']+'__'+name)
     return keys

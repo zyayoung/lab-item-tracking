@@ -312,7 +312,7 @@ class TemplatesView(generic.View):
 class TemplateView(generic.View):
     def get(self, request, *args, **kwargs):
         template = get_object_or_404(ItemTemplate, id=kwargs.get('id'))
-        print(get_export_keys(template))
+        export_keys = get_export_keys(template)
         return render(request, 'inventory/template.html', locals())
 
 
