@@ -30,7 +30,7 @@
         {% endfor %}
     </tbody>
 </table>
-{% if session.is_superadmin %}
+{% if request.session.is_superadmin %}
 <a class="btn btn-outline-primary" role="button" href="{% url 'inventory:template_edit' template.id %}">
     <i class="fa fa-edit" aria-hidden="true"></i> 编辑
 </a>
