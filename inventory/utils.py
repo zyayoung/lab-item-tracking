@@ -43,8 +43,6 @@ def set_location(item, location, user):
             operator=user,
             location_from=item.location,
             location_to=location,
-            quantity_from=item.quantity,
-            quantity_to=item.quantity,
         )
         log.save()
         item.location = location
