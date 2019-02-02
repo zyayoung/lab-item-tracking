@@ -86,7 +86,7 @@ class Item(models.Model):
         myUser,
         blank=True,
         on_delete=models.CASCADE,
-        verbose_name="所有者",
+        verbose_name="创建用户",
         related_name="user_item",
     )
     is_public = models.BooleanField(default=False, verbose_name='公开')

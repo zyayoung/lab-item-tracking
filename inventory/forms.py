@@ -7,7 +7,7 @@ class AddItemForm(forms.Form):
     name = forms.CharField(
         label="名称",
         max_length=128,
-        required = False,
+        required=False,
         widget=forms.TextInput(attrs={'class': 'form-control'}),
     )
     public = forms.BooleanField(
@@ -82,11 +82,13 @@ class EditItemForm(forms.Form):
                             'id', 'name'),
                         widget=forms.Select(attrs={'class': 'form-control'}),
                     )
+                    if not tmp_required:
+                        tmp_field.choices.insert(0, [0, '--'])
                 self.fields[tmp_label.replace(' ', '_')] = tmp_field
 
 
 class AddTemplateForm(forms.Form):
-    name=forms.CharField(
+    name = forms.CharField(
         label="名称",
         max_length=64,
         widget=forms.TextInput(attrs={'class': 'form-control'}),
@@ -124,8 +126,8 @@ class ChooseTemplateForm(forms.Form):
         super(ChooseTemplateForm, self).__init__(*args)
         if 'is_property' in kwargs.keys():
             choices = ItemTemplate.objects.filter(
-                is_property=kwargs.get('is_property')
-            ).values_list('id', 'name')
+                is_property=kwargs.get('is_property')).values_list(
+                    'id', 'name')
         else:
             choices = ItemTemplate.objects.all().values_list('id', 'name')
         self.fields["template"].choices = choices

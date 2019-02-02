@@ -8,7 +8,7 @@
 <p class="lead">物品{% if item.template.is_property %}属性{% endif %}详情：</p>
 <table class="table table-striped row mx-0">
     <tbody class="w-100">
-    {% if item.template %}
+        {% if item.template %}
         <tr class="row mx-0">
             <th class="col-3">类型</th>
             <td class="col-9"><a href="{% url 'inventory:template' item.template.id %}">{{ item.template }}</a></td>
@@ -17,7 +17,7 @@
             <th class="col-3">{{ item.template.key_name }}</th>
             <td class="col-9">{{ item }}</td>
         </tr>
-    {% else %}
+        {% else %}
         <tr class="row mx-0">
             <th class="col-3">类型</th>
             <td class="col-9">--</td>
@@ -26,7 +26,7 @@
             <th class="col-3">名称</th>
             <td class="col-9">{{ item }}</td>
         </tr>
-    {% endif %}
+        {% endif %}
         {% for key, value in extra_info %}
         <tr class="row mx-0">
             {% if value.type == 'extra' %}
@@ -35,15 +35,15 @@
             <td class="col-3">{{ key }}</td>
             {% endif %}
             <td class="col-9">
-            {% if value.type == 'link' %}
-            <a href="{% url 'inventory:item' value.data.id %}">{{ value.data }}</a>
-            {% elif value.type == 'warning' %}
-            <span class="text-warning">{{ value.data }}</span>
-            {% elif value.type == 'extra' %}
-            <span class="text-muted">{{ value.data }}</span>
-            {% else %}
-            {{ value.data }}
-            {% endif %}
+                {% if value.type == 'link' %}
+                <a href="{% url 'inventory:item' value.data.id %}">{{ value.data }}</a>
+                {% elif value.type == 'warning' %}
+                <span class="text-warning">{{ value.data }}</span>
+                {% elif value.type == 'extra' %}
+                <span class="text-muted">{{ value.data }}</span>
+                {% else %}
+                {{ value.data }}
+                {% endif %}
             </td>
         </tr>
         {% endfor %}
@@ -60,7 +60,7 @@
         </tr>
         {% endif %}
         <tr class="row mx-0">
-            <th class="col-3">所有者</th>
+            <th class="col-3">创建用户</th>
             <td class="col-9">
                 <a href="{% url 'personal:user' item.owner.id %}">
                     {{ item.owner }}

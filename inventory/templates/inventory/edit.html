@@ -50,7 +50,7 @@
                     else
                         $('#id_' + key.replace(/ /g, '_')).val(data[key]);
                 });
-                $('#id_name').val({{ item.name|safe }});
+                $('#id_name').val('{{ item.name|safe }}');
             }
         });
     }

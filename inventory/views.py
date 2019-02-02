@@ -128,13 +128,21 @@ class ItemView(generic.View):
                                 'bool', 'int', 'float', 'text'
                         ]:
                             try:
-                                extra_info.append((data_name, {
-                                    'data':
-                                    get_my_item(tmp_user,
+                                if int(item.extra_data[data_name]) != 0:
+                                    extra_info.append(
+                                        (data_name, {
+                                            'data':
+                                            get_my_item(
+                                                tmp_user,
                                                 item.extra_data[data_name]),
-                                    'type':
-                                    'link',
-                                }))
+                                            'type':
+                                            'link',
+                                        }))
+                                else:
+                                    extra_info.append((data['name'], {
+                                        'data': '--',
+                                        'type': 'plain'
+                                    }))
                             except Http404:
                                 extra_info.append((data_name, {
                                     'data': '您没有访问此物品的权限',
@@ -155,7 +163,7 @@ class ItemView(generic.View):
                     else:
                         extra_info.append((data['name'], {
                             'data': '--',
-                            'type': 'extra'
+                            'type': 'plain'
                         }))
 
         for key in item_keys:
