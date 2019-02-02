@@ -86,7 +86,7 @@ class EditItemForm(forms.Form):
 
 
 class AddTemplateForm(forms.Form):
-    name = forms.CharField(
+    name=forms.CharField(
         label="名称",
         max_length=64,
         widget=forms.TextInput(attrs={'class': 'form-control'}),

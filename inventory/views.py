@@ -74,7 +74,6 @@ class AddItemView(generic.View):
             public = add_form.cleaned_data['public']
             item = Item.objects.create(
                 name=name,
-                quantity=0,
                 owner=tmp_user,
                 is_public=public,
                 template=None,
@@ -343,6 +342,7 @@ class EditTemplateView(generic.View):
         template = get_object_or_404(ItemTemplate, id=kwargs.get('id'))
         my_list = []
         idx_list = []
+        template.key_name = request.POST.get('key_name', '名称')
         for key in request.POST.keys():
             index = re.findall(r"^name_(\d+)$", key)
             if index:

@@ -15,7 +15,7 @@
     </thead>
     <tbody>
         <tr>
-            <td>名称</td>
+            <td>{{ template.key_name }}</td>
             <td>text</td>
             <td>是</td>
             <td></td>
@@ -31,9 +31,11 @@
     </tbody>
 </table>
 <a class="btn btn-outline-primary" role="button" href="{% url 'inventory:template_edit' template.id %}">
-    编辑
+    <i class="fa fa-edit" aria-hidden="true"></i> 编辑
 </a>
-<a class="btn btn-outline-primary" role="button" href="#" onClick="cfm('{% url 'inventory:template_delete' template.id %}', '{{ template }}')">删除</a>
+<a class="btn btn-outline-primary" role="button" href="#" onClick="cfm('{% url 'inventory:template_delete' template.id %}', '{{ template }}')">
+    <i class="fa fa-trash" aria-hidden="true"></i> 删除
+</a>
 <div class="modal fade" id="cfmModal" tabindex="-1" role="dialog" aria-labelledby="cfmModalTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">

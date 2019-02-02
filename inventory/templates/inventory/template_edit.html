@@ -19,7 +19,7 @@
             {% csrf_token %}
             <tr id="tr_{{ forloop.counter }}">
                 <td>
-                    <input type="text" class="form-control" disabled value="名称">
+                    <input type="text" class="form-control" name="key_name" value="{{ template.key_name }}" required>
                 </td>
                 <td>
                     <select class="form-control" disabled>

@@ -13,8 +13,8 @@ class LocationPermissionApplicationAdmin(admin.ModelAdmin):
 
 class ItemAdmin(admin.ModelAdmin):
     list_display = ('name', 'location', 'template', 'owner', 'is_public', 'is_property')
-    search_fields = ('name', 'unit', 'owner__name', 'location__path')
-    list_filter = ('is_public', 'is_property', 'owner', 'unit')
+    search_fields = ('name', 'owner__name', 'location__path')
+    list_filter = ('is_public', 'is_property', 'owner')
     filter_horizontal = ('allowed_users',)
 
 

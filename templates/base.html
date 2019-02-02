@@ -71,6 +71,11 @@
                     </li>
                     {% if request.session.is_superadmin %}
                     <li class="nav-item">
+                        <a href="{% url 'inventory:templates' %}" class="nav-link">
+                            模板
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a href="{% url 'admin:index' %}" class="nav-link">
                             数据库
                         </a>

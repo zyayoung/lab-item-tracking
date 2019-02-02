@@ -8,29 +8,32 @@
 <p class="lead">{% if item.is_property %}属性{% else %}物品{% endif %}详情：</p>
 <table class="table table-striped row mx-0">
     <tbody class="w-100">
+    {% if item.template %}
+        <tr class="row mx-0">
+            <th class="col-3">类型</th>
+            <td class="col-9"><a href="{% url 'inventory:template' item.template.id %}">{{ item.template }}</a></td>
+        </tr>
+        <tr class="row mx-0">
+            <th class="col-3">{{ item.template.key_name }}</th>
+            <td class="col-9">{{ item }}</td>
+        </tr>
+    {% else %}
+        <tr class="row mx-0">
+            <th class="col-3">类型</th>
+            <td class="col-9">--</td>
+        </tr>
         <tr class="row mx-0">
             <th class="col-3">名称</th>
             <td class="col-9">{{ item }}</td>
         </tr>
-        {% if not item.is_property %}
-        <tr class="row mx-0">
-            <th class="col-3">位置</th>
-            <td class="col-9">
-                {% if item.location %}
-                <a href="{% url 'inventory:location' item.location.id %}">{{ item.location }}</a>
-                {% else %}
-                未放入
-                {% endif %}
-            </td>
-        </tr>
-        {% endif %}
-        <tr class="row mx-0">
-            <th class="col-3">类型</th>
-            <td class="col-9">{{ item.template }}</td>
-        </tr>
+    {% endif %}
         {% for key, value in extra_info %}
         <tr class="row mx-0">
-            <th class="col-3">{{ key }}</th>
+            {% if value.type == 'extra' %}
+            <td class="col-3 text-muted">{{ key }}</td>
+            {% else %}
+            <td class="col-3">{{ key }}</td>
+            {% endif %}
             <td class="col-9">
             {% if value.type == 'link' %}
             <a href="{% url 'inventory:item' value.data.id %}">{{ value.data }}</a>
@@ -44,8 +47,20 @@
             </td>
         </tr>
         {% endfor %}
+        {% if not item.is_property %}
         <tr class="row mx-0">
-            <th class="col-3 text-muted">所有者</th>
+            <th class="col-3">位置</th>
+            <td class="col-9">
+                {% if item.location %}
+                <a href="{% url 'inventory:location' item.location.id %}">{{ item.location }}</a>
+                {% else %}
+                未放入
+                {% endif %}
+            </td>
+        </tr>
+        {% endif %}
+        <tr class="row mx-0">
+            <th class="col-3">所有者</th>
             <td class="col-9">
                 <a href="{% url 'personal:user' item.owner.id %}">
                     {{ item.owner }}
@@ -53,7 +68,7 @@
             </td>
         </tr>
         <tr class="row mx-0">
-            <th class="col-3 text-muted">关联用户
+            <th class="col-3">关联用户
                 {% if not item.is_public %}
                 <span style="font-weight:normal;">
                     (<a href="#" onClick="toggleSelect()">编辑</a>)

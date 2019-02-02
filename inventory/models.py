@@ -47,6 +47,7 @@ class Location(models.Model):
 
 class ItemTemplate(models.Model):
     name = models.CharField(max_length=64, unique=True, verbose_name="模块名称")
+    key_name = models.CharField(max_length=32, default='名称', verbose_name="关键字段名称")
     extra_data = JSONField(default=dict, blank=True, verbose_name="扩展数据")
     create_time = models.DateTimeField("create_time", auto_now_add=True)
 
@@ -61,17 +62,6 @@ class ItemTemplate(models.Model):
 
 class Item(models.Model):
     name = models.CharField(max_length=128, verbose_name="名称")
-    quantity = models.FloatField(
-        default=0,
-        blank=True,
-        verbose_name="数量",
-    )
-    unit = models.CharField(
-        max_length=32,
-        default='',
-        blank=True,
-        verbose_name="单位",
-    )
     attribute = models.TextField(blank=True, verbose_name="属性")
     template = models.ForeignKey(
         ItemTemplate,
@@ -82,7 +72,7 @@ class Item(models.Model):
         related_name="itemtemplate_instance",
     )
     extra_data = JSONField(default=dict, blank=True, verbose_name="扩展数据")
-    # related_items = JSONField(default=dict, blank=True, verbose_name="关联物品")
+    related_items = JSONField(default=dict, blank=True, verbose_name="关联物品")
     location = models.ForeignKey(
         Location,
         null=True,
