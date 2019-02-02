@@ -1,12 +1,11 @@
 {% extends "base.html" %}
 {% load staticfiles %}
-{% block title %}物品模板详情：{{ template }} {% endblock %}
+{% block title %}物品{% if template.is_property %}属性{% endif %}模板详情：{{ template }} {% endblock %}
 {% block content %}
 {% if message %}
 <div class="alert alert-warning">{{ message }}</div>
 {% endif %}
-<p class="lead pull-left">物品模板详情：{{ template }}</p>
-<p class="lead pull-right">{% if template.is_property %}物品{% else %}属性{% endif %}</p>
+<p class="lead pull-left">物品{% if template.is_property %}属性{% endif %}模板详情：{{ template }}</p>
 <table class="table table-striped">
     <thead>
         <th>属性名称</th>
@@ -31,6 +30,7 @@
         {% endfor %}
     </tbody>
 </table>
+{% if session.is_superadmin %}
 <a class="btn btn-outline-primary" role="button" href="{% url 'inventory:template_edit' template.id %}">
     <i class="fa fa-edit" aria-hidden="true"></i> 编辑
 </a>
@@ -59,6 +59,7 @@
         </div>
     </div>
 </div>
+{% endif %}
 {% endblock %}
 
 {% block script %}

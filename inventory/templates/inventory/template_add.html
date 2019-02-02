@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load staticfiles %}
-{% block title %}新建物品模板{% endblock %}
+{% block title %}新建物品{% if is_property %}属性{% endif %}模板{% endblock %}
 {% block css %}{% endblock %}
 {% block content %}
 <div class="container">
@@ -10,7 +10,7 @@
             <div class="alert alert-warning">{{ message }}</div>
             {% endif %}
             {% csrf_token %}
-            <h2 class="text-center">新建物品模板</h2>
+            <h2 class="text-center">新建物品{% if is_property %}属性{% endif %}模板</h2>
             <div class="form-group">
                 <b>{{ add_form.name.label_tag }}</b>
                 {{ add_form.name}}

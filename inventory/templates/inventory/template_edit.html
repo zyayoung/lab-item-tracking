@@ -1,16 +1,12 @@
 {% extends "base.html" %}
 {% load staticfiles %}
-{% block title %}物品模板编辑：{{ template }} {% endblock %}
+{% block title %}物品{% if template.is_property %}属性{% endif %}模板编辑：{{ template }} {% endblock %}
 {% block content %}
 {% if message %}
 <div class="alert alert-warning">{{ message }}</div>
 {% endif %}
-<p class="lead pull-left">物品模板编辑：{{ template }}</p>
+<p class="lead pull-left">物品{% if template.is_property %}属性{% endif %}模板编辑：{{ template }}</p>
 <form method="post" action="">
-    <select name="is_property" class="form-control pull-right" style="width: 80px">
-        <option value="1" {% if template.is_property %} selected="selected" {% endif %}>物品</option>
-        <option value="0" {% if not template.is_property %} selected="selected" {% endif %}>属性</option>
-    </select>
     <table class="table table-striped" id="editTable">
         <thead>
             <th>属性名称</th>
@@ -36,7 +32,7 @@
                     </select>
                 </td>
                 <td>
-                    <input type="text" class="form-control" disabled value="">
+                    <input type="text" class="form-control" disabled value="用于显示的名称">
                 </td>
                 <td>
                     <button type="button" class="btn text-muted" disabled>删除</button>

@@ -31,8 +31,8 @@ class ItemsView(generic.View):
         is_property = 'prop' in request.path
         name = "属性" if is_property else "物品"
         tmp_user = myUser.objects.get(id=request.session.get('user_id'))
-        item_list = get_my_list(tmp_user,
-                                Item.objects.filter(template__is_property=is_property))
+        item_list = get_my_list(
+            tmp_user, Item.objects.filter(template__is_property=is_property))
         keyword = request.GET.get('q')
         if keyword:
             keyword_iri = quote(keyword)
@@ -50,7 +50,7 @@ class AddItemView(generic.View):
     def get(self, request):
         action = "新建"
         is_property = 'prop' in request.path
-        name = "属性" if is_property else "物品"
+        name = "物品属性" if is_property else "物品"
         choose_form = forms.ChooseTemplateForm(is_property=is_property)
         add_form = forms.AddItemForm()
         return render(request, 'inventory/edit.html', locals())
@@ -58,7 +58,7 @@ class AddItemView(generic.View):
     def post(self, request):
         action = "新建"
         is_property = 'prop' in request.path
-        name = "属性" if is_property else "物品"
+        name = "物品属性" if is_property else "物品"
         message = "请检查填写的内容！"
         add_form = forms.AddItemForm(request.POST)
         if add_form.is_valid():
@@ -74,7 +74,8 @@ class AddItemView(generic.View):
             item.allowed_users.add(tmp_user)
         else:
             return render(request, 'inventory/edit.html', locals())
-        choose_form = forms.ChooseTemplateForm(request.POST, is_property=is_property)
+        choose_form = forms.ChooseTemplateForm(
+            request.POST, is_property=is_property)
         if choose_form.is_valid():
             data = {}
             template_id = int(choose_form.cleaned_data['template'])
@@ -227,7 +228,8 @@ class EditItemView(generic.View):
             item.is_public = add_form.cleaned_data['public']
         else:
             return render(request, 'inventory/edit.html', locals())
-        choose_form = forms.ChooseTemplateForm(request.POST, is_property=is_property)
+        choose_form = forms.ChooseTemplateForm(
+            request.POST, is_property=is_property)
         if choose_form.is_valid():
             data = {}
             template_id = int(choose_form.cleaned_data['template'])
@@ -271,12 +273,6 @@ class TemplatesView(generic.View):
 
 
 class TemplateView(generic.View):
-    def dispatch(self, request, *args, **kwargs):
-        tmp_user = myUser.objects.get(id=request.session.get('user_id'))
-        if not tmp_user.is_superadmin:
-            raise Http404()
-        return super(TemplateView, self).dispatch(request, *args, **kwargs)
-
     def get(self, request, *args, **kwargs):
         template = get_object_or_404(ItemTemplate, id=kwargs.get('id'))
         return render(request, 'inventory/template.html', locals())
@@ -291,6 +287,7 @@ class AddTemplateView(generic.View):
 
     def get(self, request):
         add_form = forms.AddTemplateForm()
+        is_property = request.GET.get('property') is not None
         return render(request, 'inventory/template_add.html', locals())
 
     def post(self, request):
@@ -298,7 +295,10 @@ class AddTemplateView(generic.View):
         message = "请检查填写的内容！"
         if add_form.is_valid():
             name = add_form.cleaned_data['name']
-            new_template = ItemTemplate.objects.create(name=name)
+            new_template = ItemTemplate.objects.create(
+                name=name,
+                is_property=request.GET.get('property') is not None,
+            )
             new_template.save()
             message = "新建成功！"
             return redirect('inventory:template_edit', new_template.id)
@@ -332,7 +332,6 @@ class EditTemplateView(generic.View):
         my_list = []
         idx_list = []
         template.key_name = request.POST.get('key_name', '名称')
-        template.is_property = request.POST.get('is_property', False)
         for key in request.POST.keys():
             index = re.findall(r"^name_(\d+)$", key)
             if index:
@@ -475,8 +474,9 @@ def del_item(request, item_id):
     item.allowed_users.clear()
     item.is_public = False
     set_location(item, None, tmp_user)
-    return redirect('inventory:properties') if item.template.is_properity else redirect(
-        'inventory:items')
+    return redirect(
+        'inventory:properties') if item.template.is_properity else redirect(
+            'inventory:items')
 
 
 def unlink_item(request, item_id):
@@ -502,7 +502,8 @@ class AddItem2LocView(generic.View):
         tmp_user = myUser.objects.get(id=user_id)
         location = get_my_loc(tmp_user, kwargs.get('id'))
         item_list = get_my_list(
-            tmp_user, Item.objects.filter(location=None, template__is_property=False))
+            tmp_user,
+            Item.objects.filter(location=None, template__is_property=False))
         paginator = Paginator(item_list, OBJ_PER_PAGE)
         page = request.GET.get('page')
         try:

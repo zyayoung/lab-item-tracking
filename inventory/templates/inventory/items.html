@@ -46,7 +46,11 @@
                 {% endif %}
             </td>
             {% endif %}
-            <td>{% if item.template %}{{ item.template }}{% endif %}</td>
+            <td>
+                {% if item.template %}
+                <a href="{% url 'inventory:template' item.template.id %}">{{ item.template }}</a>
+                {% endif %}
+            </td>
             <td class="d-none d-md-table-cell">
                 <a href="{% url 'personal:user' item.owner.id %}">
                     {{ item.owner }}
