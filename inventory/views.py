@@ -182,6 +182,16 @@ class ItemView(generic.View):
                     'data': item.extra_data[key],
                     'type': 'extra'
                 }))
+        relation_info = {}
+        for key, values in item.related_items.items():
+            _items = []
+            for value in values:
+                try:
+                    item = get_my_item(tmp_user, value)
+                    _items.append(item)
+                except Http404():
+                    pass
+            relation_info[key.replace('__', '->')] = _items
         del_permission = item.del_permission(tmp_user)
         unlink_permission = item.unlink_permission(tmp_user)
         return render(request, 'inventory/item.html', locals())

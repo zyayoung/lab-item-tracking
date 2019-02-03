@@ -100,7 +100,27 @@
         </tr>
     </tbody>
 </table>
-    {{ item.related_items }}
+<p class="lead">相关物品:</p>
+{% for key, items in relation_info.items %}
+<table class="table table-striped ">
+<thead>
+<th>{{ key }}</th>
+<th>类型</th>
+</thead>
+<tbody>
+{% for item in items %}
+    <tr>
+        <td>
+            <a href="{% url 'inventory:item' item.id %}">{{ item.name }}</a>
+        </td>
+        <td>
+            {{ item.template }}
+        </td>
+    </tr>
+{% endfor %}
+</tbody>
+</table>
+{% endfor %}
 {% if not item.template.is_property %}
 {% if item.location %}
 <a class="btn btn-outline-primary" role="button" href="{% url 'inventory:location' item.location.id %}?pending={{ item.id }}">移动</a>
