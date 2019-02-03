@@ -179,7 +179,7 @@ class ItemView(generic.View):
                                     }))
                             except Http404:
                                 extra_info.append((data_name, {
-                                    'data': '您没有访问此物品的权限',
+                                    'data': '无权限或已删除',
                                     'type': 'warning',
                                 }))
                         else:

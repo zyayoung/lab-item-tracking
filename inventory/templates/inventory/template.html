@@ -37,6 +37,9 @@
 <a class="btn btn-outline-primary" role="button" href="#" onClick="cfm('{% url 'inventory:template_delete' template.id %}', '{{ template }}')">
     <i class="fa fa-trash" aria-hidden="true"></i> 删除
 </a>
+<a class="btn btn-outline-primary" role="button" href="{% url 'inventory:template_alter' template.id %}">
+    <i class="fa fa-refresh" aria-hidden="true"></i> 转换为物品{% if not template.is_property %}属性{% endif %}
+</a>
 {% endif %}
 <a class="btn btn-outline-primary" role="button" href="{% url 'inventory:template_export' template.id %}">
     <i class="fa fa-share" aria-hidden="true"></i> 导出
