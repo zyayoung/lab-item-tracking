@@ -159,7 +159,7 @@ class ItemView(generic.View):
                 if data['name'] in item_keys:
                     data_name = data['name']
                     item_keys.remove(data_name)
-                    if data['type'] not in ['int', 'float'] and item.extra_data[data['name']]:
+                    if data['type'] in ['int', 'float'] or item.extra_data[data['name']]:
                         if data['type'] not in ['bool', 'int', 'float', 'text']:
                             try:
                                 if int(item.extra_data[data_name]) != 0:
