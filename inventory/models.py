@@ -63,7 +63,6 @@ class ItemTemplate(models.Model):
 
 class Item(models.Model):
     name = models.CharField(max_length=128, verbose_name="名称")
-    attribute = models.TextField(blank=True, verbose_name="属性")
     template = models.ForeignKey(
         ItemTemplate,
         null=True,

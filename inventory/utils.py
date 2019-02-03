@@ -133,7 +133,7 @@ def set_extradata(item, template, extra_data, user):
                 if extra_data[data['name']] and \
                     data['type'] not in ['bool', 'int', 'float', 'text']:
                     if int(extra_data[data_name]) != 0:
-                        ext_item = get_object_or_404(Item, id=item.extra_data[data_name])
+                        ext_item = get_object_or_404(Item, id=extra_data[data_name])
                         if template.name+'__'+data['name'] in ext_item.related_items.keys():
                             related_info = ext_item.related_items[template.name+'__'+data['name']]
                             related_info.append(item.id)

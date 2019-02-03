@@ -275,8 +275,6 @@ class EditItemView(generic.View):
         if 'save_as_new' in request.POST:
             new_item = Item.objects.create(
                 name=item.name,
-                attribute=item.attribute,
-                related_items=item.related_items,
                 location=None,
                 owner=tmp_user,
                 is_public=item.is_public,
