@@ -56,9 +56,12 @@ def get_export_keys(template, visited=[], include_links=True):
         if ext_data['type'] in ['text', 'int', 'float', 'bool'] or not include_links:
             keys.append(ext_data['name'])
         elif include_links:
-            inner_template = ItemTemplate.objects.get(name=ext_data['type'])
-            for key in get_export_keys(inner_template, visited, inner_template not in visited):
-                keys.append(ext_data['name']+'__'+key)
+            try:
+                inner_template = ItemTemplate.objects.get(name=ext_data['type'])
+                for key in get_export_keys(inner_template, visited, inner_template not in visited):
+                    keys.append(ext_data['name']+'__'+key)
+            except ItemTemplate.DoesNotExist:
+                continue
     visited.pop()
     if not template.is_property:
         keys.append('位置')
@@ -73,13 +76,16 @@ def get_export_values(template, item, visited=[], include_links=True, user=None)
         if ext_data['type'] in ['text', 'int', 'float', 'bool']:
             keys.append(int_data if int_data else '')
         elif include_links:
-            inner_template = ItemTemplate.objects.get(name=ext_data['type'])
             try:
-                inner_item = get_my_item(user, int_data) if int_data else None
-            except Http404:
-                inner_item = None
-            for value in get_export_values(inner_template, inner_item, visited, inner_template not in visited):
-                keys.append(value)
+                inner_template = ItemTemplate.objects.get(name=ext_data['type'])
+                try:
+                    inner_item = get_my_item(user, int_data) if int_data else None
+                except Http404:
+                    inner_item = None
+                for value in get_export_values(inner_template, inner_item, visited, inner_template not in visited):
+                    keys.append(value)
+            except ItemTemplate.DoesNotExist:
+                continue
         else:
             try:
                 keys.append(get_my_item(user, int_data) if int_data else '')
