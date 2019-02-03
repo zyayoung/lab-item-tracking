@@ -26,9 +26,13 @@
         <input name="template" value="{{ template_id }}" hidden>
         <input name="select_id" value="{{ select_id }}" hidden>
     {% endif %}
-    <button type="submit" class="btn btn-outline-primary">保存</button>
+    <button type="submit" class="btn btn-outline-primary">
+        <i class="fa fa-save" aria-hidden="true"></i> 保存
+    </button>
     {% if is_edit %}
-    <button type="submit" class="btn btn-outline-primary" name="save_as_new">另存为新</button>
+    <button type="submit" class="btn btn-outline-primary" name="save_as_new">
+        <i class="fa fa-plus" aria-hidden="true"></i> 另存为新
+    </button>
     {% endif %}
 </form>
 {% endblock %}

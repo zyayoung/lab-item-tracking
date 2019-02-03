@@ -283,10 +283,11 @@ class EditItemView(generic.View):
             for user in item.allowed_users.all():
                 new_item.allowed_users.add(user)
             new_item.save()
+            return redirect('inventory:item', new_item.id)
         else:
             item.save()
-        message = "修改成功！"
-        return redirect('inventory:item', item.id)
+            message = "修改成功！"
+            return redirect('inventory:item', item.id)
 
 
 class TemplatesView(generic.View):
