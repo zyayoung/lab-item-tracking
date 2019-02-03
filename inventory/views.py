@@ -411,6 +411,16 @@ def del_template(request, template_id):
     return redirect('inventory:templates')
 
 
+def alt_template(request, template_id):
+    tmp_user = myUser.objects.get(id=request.session.get('user_id'))
+    if not tmp_user.is_superadmin:
+        raise Http404()
+    template = get_object_or_404(ItemTemplate, id=template_id)
+    template.is_property = not template.is_property
+    template.save()
+    return redirect('inventory:template', template_id)
+
+
 class LocationView(generic.View):
     tmp_user = None
     location_id = None
