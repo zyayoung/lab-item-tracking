@@ -24,6 +24,7 @@ class SelectWithAdd(forms.Select):
     def __init__(self, *args, **kwargs):
         self.template = kwargs.get('template')
         kwargs.pop('template')
+        kwargs['attrs']
         super(SelectWithAdd, self).__init__(*args, **kwargs)
 
     def render(self, name, *args, **kwargs):
@@ -96,7 +97,7 @@ class EditItemForm(forms.Form):
                     )
                 else:
                     objects = Item.objects.filter(template__name=tmp_type)
-                    attrs = {'class': 'form-control select_'+tmp_type}
+                    attrs = {'class': 'form-control selectpicker select_'+tmp_type, 'data-live-search': 'true'}
                     if tmp_required:
                         attrs['required'] = ''
                     tmp_field = forms.ChoiceField(
