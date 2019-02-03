@@ -43,4 +43,5 @@ urlpatterns = [
         views.put_item_to_location,
         name='put'),
     url(r'^info/$', views.InfoView.as_view(), name='info'),
+    url(r'^rebuild_related/$', views.rebuild, name='rebuild_related')
 ]
