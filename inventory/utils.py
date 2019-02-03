@@ -93,8 +93,6 @@ def get_export_values(template, item, visited=[], include_links=True, user=None)
 
 
 def set_extradata(item, template, extra_data, user):
-    if item.extra_data == extra_data:
-        return
     log = ItemLog.objects.create(
         item=item,
         operator=user,
