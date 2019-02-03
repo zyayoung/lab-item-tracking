@@ -92,8 +92,8 @@ def get_export_values(template, item, visited=[], include_links=True):
 
 
 def set_extradata(item, template, extra_data, user):
-    # if not template or item.extra_data != extra_data:
-    #     return
+    if item.extra_data == extra_data:
+        return
     log = ItemLog.objects.create(
         item=item,
         operator=user,
@@ -118,32 +118,33 @@ def set_extradata(item, template, extra_data, user):
                         else:
                             related_info = []
                         if ext_item == item:
+                            item.related_items[item.template.name + '__' + data['name']] = related_info
+                            item.save()
+                        else:
+                            ext_item.related_items[item.template.name + '__' + data['name']] = related_info
+                            ext_item.save()
+
+    # link new relationships
+    if template:
+        item_keys = extra_data.keys()
+        for data in template.extra_data:
+            if data['name'] in item_keys:
+                data_name = data['name']
+                if extra_data[data['name']] and \
+                    data['type'] not in ['bool', 'int', 'float', 'text']:
+                    if int(extra_data[data_name]) != 0:
+                        ext_item = get_my_item(user, extra_data[data_name])
+                        if template.name+'__'+data['name'] in ext_item.related_items.keys():
+                            related_info = ext_item.related_items[template.name+'__'+data['name']]
+                            related_info.append(item.id)
+                        else:
+                            related_info = [item.id]
+                        if ext_item == item:
                             item.related_items[template.name + '__' + data['name']] = related_info
                             item.save()
                         else:
                             ext_item.related_items[template.name + '__' + data['name']] = related_info
                             ext_item.save()
-
-    # link new relationships
-    item_keys = extra_data.keys()
-    for data in template.extra_data:
-        if data['name'] in item_keys:
-            data_name = data['name']
-            if extra_data[data['name']] and \
-                data['type'] not in ['bool', 'int', 'float', 'text']:
-                if int(extra_data[data_name]) != 0:
-                    ext_item = get_object_or_404(Item, id=extra_data[data_name])
-                    if template.name+'__'+data['name'] in ext_item.related_items.keys():
-                        related_info = ext_item.related_items[template.name+'__'+data['name']]
-                        related_info.append(item.id)
-                    else:
-                        related_info = [item.id]
-                    if ext_item == item:
-                        item.related_items[template.name + '__' + data['name']] = related_info
-                        item.save()
-                    else:
-                        ext_item.related_items[template.name + '__' + data['name']] = related_info
-                        ext_item.save()
     item.extra_data = extra_data
     item.template = template
     item.save()

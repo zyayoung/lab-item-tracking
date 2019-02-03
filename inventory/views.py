@@ -514,9 +514,12 @@ def del_item(request, item_id):
     if not item.del_permission(tmp_user):
         messages.error(request, "只有创建人（" + item.owner.name + "）及其管理员可以删除物品！")
         return render(request, 'inventory/info.html', locals())
+    is_property = item.template.is_property
+    set_location(item, None, tmp_user)
+    set_extradata(item, None, {}, tmp_user)
     item.delete()
     return redirect(
-        'inventory:properties') if item.template.is_property else redirect(
+        'inventory:properties') if is_property else redirect(
             'inventory:items')
 
 
