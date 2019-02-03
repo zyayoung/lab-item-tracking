@@ -313,8 +313,6 @@ class EditItemView(generic.View):
 class TemplatesView(generic.View):
     def get(self, request, *args, **kwargs):
         tmp_user = myUser.objects.get(id=request.session.get('user_id'))
-        if not tmp_user.is_superadmin:
-            raise Http404()
         template_list = ItemTemplate.objects.all()
         keyword = request.GET.get('q')
         if keyword:
@@ -342,12 +340,10 @@ class TemplateView(generic.View):
 class TemplateExportView(generic.View):
     def get(self, request, *args, **kwargs):
         tmp_user = myUser.objects.get(id=request.session.get('user_id'))
-        if not tmp_user.is_superadmin:
-            raise Http404()
         template = get_object_or_404(ItemTemplate, id=kwargs.get('id'))
         export_keys = get_export_keys(template)
         all_objs = get_my_list(tmp_user, Item.objects.filter(template=template))
-        full_info = [get_export_values(template, obj) for obj in all_objs]
+        full_info = [get_export_values(template, obj, user=tmp_user) for obj in all_objs]
         return render(request, 'inventory/template_export.html', locals())
 
 

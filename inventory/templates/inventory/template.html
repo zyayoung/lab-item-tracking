@@ -37,9 +37,11 @@
 <a class="btn btn-outline-primary" role="button" href="#" onClick="cfm('{% url 'inventory:template_delete' template.id %}', '{{ template }}')">
     <i class="fa fa-trash" aria-hidden="true"></i> 删除
 </a>
+{% endif %}
 <a class="btn btn-outline-primary" role="button" href="{% url 'inventory:template_export' template.id %}">
     <i class="fa fa-share" aria-hidden="true"></i> 导出
 </a>
+{% if request.session.is_superadmin %}
 <div class="modal fade" id="cfmModal" tabindex="-1" role="dialog" aria-labelledby="cfmModalTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
