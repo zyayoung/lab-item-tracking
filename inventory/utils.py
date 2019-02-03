@@ -6,9 +6,10 @@ from trace_item.models import ItemLog
 
 def get_my_item(user_now, item_id):
     item = get_object_or_404(Item, id=item_id)
+    if not user_now or user_now.is_superadmin:
+        return item
     # two cases: (admin) and (not admin)
     if not (item.is_public or
-            user_now.is_superadmin or
             (user_now.staff.all() & item.allowed_users.all()).exists() or
             (item.allowed_users.filter(id=user_now.id).exists())):
         raise Http404()
@@ -64,7 +65,7 @@ def get_export_keys(template, visited=[], include_links=True):
     return keys
 
 
-def get_export_values(template, item, visited=[], include_links=True):
+def get_export_values(template, item, visited=[], include_links=True, user=None):
     visited.append(template)
     keys = [item.name if item else '']
     for ext_data in template.extra_data:
@@ -74,15 +75,15 @@ def get_export_values(template, item, visited=[], include_links=True):
         elif include_links:
             inner_template = ItemTemplate.objects.get(name=ext_data['type'])
             try:
-                inner_item = Item.objects.get(id=int_data) if int_data else None
-            except Item.DoesNotExist:
+                inner_item = get_my_item(user, int_data) if int_data else None
+            except Http404:
                 inner_item = None
             for value in get_export_values(inner_template, inner_item, visited, inner_template not in visited):
                 keys.append(value)
         else:
-            if item and int_data not in ["0", ""]:
-                keys.append(Item.objects.get(id=int_data).name)
-            else:
+            try:
+                keys.append(get_my_item(user, int_data) if int_data else '')
+            except Http404:
                 keys.append('')
     if not template.is_property:
         loc = item.location if item else ''

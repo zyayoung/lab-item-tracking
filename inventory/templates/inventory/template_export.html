@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block title %}物品{% if template.is_property %}属性{% endif %}模板详情：{{ template }} {% endblock %}
+{% block content %}
+{% if message %}
+<div class="alert alert-warning">{{ message }}</div>
+{% endif %}
+<p class="lead pull-left">物品{% if template.is_property %}属性{% endif %}模板详情导出：{{ template }}</p>
+<div class="pull-right">
+    <button class="btn btn-outline-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
+        aria-haspopup="true" aria-expanded="false">
+        导出为...
+    </button>
+    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+        <a class="dropdown-item" href="javascript://" onclick="exportAll('csv');">CSV</a>
+        <a class="dropdown-item" href="javascript://" onclick="exportAll('txt');">TXT</a>
+        <a class="dropdown-item" href="javascript://" onclick="exportAll('xls');">XLS</a>
+        <a class="dropdown-item" href="javascript://" onclick="exportAll('sql');">SQL</a>
+        <a class="dropdown-item" href="javascript://" onclick="exportAll('json');">JSON </a>
+    </div>
+</div>
+<table class="table table-striped table-sm" id="export_data">
+    <thead>
+        {% for key in export_keys %}
+        <th>{{ key }}</th>
+        {% endfor %}
+    </thead>
+    <tbody>
+        {% for obj in full_info %}
+            <tr>
+            {% for value in obj %}
+                <td>{{ value }}</td>
+            {% endfor %}
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
+{% block script %}
+<script>
+    function cfm(url, item) {
+        $('#modalNotice').html('您确认要删除模板<b>' + item + '</b>吗？');
+        $('#cfmUrl').val(url);
+        $('#cfmModal').modal();
+    }
+
+    function urlSubmit() {
+        var url = $.trim($("#cfmUrl").val());
+        window.location.href = url;
+    }
+</script>
+<script src="{% static '/js/tableExport.min.js' %}"></script>
+<script>
+    function exportAll(type) {
+        $('#export_data').tableExport({
+            filename: '{{ user.name }}操作记录_%YY%-%MM%-%DD%',
+            format: type
+        });
+    }
+</script>
+{% endblock %}
