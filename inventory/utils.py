@@ -57,8 +57,11 @@ def get_export_keys(template, visited=[], include_links=True):
             keys.append(ext_data['name'])
         elif include_links:
             inner_template = ItemTemplate.objects.get(name=ext_data['type'])
-            for key in get_export_keys(inner_template, visited.copy(), inner_template not in visited):
+            for key in get_export_keys(inner_template, visited, inner_template not in visited):
                 keys.append(ext_data['name']+'__'+key)
+    visited.pop()
+    if not template.is_property:
+        keys.append('位置')
     return keys
 
 
@@ -67,12 +70,7 @@ def get_export_values(template, item, visited=[], include_links=True):
     keys = [item.name if item else '']
     for ext_data in template.extra_data:
         int_data = item.extra_data[ext_data['name']] if item and ext_data['name'] in item.extra_data.keys() else ''
-        if ext_data['type'] not in ['text', 'int', 'float', 'bool'] and not include_links:
-            if item and int_data not in ["0", ""]:
-                keys.append(Item.objects.get(id=int_data).name)
-            else:
-                keys.append('')
-        elif ext_data['type'] in ['text', 'int', 'float', 'bool'] or not include_links:
+        if ext_data['type'] in ['text', 'int', 'float', 'bool']:
             keys.append(int_data)
         elif include_links:
             inner_template = ItemTemplate.objects.get(name=ext_data['type'])
@@ -80,6 +78,15 @@ def get_export_values(template, item, visited=[], include_links=True):
                 inner_item = Item.objects.get(id=int_data) if int_data else None
             except Item.DoesNotExist:
                 inner_item = None
-            for value in get_export_values(inner_template, inner_item, visited.copy(), inner_template not in visited):
+            for value in get_export_values(inner_template, inner_item, visited, inner_template not in visited):
                 keys.append(value)
+        else:
+            if item and int_data not in ["0", ""]:
+                keys.append(Item.objects.get(id=int_data).name)
+            else:
+                keys.append('')
+    if not template.is_property:
+        loc = item.location if item else ''
+        keys.append(loc if loc else '')
+    visited.pop()
     return keys
