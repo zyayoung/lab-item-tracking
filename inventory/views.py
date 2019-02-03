@@ -187,8 +187,7 @@ class ItemView(generic.View):
             _items = []
             for value in values:
                 try:
-                    item = get_my_item(tmp_user, value)
-                    _items.append(item)
+                    _items.append(get_my_item(tmp_user, value))
                 except Http404():
                     pass
             relation_info[key.replace('__', '->')] = _items
