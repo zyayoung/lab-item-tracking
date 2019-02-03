@@ -96,7 +96,7 @@ class EditItemForm(forms.Form):
                     )
                 else:
                     objects = Item.objects.filter(template__name=tmp_type)
-                    attrs = {'class': 'form-control'}
+                    attrs = {'class': 'form-control select_'+tmp_type}
                     if tmp_required:
                         attrs['required'] = ''
                     tmp_field = forms.ChoiceField(

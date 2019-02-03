@@ -7,8 +7,13 @@
 <body>
 <option id="new_option{{ item.id }}" value="{{ item.id }}">{{ item.name }}</option>
 <script>
-let node=document.getElementById("new_option{{ item.id }}");
-window.opener.document.getElementById('{{ select_id }}').append(node);
+var node = document.getElementById("new_option{{ item.id }}");
+for(var o=window.opener; o; o=o.opener){
+    var list = o.document.getElementsByClassName('select_{{ template }}');
+    for (var i = 0; i < list.length; i++) {
+        list[i].appendChild(node.cloneNode(true));
+    }
+}
 window.opener.document.getElementById('{{ select_id }}').value={{ item.id }};
 window.close();
 </script>
