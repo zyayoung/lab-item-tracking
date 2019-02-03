@@ -121,8 +121,6 @@ class AddItemView(generic.View):
                 for dictionary in template.extra_data:
                     data[dictionary['name']] = edit_form.cleaned_data[
                         dictionary['name'].replace(' ', '_')]
-                    if dictionary['type'] == 'link':
-                        data[dictionary['name']] = int(data[dictionary['name']])
             set_extradata(item, template, data, tmp_user)
         else:
             return render(request, 'inventory/edit.html', locals())
@@ -291,8 +289,6 @@ class EditItemView(generic.View):
                 for dictionary in template.extra_data:
                     data[dictionary['name']] = edit_form.cleaned_data[
                         dictionary['name'].replace(' ', '_')]
-                    if dictionary['type'] == 'link':
-                        data[dictionary['name']] = int(data[dictionary['name']])
             set_extradata(item, template, data, tmp_user)
         else:
             return render(request, 'inventory/edit.html', locals())
@@ -558,7 +554,7 @@ def del_item(request, item_id):
     for key, values in item.related_items.items():
         for value in values:
             ext_item = Item.objects.get(id=value)
-            ext_item.extra_data[key.split('__')[1]] = 0
+            ext_item.extra_data[key.split('__')[1]] = "0"
             ext_item.save()
     set_location(item, None, tmp_user)
     set_extradata(item, None, {}, tmp_user)
