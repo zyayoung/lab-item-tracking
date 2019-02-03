@@ -111,19 +111,22 @@ def set_extradata(item, template, extra_data, user):
                 if item.extra_data[data['name']] and \
                     data['type'] not in ['bool', 'int', 'float', 'text']:
                     if int(item.extra_data[data_name]) != 0:
-                        ext_item = get_object_or_404(Item, id=item.extra_data[data_name])
-                        if item.template.name+'__'+data['name'] in ext_item.related_items.keys():
-                            related_info = ext_item.related_items[item.template.name+'__'+data['name']]
-                            if item.id in related_info:
-                                related_info.remove(item.id)
-                        else:
-                            related_info = []
-                        if ext_item == item:
-                            item.related_items[item.template.name + '__' + data['name']] = related_info
-                            item.save()
-                        else:
-                            ext_item.related_items[item.template.name + '__' + data['name']] = related_info
-                            ext_item.save()
+                        try:
+                            ext_item = get_object_or_404(Item, id=item.extra_data[data_name])
+                            if item.template.name+'__'+data['name'] in ext_item.related_items.keys():
+                                related_info = ext_item.related_items[item.template.name+'__'+data['name']]
+                                if item.id in related_info:
+                                    related_info.remove(item.id)
+                            else:
+                                related_info = []
+                            if ext_item == item:
+                                item.related_items[item.template.name + '__' + data['name']] = related_info
+                                item.save()
+                            else:
+                                ext_item.related_items[item.template.name + '__' + data['name']] = related_info
+                                ext_item.save()
+                        except Http404:
+                            pass
 
     # link new relationships
     if template:
@@ -134,18 +137,21 @@ def set_extradata(item, template, extra_data, user):
                 if extra_data[data['name']] and \
                     data['type'] not in ['bool', 'int', 'float', 'text']:
                     if int(extra_data[data_name]) != 0:
-                        ext_item = get_object_or_404(Item, id=extra_data[data_name])
-                        if template.name+'__'+data['name'] in ext_item.related_items.keys():
-                            related_info = ext_item.related_items[template.name+'__'+data['name']]
-                            related_info.append(item.id)
-                        else:
-                            related_info = [item.id]
-                        if ext_item == item:
-                            item.related_items[template.name + '__' + data['name']] = related_info
-                            item.save()
-                        else:
-                            ext_item.related_items[template.name + '__' + data['name']] = related_info
-                            ext_item.save()
+                        try:
+                            ext_item = get_object_or_404(Item, id=extra_data[data_name])
+                            if template.name+'__'+data['name'] in ext_item.related_items.keys():
+                                related_info = ext_item.related_items[template.name+'__'+data['name']]
+                                related_info.append(item.id)
+                            else:
+                                related_info = [item.id]
+                            if ext_item == item:
+                                item.related_items[template.name + '__' + data['name']] = related_info
+                                item.save()
+                            else:
+                                ext_item.related_items[template.name + '__' + data['name']] = related_info
+                                ext_item.save()
+                        except Http404:
+                            pass
     item.extra_data = extra_data
     item.template = template
     item.save()
