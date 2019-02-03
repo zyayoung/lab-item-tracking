@@ -37,6 +37,7 @@ class ItemsView(generic.View):
         tmp_user = myUser.objects.get(id=request.session.get('user_id'))
         if 'filter' not in tmp_user.settings.keys():
             tmp_user.settings['filter'] = []
+            tmp_user.save()
         user_filter = tmp_user.settings['filter']
         item_list = get_my_list(
             tmp_user, Item.objects.filter(template__is_property=is_property).exclude(
