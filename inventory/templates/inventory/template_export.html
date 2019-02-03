@@ -19,7 +19,7 @@
         <a class="dropdown-item" href="javascript://" onclick="exportAll('json');">JSON </a>
     </div>
 </div>
-<table data-toggle="table" data-sort-class="table-active" data-sortable="true" class="table table-sm" id="export_data">
+<table data-toggle="table" data-search="true" data-sort-class="table-active" data-sortable="true" class="table table-sm" id="export_data">
     <thead>
         {% for key in export_keys %}
         <th data-sortable="true">{{ key }}</th>
