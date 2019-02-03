@@ -68,6 +68,7 @@
                     </li>
                 </ul>
             </div>
+            {% if tmp_user.is_superadmin %}
             <div class="card">
                 <h5 class="card-title mt-3">模板</h5>
                 <ul class="list-group list-group-flush">
@@ -76,8 +77,19 @@
                             <i class="fa fa-list-ul" aria-hidden="true"></i> 模板列表
                         </a>
                     </li>
+                    <li class="list-group-item">
+                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-plus" aria-hidden="true"></i>
+                            新建模板
+                        </a>
+                        <div class="dropdown-menu" style="min-width: 0px;" aria-labelledby="dropdownMenuButton">
+                            <a class="dropdown-item" href="{% url 'inventory:add_template' %}">物品模板</a>
+                            <a class="dropdown-item" href="{% url 'inventory:add_template' %}?property=true">物品属性模板</a>
+                        </div>
+                    </li>
                 </ul>
             </div>
+            {% endif %}
         </div>
         <div class="col-lg-3 col-sm-6 section mb-3">
             <div class="card">
