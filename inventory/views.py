@@ -35,10 +35,11 @@ class ItemsView(generic.View):
         choose_form = forms.ChooseTemplateForm(is_property=is_property)
         choices = choose_form.fields["template"].choices
         tmp_user = myUser.objects.get(id=request.session.get('user_id'))
+        if 'filter' not in tmp_user.settings.keys():
+            tmp_user.settings['filter'] = []
         user_filter = tmp_user.settings['filter']
         item_list = get_my_list(
-            tmp_user, Item.objects.filter(
-                template__is_property=is_property,
+            tmp_user, Item.objects.filter(template__is_property=is_property).exclude(
                 template__id__in=user_filter
             ))
         keyword = request.GET.get('q')
@@ -63,9 +64,9 @@ class ItemsView(generic.View):
             settings = tmp_user.settings
             new_filter = [int(id) for id in request.POST.getlist('filter')]
             for key, value in choices:
-                if key in settings['filter'] and key not in new_filter:
+                if key in settings['filter'] and key in new_filter:
                     settings['filter'].remove(key)
-                elif key not in settings['filter'] and key in new_filter:
+                elif key not in settings['filter'] and key not in new_filter:
                     settings['filter'].append(key)
             tmp_user.settings = settings
             tmp_user.save()
