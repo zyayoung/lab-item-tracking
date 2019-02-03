@@ -79,7 +79,7 @@
         ajaxSubmit();
     });
     function popup(n, t) {
-        window.open('{% url 'inventory:add' %}'+'?template='+encodeURI(t)+'&select_id='+encodeURI(n), Math.random().toString(32).substr(2), 'height=500,width=800,resizable=yes,scrollbars=yes');
+        window.open('{% url 'inventory:add' %}'+'?template='+encodeURI(t)+'&select_id='+encodeURI(n), Math.random().toString(32).substr(2), 'height=900,width=800,resizable=yes,scrollbars=yes');
     }
 </script>
 {% endblock %}
