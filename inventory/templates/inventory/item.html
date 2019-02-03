@@ -89,7 +89,7 @@
                     <select name="share" id="share_id" class="selectpicker" data-live-search="true" multiple>
                         {% for user in all_users %}
                         <option value="{{ user.id }}" {% if user in item.allowed_users.all %} selected {% endif %} {% if user == item.owner %}disabled{% endif %}>
-                            {{user.name }}
+                            {{ user.name }}
                         </option>
                         {% endfor %}
                     </select>

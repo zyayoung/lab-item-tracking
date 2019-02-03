@@ -149,12 +149,13 @@ class ChooseTemplateForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         super(ChooseTemplateForm, self).__init__(*args)
+        template_queryset=kwargs.get('template_queryset')
         if 'is_property' in kwargs.keys():
-            choices = ItemTemplate.objects.filter(
+            choices = template_queryset.filter(
                 is_property=kwargs.get('is_property')).values_list(
                     'id', 'name')
         else:
-            choices = ItemTemplate.objects.all().values_list('id', 'name')
+            choices = template_queryset.all().values_list('id', 'name')
         self.fields["template"].choices = choices
 
 

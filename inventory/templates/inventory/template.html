@@ -5,7 +5,18 @@
 {% if message %}
 <div class="alert alert-warning">{{ message }}</div>
 {% endif %}
-<p class="lead pull-left">物品{% if template.is_property %}属性{% endif %}模板详情：{{ template }}</p>
+<p class="lead">物品{% if template.is_property %}属性{% endif %}模板详情：{{ template }}</p>
+<span class="lead pull-left">可使用该模板用户：</span>
+{% if not template.allowed_users %}
+<div id="userArea">
+    {% for user in template.allowed_users.all %}
+    {{ user.name }}
+    {% endfor %}
+</div>
+{% else %}
+<span class="lead">全部</span>
+{% endif %}
+<p></p>
 <table class="table table-striped">
     <thead>
         <th>属性名称</th>

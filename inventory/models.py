@@ -47,17 +47,30 @@ class Location(models.Model):
 
 class ItemTemplate(models.Model):
     name = models.CharField(max_length=64, unique=True, verbose_name="模块名称")
-    key_name = models.CharField(max_length=32, default='名称', verbose_name="关键字段名称")
+    key_name = models.CharField(
+        max_length=32,
+        default='名称',
+        verbose_name="关键字段名称",
+    )
     extra_data = JSONField(default=dict, blank=True, verbose_name="扩展数据")
     is_property = models.BooleanField(default=False, verbose_name='不可存入')
     create_time = models.DateTimeField("create_time", auto_now_add=True)
+    allowed_users = models.ManyToManyField(
+        myUser,
+        blank=True,
+        verbose_name="白名单",
+    )
 
     def __str__(self):
         return self.name
 
+    def allowed_users_summary(self):
+        return '全部' if not self.allowed_users.exists() else ' '.join([user.name for user in self.allowed_users.all()[:5]]) + \
+               ('' if self.allowed_users.count() <= 5 else ' 等%d人' % self.allowed_users.count())
+
     class Meta:
         ordering = ['-create_time']
-        verbose_name = "模块配置"
+        verbose_name = "物品模板"
         verbose_name_plural = verbose_name
 
 
@@ -152,7 +165,7 @@ class LocationPermissionApplication(models.Model):
     def approve(self):
         self.approved = True
         self.closed = True
-        
+
         # recursively permit
         loc = self.location
         while loc:

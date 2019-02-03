@@ -30,19 +30,22 @@ class ItemsView(generic.View):
     message = None
 
     def get(self, request, *args, **kwargs):
-        is_property = 'prop' in request.path
-        name = "物品属性" if is_property else "物品"
-        choose_form = forms.ChooseTemplateForm(is_property=is_property)
-        choices = choose_form.fields["template"].choices
         tmp_user = myUser.objects.get(id=request.session.get('user_id'))
+        is_property = 'prop' in request.path
+        template_queryset = get_my_template_queryset(
+            tmp_user, ItemTemplate.objects.all())
+        choose_form = forms.ChooseTemplateForm(
+            is_property=is_property, template_queryset=template_queryset)
+        name = "物品属性" if is_property else "物品"
+        choices = choose_form.fields["template"].choices
         if 'filter' not in tmp_user.settings.keys():
             tmp_user.settings['filter'] = []
             tmp_user.save()
         user_filter = tmp_user.settings['filter']
         item_list = get_my_list(
-            tmp_user, Item.objects.filter(template__is_property=is_property).exclude(
-                template__id__in=user_filter
-            ))
+            tmp_user,
+            Item.objects.filter(template__is_property=is_property).exclude(
+                template__id__in=user_filter))
         keyword = request.GET.get('q')
         if keyword:
             keyword_iri = quote(keyword)
@@ -60,7 +63,10 @@ class ItemsView(generic.View):
         tmp_user = myUser.objects.get(id=request.session.get('user_id'))
         if action == 'user':
             is_property = 'prop' in request.path
-            choose_form = forms.ChooseTemplateForm(is_property=is_property)
+            template_queryset = get_my_template_queryset(
+                tmp_user, ItemTemplate.objects.all())
+            choose_form = forms.ChooseTemplateForm(
+                is_property=is_property, template_queryset=template_queryset)
             choices = choose_form.fields["template"].choices
             settings = tmp_user.settings
             new_filter = [int(id) for id in request.POST.getlist('filter')]
@@ -77,8 +83,10 @@ class ItemsView(generic.View):
 class AddItemView(generic.View):
     def get(self, request):
         action = "新建"
-        if 'template' in request.GET.keys() and 'select_id' in request.GET.keys():
-            template = get_object_or_404(ItemTemplate, name=request.GET.get('template', ''))
+        if 'template' in request.GET.keys(
+        ) and 'select_id' in request.GET.keys():
+            template = get_object_or_404(
+                ItemTemplate, name=request.GET.get('template', ''))
             select_id = request.GET.get('select_id', '')
             is_popup = True
             is_property = template.is_property
@@ -86,7 +94,11 @@ class AddItemView(generic.View):
         else:
             is_property = 'prop' in request.path
         name = "物品属性" if is_property else "物品"
-        choose_form = forms.ChooseTemplateForm(is_property=is_property)
+        tmp_user = myUser.objects.get(id=request.session.get('user_id'))
+        template_queryset = get_my_template_queryset(
+            tmp_user, ItemTemplate.objects.all())
+        choose_form = forms.ChooseTemplateForm(
+            is_property=is_property, template_queryset=template_queryset)
         add_form = forms.AddItemForm()
         return render(request, 'inventory/edit.html', locals())
 
@@ -96,8 +108,8 @@ class AddItemView(generic.View):
         name = "物品属性" if is_property else "物品"
         message = "请检查填写的内容！"
         add_form = forms.AddItemForm(request.POST)
+        tmp_user = myUser.objects.get(id=request.session.get('user_id'))
         if add_form.is_valid():
-            tmp_user = myUser.objects.get(id=request.session.get('user_id'))
             name = add_form.cleaned_data['name']
             public = add_form.cleaned_data['public']
             item = Item.objects.create(
@@ -109,7 +121,10 @@ class AddItemView(generic.View):
             item.allowed_users.add(tmp_user)
         else:
             return render(request, 'inventory/edit.html', locals())
-        choose_form = forms.ChooseTemplateForm(request.POST)
+        template_queryset = get_my_template_queryset(
+            tmp_user, ItemTemplate.objects.all())
+        choose_form = forms.ChooseTemplateForm(
+            request.POST, template_queryset=template_queryset)
         if choose_form.is_valid():
             data = {}
             template_id = int(choose_form.cleaned_data['template'])
@@ -122,7 +137,8 @@ class AddItemView(generic.View):
                     data[dictionary['name']] = edit_form.cleaned_data[
                         dictionary['name'].replace(' ', '_')]
                     if dictionary['type'] == 'link':
-                        data[dictionary['name']] = int(data[dictionary['name']])
+                        data[dictionary['name']] = int(
+                            data[dictionary['name']])
             set_extradata(item, template, data, tmp_user)
         else:
             return render(request, 'inventory/edit.html', locals())
@@ -161,8 +177,11 @@ class ItemView(generic.View):
                 if data['name'] in item_keys:
                     data_name = data['name']
                     item_keys.remove(data_name)
-                    if data['type'] in ['int', 'float'] or item.extra_data[data['name']]:
-                        if data['type'] not in ['bool', 'int', 'float', 'text']:
+                    if data['type'] in ['int', 'float'
+                                        ] or item.extra_data[data['name']]:
+                        if data['type'] not in [
+                                'bool', 'int', 'float', 'text'
+                        ]:
                             try:
                                 if int(item.extra_data[data_name]) != 0:
                                     extra_info.append(
@@ -212,7 +231,8 @@ class ItemView(generic.View):
                 }))
         relation_info = {}
         for key, values in item.related_items.items():
-            relation_info[key.replace('__', '->')] = get_my_list(tmp_user, Item.objects.filter(id__in=values))
+            relation_info[key.replace('__', '->')] = get_my_list(
+                tmp_user, Item.objects.filter(id__in=values))
         del_permission = item.del_permission(tmp_user)
         unlink_permission = item.unlink_permission(tmp_user)
         return render(request, 'inventory/item.html', locals())
@@ -258,7 +278,10 @@ class EditItemView(generic.View):
             messages.error(request,
                            "只有创建人（{}）及其管理员可以编辑物品！".format(item.owner.name))
             return render(request, 'inventory/info.html', locals())
-        choose_form = forms.ChooseTemplateForm(is_property=is_property)
+        template_queryset = get_my_template_queryset(
+            tmp_user, ItemTemplate.objects.all())
+        choose_form = forms.ChooseTemplateForm(
+            is_property=is_property, template_queryset=template_queryset)
         add_form = forms.AddItemForm()
         return render(request, 'inventory/edit.html', locals())
 
@@ -279,7 +302,10 @@ class EditItemView(generic.View):
             item.is_public = add_form.cleaned_data['public']
         else:
             return render(request, 'inventory/edit.html', locals())
-        choose_form = forms.ChooseTemplateForm(request.POST)
+        template_queryset = get_my_template_queryset(
+            tmp_user, ItemTemplate.objects.all())
+        choose_form = forms.ChooseTemplateForm(
+            request.POST, template_queryset=template_queryset)
         if choose_form.is_valid():
             data = {}
             template_id = int(choose_form.cleaned_data['template'])
@@ -292,7 +318,8 @@ class EditItemView(generic.View):
                     data[dictionary['name']] = edit_form.cleaned_data[
                         dictionary['name'].replace(' ', '_')]
                     if dictionary['type'] == 'link':
-                        data[dictionary['name']] = int(data[dictionary['name']])
+                        data[dictionary['name']] = int(
+                            data[dictionary['name']])
             set_extradata(item, template, data, tmp_user)
         else:
             return render(request, 'inventory/edit.html', locals())
@@ -317,7 +344,8 @@ class EditItemView(generic.View):
 class TemplatesView(generic.View):
     def get(self, request, *args, **kwargs):
         tmp_user = myUser.objects.get(id=request.session.get('user_id'))
-        template_list = ItemTemplate.objects.all()
+        template_list = get_my_template_queryset(tmp_user,
+                                                 ItemTemplate.objects.all())
         keyword = request.GET.get('q')
         if keyword:
             keyword_iri = quote(keyword)
@@ -336,8 +364,13 @@ class TemplateView(generic.View):
         tmp_user = myUser.objects.get(id=request.session.get('user_id'))
         template = get_object_or_404(ItemTemplate, id=kwargs.get('id'))
         export_keys = get_export_keys(template, include_links=False)
-        all_objs = get_my_list(tmp_user, Item.objects.filter(template=template))
-        full_info = [get_export_values(template, obj, include_links=False, user=tmp_user) for obj in all_objs]
+        all_objs = get_my_list(tmp_user,
+                               Item.objects.filter(template=template))
+        full_info = [
+            get_export_values(
+                template, obj, include_links=False, user=tmp_user)
+            for obj in all_objs
+        ]
         return render(request, 'inventory/template.html', locals())
 
 
@@ -346,8 +379,11 @@ class TemplateExportView(generic.View):
         tmp_user = myUser.objects.get(id=request.session.get('user_id'))
         template = get_object_or_404(ItemTemplate, id=kwargs.get('id'))
         export_keys = get_export_keys(template)
-        all_objs = get_my_list(tmp_user, Item.objects.filter(template=template))
-        full_info = [get_export_values(template, obj, user=tmp_user) for obj in all_objs]
+        all_objs = get_my_list(tmp_user,
+                               Item.objects.filter(template=template))
+        full_info = [
+            get_export_values(template, obj, user=tmp_user) for obj in all_objs
+        ]
         return render(request, 'inventory/template_export.html', locals())
 
 
@@ -393,6 +429,7 @@ class EditTemplateView(generic.View):
         choices.extend([
             name[0] for name in ItemTemplate.objects.all().values_list('name')
         ])
+        all_users = myUser.objects.all()
         return render(request, 'inventory/template_edit.html', locals())
 
     def post(self, request, *args, **kwargs):
@@ -405,6 +442,9 @@ class EditTemplateView(generic.View):
         my_list = []
         idx_list = []
         template.key_name = request.POST.get('key_name', '名称')
+        template.allowed_users.clear()
+        for user_id in request.POST.getlist('share'):
+            template.allowed_users.add(myUser.objects.get(id=user_id))
         for key in request.POST.keys():
             index = re.findall(r"^name_(\d+)$", key)
             if index:
@@ -430,7 +470,7 @@ class EditTemplateView(generic.View):
         template.extra_data = my_list
         template.save()
         message = "保存成功"
-        return redirect('inventory:templates')
+        return redirect('inventory:template', kwargs.get('id'))
 
 
 def del_template(request, template_id):
@@ -563,9 +603,8 @@ def del_item(request, item_id):
     set_location(item, None, tmp_user)
     set_extradata(item, None, {}, tmp_user)
     item.delete()
-    return redirect(
-        'inventory:properties') if is_property else redirect(
-            'inventory:items')
+    return redirect('inventory:properties') if is_property else redirect(
+        'inventory:items')
 
 
 def unlink_item(request, item_id):

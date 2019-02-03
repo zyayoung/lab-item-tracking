@@ -19,8 +19,7 @@ def get_my_item(user_now, item_id):
 def get_my_loc(user_now, loc_id):
     loc = get_object_or_404(Location, id=loc_id)
     # two cases: (admin) and (not admin)
-    if not (loc.is_public or
-            user_now.is_superadmin or
+    if not (loc.is_public or user_now.is_superadmin or
             (user_now.staff.all() & loc.allowed_users.all()).exists() or
             (loc.allowed_users.filter(id=user_now.id).exists())):
         raise Http404()
@@ -33,6 +32,16 @@ def get_my_list(user_now, all_obj):
     users = user_now.staff.all()
     obj_list = all_obj.filter(allowed_users=user_now) | \
         all_obj.filter(is_public=True) | \
+        all_obj.filter(allowed_users__in=users)
+    return obj_list.distinct()
+
+
+def get_my_template_queryset(user_now, all_obj):
+    if user_now.is_superadmin:
+        return all_obj.filter()
+    users = user_now.staff.all()
+    obj_list = all_obj.filter(allowed_users=user_now) | \
+        all_obj.filter(allowed_users=None) | \
         all_obj.filter(allowed_users__in=users)
     return obj_list.distinct()
 
@@ -53,13 +62,16 @@ def get_export_keys(template, visited=[], include_links=True):
     visited.append(template)
     keys = [template.key_name]
     for ext_data in template.extra_data:
-        if ext_data['type'] in ['text', 'int', 'float', 'bool'] or not include_links:
+        if ext_data['type'] in ['text', 'int', 'float', 'bool'
+                                ] or not include_links:
             keys.append(ext_data['name'])
         elif include_links:
             try:
-                inner_template = ItemTemplate.objects.get(name=ext_data['type'])
-                for key in get_export_keys(inner_template, visited, inner_template not in visited):
-                    keys.append(ext_data['name']+'__'+key)
+                inner_template = ItemTemplate.objects.get(
+                    name=ext_data['type'])
+                for key in get_export_keys(inner_template, visited,
+                                           inner_template not in visited):
+                    keys.append(ext_data['name'] + '__' + key)
             except ItemTemplate.DoesNotExist:
                 continue
     visited.pop()
@@ -68,21 +80,30 @@ def get_export_keys(template, visited=[], include_links=True):
     return keys
 
 
-def get_export_values(template, item, visited=[], include_links=True, user=None):
+def get_export_values(template,
+                      item,
+                      visited=[],
+                      include_links=True,
+                      user=None):
     visited.append(template)
     keys = [item.name if item else '']
     for ext_data in template.extra_data:
-        int_data = item.extra_data[ext_data['name']] if item and ext_data['name'] in item.extra_data.keys() else ''
+        int_data = item.extra_data[ext_data['name']] if item and ext_data[
+            'name'] in item.extra_data.keys() else ''
         if ext_data['type'] in ['text', 'int', 'float', 'bool']:
             keys.append(int_data if int_data else '')
         elif include_links:
             try:
-                inner_template = ItemTemplate.objects.get(name=ext_data['type'])
+                inner_template = ItemTemplate.objects.get(
+                    name=ext_data['type'])
                 try:
-                    inner_item = get_my_item(user, int_data) if int_data else None
+                    inner_item = get_my_item(user,
+                                             int_data) if int_data else None
                 except Http404:
                     inner_item = None
-                for value in get_export_values(inner_template, inner_item, visited, inner_template not in visited):
+                for value in get_export_values(inner_template, inner_item,
+                                               visited,
+                                               inner_template not in visited):
                     keys.append(value)
             except ItemTemplate.DoesNotExist:
                 continue
@@ -116,18 +137,24 @@ def set_extradata(item, template, extra_data, user):
                     data['type'] not in ['bool', 'int', 'float', 'text']:
                     if int(item.extra_data[data_name]) != 0:
                         try:
-                            ext_item = get_object_or_404(Item, id=item.extra_data[data_name])
-                            if item.template.name+'__'+data['name'] in ext_item.related_items.keys():
-                                related_info = ext_item.related_items[item.template.name+'__'+data['name']]
+                            ext_item = get_object_or_404(
+                                Item, id=item.extra_data[data_name])
+                            if item.template.name + '__' + data[
+                                    'name'] in ext_item.related_items.keys():
+                                related_info = ext_item.related_items[
+                                    item.template.name + '__' + data['name']]
                                 if item.id in related_info:
                                     related_info.remove(item.id)
                             else:
                                 related_info = []
                             if ext_item == item:
-                                item.related_items[item.template.name + '__' + data['name']] = related_info
+                                item.related_items[item.template.name + '__' +
+                                                   data['name']] = related_info
                                 item.save()
                             else:
-                                ext_item.related_items[item.template.name + '__' + data['name']] = related_info
+                                ext_item.related_items[
+                                    item.template.name + '__' +
+                                    data['name']] = related_info
                                 ext_item.save()
                         except Http404:
                             pass
@@ -142,17 +169,23 @@ def set_extradata(item, template, extra_data, user):
                     data['type'] not in ['bool', 'int', 'float', 'text']:
                     if int(extra_data[data_name]) != 0:
                         try:
-                            ext_item = get_object_or_404(Item, id=extra_data[data_name])
-                            if template.name+'__'+data['name'] in ext_item.related_items.keys():
-                                related_info = ext_item.related_items[template.name+'__'+data['name']]
+                            ext_item = get_object_or_404(
+                                Item, id=extra_data[data_name])
+                            if template.name + '__' + data[
+                                    'name'] in ext_item.related_items.keys():
+                                related_info = ext_item.related_items[
+                                    template.name + '__' + data['name']]
                                 related_info.append(item.id)
                             else:
                                 related_info = [item.id]
                             if ext_item == item:
-                                item.related_items[template.name + '__' + data['name']] = related_info
+                                item.related_items[template.name + '__' +
+                                                   data['name']] = related_info
                                 item.save()
                             else:
-                                ext_item.related_items[template.name + '__' + data['name']] = related_info
+                                ext_item.related_items[
+                                    template.name + '__' +
+                                    data['name']] = related_info
                                 ext_item.save()
                         except Http404:
                             pass
@@ -180,15 +213,20 @@ def rebuild_related():
                 if extra_data[data['name']] and \
                     data['type'] not in ['bool', 'int', 'float', 'text']:
                     if int(extra_data[data_name]) != 0:
-                        ext_item = get_object_or_404(Item, id=item.extra_data[data_name])
-                        if template.name+'__'+data['name'] in ext_item.related_items.keys():
-                            related_info = ext_item.related_items[template.name+'__'+data['name']]
+                        ext_item = get_object_or_404(
+                            Item, id=item.extra_data[data_name])
+                        if template.name + '__' + data[
+                                'name'] in ext_item.related_items.keys():
+                            related_info = ext_item.related_items[
+                                template.name + '__' + data['name']]
                             related_info.append(item.id)
                         else:
                             related_info = [item.id]
                         if ext_item == item:
-                            item.related_items[template.name + '__' + data['name']] = related_info
+                            item.related_items[template.name + '__' +
+                                               data['name']] = related_info
                             item.save()
                         else:
-                            ext_item.related_items[template.name + '__' + data['name']] = related_info
+                            ext_item.related_items[template.name + '__' +
+                                                   data['name']] = related_info
                             ext_item.save()
