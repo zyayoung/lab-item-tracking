@@ -71,7 +71,7 @@ def get_export_values(template, item, visited=[], include_links=True, user=None)
     for ext_data in template.extra_data:
         int_data = item.extra_data[ext_data['name']] if item and ext_data['name'] in item.extra_data.keys() else ''
         if ext_data['type'] in ['text', 'int', 'float', 'bool']:
-            keys.append(int_data)
+            keys.append(int_data if int_data else '')
         elif include_links:
             inner_template = ItemTemplate.objects.get(name=ext_data['type'])
             try:
