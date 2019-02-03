@@ -2,8 +2,8 @@
 {% load staticfiles %}
 {% block title %}物品{% if item.template.is_property %}属性{% endif %}详情：{{ item }} {% endblock %}
 {% block content %}
-{% if message %}
-<div class="alert alert-warning">{{ message }}</div>
+{% if self.message %}
+<div class="alert alert-warning">{{ self.message }}</div>
 {% endif %}
 <p class="lead">物品{% if item.template.is_property %}属性{% endif %}详情：</p>
 <table class="table table-striped row mx-0">

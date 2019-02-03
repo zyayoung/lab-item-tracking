@@ -2,6 +2,9 @@
 {% load staticfiles %}
 {% block title %}{{ name }}列表{% endblock %}
 {% block content %}
+{% if self.message %}
+<div class="alert alert-warning">{{ self.message }}</div>
+{% endif %}
 <span class="lead">
     {{ name }}：
 </span>
@@ -108,4 +111,15 @@
 {% else %}
 <p class="lead">没有符合条件的{{ name }}</p>
 {% endif %}
+<form id="selectForm" method="post" action="./?action=user">
+    {% csrf_token %}
+    <select name="filter" id="id_filter" class="selectpicker" data-live-search="true" multiple title="过滤器" data-actions-box="true">
+        {% for key, value in choices %}
+        <option value="{{ key }}" {% if key in user_filter %} selected {% endif %}>
+            {{ value }}
+        </option>
+        {% endfor %}
+    </select>
+    <button type="submit" class="btn btn-outline-primary">确认</button>
+</form>
 {% endblock %}

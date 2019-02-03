@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.postgres.fields import JSONField
 
 # Create your models here.
 
@@ -8,6 +9,7 @@ class User(models.Model):
     password = models.CharField(max_length=256)
     email = models.EmailField(unique=True)
     c_time = models.DateTimeField(auto_now_add=True)
+    settings = JSONField(verbose_name='设置', blank=True, default=dict)
     staff = models.ManyToManyField(
         "self",
         symmetrical=False,

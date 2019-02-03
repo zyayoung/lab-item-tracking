@@ -27,12 +27,20 @@ class IndexView(generic.View):
 
 
 class ItemsView(generic.View):
+    message = None
+
     def get(self, request, *args, **kwargs):
         is_property = 'prop' in request.path
         name = "物品属性" if is_property else "物品"
+        choose_form = forms.ChooseTemplateForm(is_property=is_property)
+        choices = choose_form.fields["template"].choices
         tmp_user = myUser.objects.get(id=request.session.get('user_id'))
+        user_filter = tmp_user.settings['filter']
         item_list = get_my_list(
-            tmp_user, Item.objects.filter(template__is_property=is_property))
+            tmp_user, Item.objects.filter(
+                template__is_property=is_property,
+                template__id__in=user_filter
+            ))
         keyword = request.GET.get('q')
         if keyword:
             keyword_iri = quote(keyword)
@@ -44,6 +52,24 @@ class ItemsView(generic.View):
         except EmptyPage:
             item_list = paginator.page(paginator.num_pages)
         return render(request, 'inventory/items.html', locals())
+
+    def post(self, request, *args, **kwargs):
+        action = request.GET['action']
+        tmp_user = myUser.objects.get(id=request.session.get('user_id'))
+        if action == 'user':
+            is_property = 'prop' in request.path
+            choose_form = forms.ChooseTemplateForm(is_property=is_property)
+            choices = choose_form.fields["template"].choices
+            settings = tmp_user.settings
+            new_filter = [int(id) for id in request.POST.getlist('filter')]
+            for key, value in choices:
+                if key in settings['filter'] and key not in new_filter:
+                    settings['filter'].remove(key)
+                elif key not in settings['filter'] and key in new_filter:
+                    settings['filter'].append(key)
+            tmp_user.settings = settings
+            tmp_user.save()
+        return HttpResponseRedirect(request.path)
 
 
 class AddItemView(generic.View):
