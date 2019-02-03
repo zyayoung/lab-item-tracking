@@ -93,7 +93,7 @@ class AddItemView(generic.View):
                 for dictionary in template.extra_data:
                     data[dictionary['name']] = edit_form.cleaned_data[
                         dictionary['name'].replace(' ', '_')]
-            set_extradata(item, template, data)
+            set_extradata(item, template, data, tmp_user)
         else:
             return render(request, 'inventory/edit.html', locals())
         item.save()
@@ -270,7 +270,7 @@ class EditItemView(generic.View):
                 for dictionary in template.extra_data:
                     data[dictionary['name']] = edit_form.cleaned_data[
                         dictionary['name'].replace(' ', '_')]
-            set_extradata(item, template, data)
+            set_extradata(item, template, data, tmp_user)
         else:
             return render(request, 'inventory/edit.html', locals())
         if 'save_as_new' in request.POST:
@@ -282,7 +282,7 @@ class EditItemView(generic.View):
                 owner=tmp_user,
                 is_public=item.is_public,
             )
-            set_extradata(new_item, template, item.extra_data)
+            set_extradata(new_item, template, item.extra_data, tmp_user)
             for user in item.allowed_users.all():
                 new_item.allowed_users.add(user)
             new_item.save()
@@ -516,7 +516,7 @@ def del_item(request, item_id):
         return render(request, 'inventory/info.html', locals())
     is_property = item.template.is_property
     set_location(item, None, tmp_user)
-    set_extradata(item, None, {})
+    set_extradata(item, None, {}, tmp_user)
     item.delete()
     return redirect(
         'inventory:properties') if is_property else redirect(

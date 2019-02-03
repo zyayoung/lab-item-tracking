@@ -22,7 +22,7 @@ class ItemLog(models.Model):
         on_delete=models.SET_NULL,
     )
     extra_data_to = JSONField(
-        default=0,
+        default=dict,
         blank=True,
         verbose_name="属性",
     )

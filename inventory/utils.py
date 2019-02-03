@@ -91,7 +91,7 @@ def get_export_values(template, item, visited=[], include_links=True):
     return keys
 
 
-def set_extradata(item, template, extra_data):
+def set_extradata(item, template, extra_data, user):
     if item.extra_data == extra_data:
         return
     log = ItemLog.objects.create(
