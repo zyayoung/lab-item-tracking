@@ -113,7 +113,7 @@
 {% endif %}
 <form id="selectForm" method="post" action="./?action=user">
     {% csrf_token %}
-    <select name="filter" id="id_filter" class="selectpicker" data-live-search="true" multiple title="过滤器" data-actions-box="true">
+    <select name="filter" id="id_filter" class="selectpicker" multiple title="过滤器" data-actions-box="true">
         {% for key, value in choices %}
         <option value="{{ key }}" {% if key not in user_filter %} selected {% endif %}>
             {{ value }}
