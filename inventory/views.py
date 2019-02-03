@@ -93,10 +93,7 @@ class AddItemView(generic.View):
                 for dictionary in template.extra_data:
                     data[dictionary['name']] = edit_form.cleaned_data[
                         dictionary['name'].replace(' ', '_')]
-            item.extra_data = data
-            item.template = template
-            if not len(name.strip()):
-                item.name = "未命名 {}-{}".format(template.name, item.id)
+            set_extradata(item, template, data, tmp_user)
         else:
             return render(request, 'inventory/edit.html', locals())
         item.save()
@@ -255,32 +252,27 @@ class EditItemView(generic.View):
         if choose_form.is_valid():
             data = {}
             template_id = int(choose_form.cleaned_data['template'])
-            if template_id != 0:
-                template = ItemTemplate.objects.get(id=template_id)
-                extra_data = template.extra_data
-                edit_form = forms.EditItemForm(
-                    request.POST, data=extra_data, user=tmp_user)
-                if edit_form.is_valid():
-                    for dictionary in template.extra_data:
-                        data[dictionary['name']] = edit_form.cleaned_data[
-                            dictionary['name'].replace(' ', '_')]
-            else:
-                template = None
-            item.extra_data = data
-            item.template = template
+            template = ItemTemplate.objects.get(id=template_id)
+            extra_data = template.extra_data
+            edit_form = forms.EditItemForm(
+                request.POST, data=extra_data, user=tmp_user)
+            if edit_form.is_valid():
+                for dictionary in template.extra_data:
+                    data[dictionary['name']] = edit_form.cleaned_data[
+                        dictionary['name'].replace(' ', '_')]
+            set_extradata(item, template, data, tmp_user)
         else:
             return render(request, 'inventory/edit.html', locals())
         if 'save_as_new' in request.POST:
             new_item = Item.objects.create(
                 name=item.name,
                 attribute=item.attribute,
-                template=item.template,
-                extra_data=item.extra_data,
                 related_items=item.related_items,
                 location=None,
-                owner=item.owner,
+                owner=tmp_user,
                 is_public=item.is_public,
             )
+            set_extradata(new_item, template, item.extra_data, tmp_user)
             for user in item.allowed_users.all():
                 new_item.allowed_users.add(user)
             new_item.save()
