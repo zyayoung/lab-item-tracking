@@ -184,13 +184,7 @@ class ItemView(generic.View):
                 }))
         relation_info = {}
         for key, values in item.related_items.items():
-            _items = []
-            for value in values:
-                try:
-                    _items.append(get_my_item(tmp_user, value))
-                except Http404():
-                    pass
-            relation_info[key.replace('__', '->')] = _items
+            relation_info[key.replace('__', '->')] = get_my_list(tmp_user, Item.objects.filter(id__in=values))
         del_permission = item.del_permission(tmp_user)
         unlink_permission = item.unlink_permission(tmp_user)
         return render(request, 'inventory/item.html', locals())

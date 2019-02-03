@@ -154,6 +154,7 @@ def rebuild_related():
     # unlink old relationships
     for item in Item.objects.all():
         item.related_items = {}
+        item.save()
 
     # link new relationships
     for item in Item.objects.all():
