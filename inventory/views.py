@@ -32,8 +32,7 @@ class ItemsView(generic.View):
     def get(self, request, *args, **kwargs):
         tmp_user = myUser.objects.get(id=request.session.get('user_id'))
         is_property = 'prop' in request.path
-        template_queryset = get_my_template_queryset(
-            tmp_user, ItemTemplate.objects.all())
+        template_queryset = ItemTemplate.objects.all()
         choose_form = forms.ChooseTemplateForm(
             is_property=is_property, template_queryset=template_queryset)
         name = "物品属性" if is_property else "物品"
@@ -63,8 +62,7 @@ class ItemsView(generic.View):
         tmp_user = myUser.objects.get(id=request.session.get('user_id'))
         if action == 'user':
             is_property = 'prop' in request.path
-            template_queryset = get_my_template_queryset(
-                tmp_user, ItemTemplate.objects.all())
+            template_queryset = ItemTemplate.objects.all()
             choose_form = forms.ChooseTemplateForm(
                 is_property=is_property, template_queryset=template_queryset)
             choices = choose_form.fields["template"].choices
