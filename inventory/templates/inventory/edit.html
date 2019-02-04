@@ -1,7 +1,9 @@
 {% extends 'base.html' %}
 {% load staticfiles %}
 {% block title %}{{ action }}{{ name }}{% endblock %}
-{% block css %}{% endblock %}
+{% block css %}
+<link href="https://cdn.bootcss.com/jqueryui/1.12.1/jquery-ui.min.css" rel="stylesheet">
+{% endblock %}
 {% block content %}
 <p class="lead">{{ action }}{{ name }}：</p>
 <form class="form-add" action="" method="post" id="main_form">
@@ -37,6 +39,7 @@
 </form>
 {% endblock %}
 {% block script %}
+<script src="https://cdn.bootcss.com/jqueryui/1.12.1/jquery-ui.min.js"></script>
 <script>
     False = false;
     True = true;

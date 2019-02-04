@@ -137,6 +137,9 @@ class AddItemView(generic.View):
                     if dictionary['type'] == 'link':
                         data[dictionary['name']] = int(
                             data[dictionary['name']])
+                    elif dictionary['type'] == 'date':
+                        data[dictionary['name']] = data[
+                            dictionary['name']].strftime("%Y-%m-%d")
             set_extradata(item, template, data, tmp_user)
         else:
             return render(request, 'inventory/edit.html', locals())
@@ -178,7 +181,7 @@ class ItemView(generic.View):
                     if data['type'] in ['int', 'float'
                                         ] or item.extra_data[data['name']]:
                         if data['type'] not in [
-                                'bool', 'int', 'float', 'text'
+                                'bool', 'int', 'float', 'text', 'date'
                         ]:
                             try:
                                 if int(item.extra_data[data_name]) != 0:
@@ -318,6 +321,9 @@ class EditItemView(generic.View):
                     if dictionary['type'] == 'link':
                         data[dictionary['name']] = int(
                             data[dictionary['name']])
+                    elif dictionary['type'] == 'date':
+                        data[dictionary['name']] = data[
+                            dictionary['name']].strftime("%Y-%m-%d")
             set_extradata(item, template, data, tmp_user)
         else:
             return render(request, 'inventory/edit.html', locals())
@@ -422,7 +428,7 @@ class EditTemplateView(generic.View):
     def get(self, request, *args, **kwargs):
         template = get_object_or_404(ItemTemplate, id=kwargs.get('id'))
         edit_form = forms.EditTemplateForm()
-        choices = ["text", "float", "int", "bool"]
+        choices = ['text', 'bool', 'int', 'float', 'date']
         choices.extend([
             name[0] for name in ItemTemplate.objects.all().values_list('name')
         ])
@@ -430,7 +436,7 @@ class EditTemplateView(generic.View):
         return render(request, 'inventory/template_edit.html', locals())
 
     def post(self, request, *args, **kwargs):
-        choices = ["text", "float", "int", "bool"]
+        choices = ['text', 'bool', 'int', 'float', 'date']
         choices.extend([
             name[0] for name in ItemTemplate.objects.all().values_list('name')
         ])

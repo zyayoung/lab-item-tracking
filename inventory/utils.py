@@ -62,7 +62,7 @@ def get_export_keys(template, visited=[], include_links=True):
     visited.append(template)
     keys = [template.key_name]
     for ext_data in template.extra_data:
-        if ext_data['type'] in ['text', 'int', 'float', 'bool'
+        if ext_data['type'] in ['bool', 'int', 'float', 'text', 'date'
                                 ] or not include_links:
             keys.append(ext_data['name'])
         elif include_links:
@@ -90,7 +90,7 @@ def get_export_values(template,
     for ext_data in template.extra_data:
         int_data = item.extra_data[ext_data['name']] if item and ext_data[
             'name'] in item.extra_data.keys() else ''
-        if ext_data['type'] in ['text', 'int', 'float', 'bool']:
+        if ext_data['type'] in ['bool', 'int', 'float', 'text', 'date']:
             keys.append(int_data if int_data else '')
         elif include_links:
             try:
@@ -134,7 +134,7 @@ def set_extradata(item, template, extra_data, user):
             if data['name'] in item_keys:
                 data_name = data['name']
                 if item.extra_data[data['name']] and \
-                    data['type'] not in ['bool', 'int', 'float', 'text']:
+                    data['type'] not in ['bool', 'int', 'float', 'text', 'date']:
                     if int(item.extra_data[data_name]) != 0:
                         try:
                             ext_item = get_object_or_404(
@@ -166,7 +166,7 @@ def set_extradata(item, template, extra_data, user):
             if data['name'] in item_keys:
                 data_name = data['name']
                 if extra_data[data['name']] and \
-                    data['type'] not in ['bool', 'int', 'float', 'text']:
+                    data['type'] not in ['bool', 'int', 'float', 'text', 'date']:
                     if int(extra_data[data_name]) != 0:
                         try:
                             ext_item = get_object_or_404(
@@ -211,7 +211,7 @@ def rebuild_related():
             if data['name'] in item_keys:
                 data_name = data['name']
                 if extra_data[data['name']] and \
-                    data['type'] not in ['bool', 'int', 'float', 'text']:
+                    data['type'] not in ['bool', 'int', 'float', 'text', 'date']:
                     if int(extra_data[data_name]) != 0:
                         ext_item = get_object_or_404(
                             Item, id=item.extra_data[data_name])

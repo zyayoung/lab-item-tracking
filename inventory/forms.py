@@ -31,15 +31,14 @@ class SelectWithAdd(forms.Select):
     def render(self, name, *args, **kwargs):
         select = super(SelectWithAdd, self).render(name, *args, **kwargs)
         _template = ItemTemplate.objects.get(name=self.template)
-        if _template in get_my_template_queryset(self.user, ItemTemplate.objects.all()):
+        if _template in get_my_template_queryset(self.user,
+                                                 ItemTemplate.objects.all()):
             select_with_add = render_to_string(
-                "inventory/select_with_add.html",
-                {
+                "inventory/select_with_add.html", {
                     'select': select,
                     'name': name,
                     'template_name': self.template,
-                }
-            )
+                })
         else:
             select_with_add = select
         return select_with_add
@@ -100,9 +99,20 @@ class EditItemForm(forms.Form):
                                 'placeholder': tmp_placeholder,
                             }),
                     )
+                elif tmp_type == 'date':
+                    tmp_field = forms.DateField(
+                        label=tmp_label,
+                        required=tmp_required,
+                        widget=forms.TextInput(
+                            attrs={'class': 'form_datetime form-control'}),
+                    )
                 else:
                     objects = Item.objects.filter(template__name=tmp_type)
-                    attrs = {'class': 'form-control selectpicker select_'+tmp_type, 'data-live-search': 'true'}
+                    attrs = {
+                        'class':
+                        'form-control selectpicker select_' + tmp_type,
+                        'data-live-search': 'true'
+                    }
                     if tmp_required:
                         attrs['required'] = ''
                     tmp_field = forms.ChoiceField(
@@ -110,7 +120,8 @@ class EditItemForm(forms.Form):
                         required=tmp_required,
                         choices=get_my_list(user, objects).values_list(
                             'id', 'name'),
-                        widget=SelectWithAdd(attrs=attrs, template=tmp_type, user=user),
+                        widget=SelectWithAdd(
+                            attrs=attrs, template=tmp_type, user=user),
                     )
                     if not tmp_required:
                         tmp_field.choices.insert(0, [0, '--'])
@@ -154,7 +165,7 @@ class ChooseTemplateForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         super(ChooseTemplateForm, self).__init__(*args)
-        template_queryset=kwargs.get('template_queryset')
+        template_queryset = kwargs.get('template_queryset')
         if 'is_property' in kwargs.keys():
             choices = template_queryset.filter(
                 is_property=kwargs.get('is_property')).values_list(
