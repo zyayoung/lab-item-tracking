@@ -30,9 +30,9 @@
         {% for key, value in extra_info %}
         <tr class="row mx-0">
             {% if value.type == 'extra' %}
-            <td class="col-3 text-muted">{{ key }}</td>
+            <th class="col-3 text-muted">{{ key }}</td>
             {% else %}
-            <td class="col-3">{{ key }}</td>
+            <th class="col-3">{{ key }}</td>
             {% endif %}
             <td class="col-9">
                 {% if value.type == 'link' %}
