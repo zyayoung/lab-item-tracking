@@ -1,6 +1,6 @@
 from django import forms
 from .models import Item, ItemTemplate
-from .utils import get_my_list
+from .utils import get_my_list, get_my_template_queryset
 from django.template.loader import render_to_string
 import re
 
@@ -31,7 +31,7 @@ class SelectWithAdd(forms.Select):
     def render(self, name, *args, **kwargs):
         select = super(SelectWithAdd, self).render(name, *args, **kwargs)
         _template = ItemTemplate.objects.get(name=self.template)
-        if not _template.allowed_users.exists() or self.user in _template.allowed_users.all():
+        if _template in get_my_template_queryset(self.user, ItemTemplate.objects.all()):
             select_with_add = render_to_string(
                 "inventory/select_with_add.html",
                 {
