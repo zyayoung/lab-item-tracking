@@ -23,20 +23,25 @@ class AddItemForm(forms.Form):
 class SelectWithAdd(forms.Select):
     def __init__(self, *args, **kwargs):
         self.template = kwargs.get('template')
+        self.user = kwargs.get('user')
         kwargs.pop('template')
-        kwargs['attrs']
+        kwargs.pop('user')
         super(SelectWithAdd, self).__init__(*args, **kwargs)
 
     def render(self, name, *args, **kwargs):
         select = super(SelectWithAdd, self).render(name, *args, **kwargs)
-        select_with_add = render_to_string(
-            "inventory/select_with_add.html",
-            {
-                'select': select,
-                'name': name,
-                'template_name': self.template,
-            }
-        )
+        _template = ItemTemplate.objects.get(name=self.template)
+        if not _template.allowed_users.exists() or self.user in _template.allowed_users.all():
+            select_with_add = render_to_string(
+                "inventory/select_with_add.html",
+                {
+                    'select': select,
+                    'name': name,
+                    'template_name': self.template,
+                }
+            )
+        else:
+            select_with_add = select
         return select_with_add
 
 
@@ -105,7 +110,7 @@ class EditItemForm(forms.Form):
                         required=tmp_required,
                         choices=get_my_list(user, objects).values_list(
                             'id', 'name'),
-                        widget=SelectWithAdd(attrs=attrs, template=tmp_type),
+                        widget=SelectWithAdd(attrs=attrs, template=tmp_type, user=user),
                     )
                     if not tmp_required:
                         tmp_field.choices.insert(0, [0, '--'])

@@ -344,8 +344,7 @@ class EditItemView(generic.View):
 class TemplatesView(generic.View):
     def get(self, request, *args, **kwargs):
         tmp_user = myUser.objects.get(id=request.session.get('user_id'))
-        template_list = get_my_template_queryset(tmp_user,
-                                                 ItemTemplate.objects.all())
+        template_list = ItemTemplate.objects.all()
         keyword = request.GET.get('q')
         if keyword:
             keyword_iri = quote(keyword)
