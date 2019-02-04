@@ -9,6 +9,7 @@
         <i class="fa fa-search" aria-hidden="true"></i>
     </button>
 </form>
+{% if tmp_user.is_superadmin %}
 <div class="pull-right">
     <button class="btn btn-outline-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
         aria-haspopup="true" aria-expanded="false">
@@ -21,6 +22,7 @@
     </div>
 </div>
 <p></p>
+{% endif %}
 {% if keyword %}
 <p class="lead">
     名称中含关键词：{{ keyword }}
