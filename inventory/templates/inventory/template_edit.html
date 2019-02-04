@@ -8,7 +8,7 @@
 <p class="lead">物品{% if template.is_property %}属性{% endif %}模板编辑：{{ template }}</p>
 <form method="post" action="">
     <span class="lead pull-left">可使用该模板用户：</span>
-    <select name="share" id="share_id" class="selectpicker" data-live-search="true" multiple>
+    <select name="share" id="share_id" class="selectpicker" data-live-search="true" multiple title="允许全部用户">
         {% for user in all_users %}
         <option value="{{ user.id }}" {% if user in template.allowed_users.all %} selected {% endif %}>
             {{ user.name }}

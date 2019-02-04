@@ -7,7 +7,7 @@
 {% endif %}
 <p class="lead">物品{% if template.is_property %}属性{% endif %}模板详情：{{ template }}</p>
 <span class="lead pull-left">可使用该模板用户：</span>
-{% if not template.allowed_users %}
+{% if template.allowed_users.exists %}
 <div id="userArea">
     {% for user in template.allowed_users.all %}
     {{ user.name }}
