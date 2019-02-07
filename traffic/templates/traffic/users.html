@@ -20,40 +20,44 @@
     </div>
 </nav>
 <p class="lead">{% if bias %}{{ start }}{% else %}今日{% endif %}活跃</p>
-<div id="main1" class="col-sm-12 chart" style="height: 300px;"></div>
-<div id="main3" class="col-sm-12 chart" style="height: 300px;"></div>
-<nav aria-label="page navigation">
-    <ul class="pagination justify-content-center">
-        <li class="page-item">
-            <a class="page-link" href="?bias={{ bias|add:-1 }}">
-                前一天
-            </a>
-        </li>
-        {% if bias < 0 %}
-        <li class="page-item">
-            <a class="page-link" href="?bias={{ bias|add:1 }}">
-                后一天
-            </a>
-        </li>
-        <li class="page-item">
-            <a class="page-link" href="?bias=0">
-                今天
-            </a>
-        </li>
-        {% else %}
-        <li class="page-item disabled">
-            <a class="page-link" href="?bias=0">
-                后一天
-            </a>
-        </li>
-        <li class="page-item disabled">
-            <a class="page-link" href="?bias=0">
-                今天
-            </a>
-        </li>
-        {% endif %}
-    </ul>
-</nav>
+<div class="row">
+    <div id="main1" class="col-sm-6 chart" style="height: 300px;"></div>
+    <div class="col-sm-6">
+        <div id="main3" class="chart" style="height: 300px;"></div>
+        <nav aria-label="page navigation">
+            <ul class="pagination justify-content-center">
+                <li class="page-item">
+                    <a class="page-link" href="?bias={{ bias|add:-1 }}">
+                        前一天
+                    </a>
+                </li>
+                {% if bias < 0 %}
+                <li class="page-item">
+                    <a class="page-link" href="?bias={{ bias|add:1 }}">
+                        后一天
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?bias=0">
+                        今天
+                    </a>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
+                    <a class="page-link" href="?bias=0">
+                        后一天
+                    </a>
+                </li>
+                <li class="page-item disabled">
+                    <a class="page-link" href="?bias=0">
+                        今天
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+</div>
 <p class="lead">用户关系</p>
 <div id="main2" class="col-sm-12 border chart" style="height: 600px;"></div>
 

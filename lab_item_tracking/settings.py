@@ -29,6 +29,13 @@ ALLOWED_HOSTS = ['*']
 CAPTCHA_IMAGE_SIZE = (100, 30)
 CAPTCHA_TEST_MODE = DEBUG
 
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'unique-snowflake',
+    }
+}
+
 # Application definition
 
 INSTALLED_APPS = [
