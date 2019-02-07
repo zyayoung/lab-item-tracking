@@ -100,7 +100,7 @@
         </tr>
     </tbody>
 </table>
-<p class="lead">相关物品:</p>
+{% if relation_info %}<p class="lead">相关物品:</p>{% endif %}
 {% for key, items in relation_info.items %}
 <table class="table table-striped ">
 <thead>
