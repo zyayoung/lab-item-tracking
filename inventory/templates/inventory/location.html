@@ -52,12 +52,12 @@
                 {% endif %}
                 {% for sublocation in allow_locs %}
                 <tr class="row mx-0">
-                    <td class="col-3">
+                    <td class="col-6">
                         <a href="{% url 'inventory:location' sublocation.id %}{% if pending %}?pending={{ pending.pk }}{% endif %}">
                             {{ sublocation.path }}
                         </a>
                     </td>
-                    <td class="col-9">
+                    <td class="col-6">
                         {% if sublocation.is_public %}
                         全部
                         {% else %}
@@ -102,21 +102,33 @@
                 {% endif %}
             </span>
         </p>
-        {% if item_list %}
         <table class="table table-striped table-sm">
-            <thead>
-                <th>名称</th>
-                <th>类型</th>
+            <thead class="w-100">
+                <tr class="row mx-0">
+                    <th class="col-6">名称</th>
+                    <th class="col-6">类型</th>
+                </tr>
             </thead>
-            <tbody>
+            {% if item_list %}
+            <tbody class="w-100">
                 {% for item in item_list %}
-                <tr>
-                    <td><a href="{% url 'inventory:item' item.id %}">{{ item }}</a></td>
-                    <td>{% if item.template %}{{ item.template }}{% endif %}</td>
+                <tr class="row mx-0">
+                    <td class="col-6">
+                        <a href="{% url 'inventory:item' item.id %}">{{ item }}</a>
+                    </td>
+                    <td class="col-6">
+                        {% if item.template %}
+                        <a href="{% url 'inventory:template' item.template.id %}">
+                            {{ item.template }}
+                        </a>
+                        {% endif %}
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
+            {% endif %}
         </table>
+        {% if item_list %}
         <nav aria-label="page navigation">
             <ul class="pagination justify-content-center">
                 <li class="page-item">
