@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-
+{% load staticfiles %}
 {% block title %} 实验室物品管理 {% endblock %}
 {% block content %}
 <div class="container">
@@ -27,6 +27,8 @@
                     </li>
                 </ul>
             </div>
+        </div>
+        <div class="col-lg-3 col-sm-6 section mb-3">
             <div class="card">
                 <h5 class="card-title mt-3">物品属性</h5>
                 <ul class="list-group list-group-flush">
@@ -68,6 +70,8 @@
                     </li>
                 </ul>
             </div>
+        </div>
+        <div class="col-lg-3 col-sm-6 section mb-3">
             <div class="card">
                 <h5 class="card-title mt-3">模板</h5>
                 <ul class="list-group list-group-flush">
@@ -79,7 +83,8 @@
                     {% if tmp_user.is_superadmin %}
                     <li class="list-group-item">
                         &nbsp;&nbsp;&nbsp;
-                        <a class="dropdown-toggle card-link" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <a class="dropdown-toggle card-link" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown"
+                            aria-haspopup="true" aria-expanded="false">
                             <i class="fa fa-plus" aria-hidden="true"></i>
                             新建模板
                         </a>
@@ -89,23 +94,6 @@
                         </div>
                     </li>
                     {% endif %}
-                </ul>
-            </div>
-        </div>
-        <div class="col-lg-3 col-sm-6 section mb-3">
-            <div class="card">
-                <h5 class="card-title mt-3">关于</h5>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item">
-                        <a href="https://github.com/zyayoung/lab-item-tracking/wiki" class="card-link">
-                            <i class="fa fa-book" aria-hidden="true"></i> 使用手册
-                        </a>
-                    </li>
-                    <li class="list-group-item">
-                        <a href="https://github.com/zyayoung/lab-item-tracking/issues" class="card-link">
-                            <i class="fa fa-stethoscope" aria-hidden="true"></i> 反馈问题
-                        </a>
-                    </li>
                 </ul>
             </div>
         </div>
@@ -137,32 +125,32 @@
                 </ul>
             </div>
         </div>
+        {% endif %}
     </div>
-    {% endif %}
-</div>
-{% if tmp_user.is_superadmin %}
-<div class="modal fade" id="cfmModal" tabindex="-1" role="dialog" aria-labelledby="cfmModalTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="cfmModalTitle">
-                    <i class="fa fa-info" aria-hidden="true"></i> 提示信息
-                </h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <p id="modalNotice"></p>
-            </div>
-            <div class="modal-footer" id="actions">
-                <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">取消</button>
-                <button type="button" class="btn btn-outline-primary" onClick="batch_download()">确定</button>
+    {% if tmp_user.is_superadmin %}
+    <div class="modal fade" id="cfmModal" tabindex="-1" role="dialog" aria-labelledby="cfmModalTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="cfmModalTitle">
+                        <i class="fa fa-info" aria-hidden="true"></i> 提示信息
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p id="modalNotice"></p>
+                </div>
+                <div class="modal-footer" id="actions">
+                    <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-outline-primary" onClick="batch_download()">确定</button>
+                </div>
             </div>
         </div>
     </div>
+    {% endif %}
 </div>
-{% endif %}
 {% endblock %}
 {% block script %}
 {% if tmp_user.is_superadmin %}
