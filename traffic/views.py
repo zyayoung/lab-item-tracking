@@ -184,8 +184,8 @@ class Locations(generic.View):
         end = start + datetime.timedelta(days=1)
         loc_data = []
         for idx, loc in enumerate(Location.objects.all()):
-            count = ItemLog.objects.filter(time__range=(start, end), location_from=loc).count() + \
-                    ItemLog.objects.filter(time__range=(start, end), location_to=loc).count()
+            # count = ItemLog.objects.filter(time__range=(start, end), location_from=loc).count() + \
+            count = ItemLog.objects.filter(time__range=(start, end), location_to=loc).count()
             if count:
                 loc_data.append({
                     'name': loc.__str__(),
