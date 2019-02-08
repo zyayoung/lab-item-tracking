@@ -7,7 +7,7 @@
 Create a postgresql server
 
 ```bash
-docker run --name postgresql -e POSTGRES_PASSWORD=password -p 5432:5432 -d postgres:9.4
+docker run --name postgresql -e POSTGRES_PASSWORD=password -p 5432:5432 -d postgres
 ```
 
 ```bash
