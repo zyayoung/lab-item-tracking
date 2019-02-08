@@ -20,7 +20,6 @@
     <thead>
         <th>物品</th>
         <th>调整</th>
-        <th>自</th>
         <th>至</th>
         <th class="d-none d-md-table-cell">时间</th>
     </thead>
@@ -31,15 +30,6 @@
             <td>{{ log.operation }}</td>
             {% if log.operation == '位置' %}
             <td>
-                {% if log.fr.id %}
-                <a href="{% url 'inventory:location' log.fr.id %}">
-                    {{ log.fr }}
-                </a>
-                {% else %}
-                {{ log.fr }}
-                {% endif %}
-            </td>
-            <td>
                 {% if log.to.id %}
                 <a href="{% url 'inventory:location' log.to.id %}">
                     {{ log.to }}
@@ -49,7 +39,6 @@
                 {% endif %}
             </td>
             {% else %}
-            <td>{{ log.fr }}</td>
             <td>{{ log.to }}</td>
             {% endif %}
             <td class="d-none d-md-table-cell">{{ log.time }}</td>

@@ -51,6 +51,7 @@ def set_location(item, location, user):
         log = ItemLog.objects.create(
             item=item,
             operator=user,
+            location_from=item.location,
             location_to=location,
         )
         log.save()
