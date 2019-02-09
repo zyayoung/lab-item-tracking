@@ -463,6 +463,7 @@ class EditTemplateView(generic.View):
         my_list = []
         idx_list = []
         template.key_name = request.POST.get('key_name', '名称')
+        template.key_name_placeholder = request.POST.get('key_name_placeholder', '用于显示的名称')
         template.allowed_users.clear()
         for user_id in request.POST.getlist('share'):
             template.allowed_users.add(myUser.objects.get(id=user_id))
