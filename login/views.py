@@ -92,7 +92,7 @@ def register(request):
             new_user.password = hash_code(password1)
             new_user.email = email
             new_user.save()
-            add_log(new_user, new_user.id, '用户', '用户名', '', username)
+            add_log(new_user, new_user.id, '用户', '用户名', '未创建', username)
             if settings.EMAIL_ENABLE:
                 # Send confirm email
                 code = get_confirm_string(new_user)

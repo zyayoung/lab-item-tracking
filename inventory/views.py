@@ -117,8 +117,8 @@ class AddItemView(generic.View):
                 is_public=public,
                 template=None,
             )
-            add_log(tmp_user, item.id, '物品', '名称', '', name)
-            add_log(tmp_user, item.id, '物品', '公开', '', '是' if public else '否')
+            add_log(tmp_user, item.id, '物品', '名称', '未创建', name)
+            add_log(tmp_user, item.id, '物品', '公开', '否', '是' if public else '否')
             item.allowed_users.add(tmp_user)
             add_log(tmp_user, item.id, '物品', '白名单', '', tmp_user.__str__())
         else:
@@ -347,9 +347,12 @@ class EditItemView(generic.View):
                 owner=tmp_user,
                 is_public=item.is_public,
             )
-            set_extradata(new_item, template, item.extra_data, tmp_user)
+            add_log(tmp_user, new_item.id, '物品', '名称', '未创建', item.name)
+            add_log(tmp_user, new_item.id, '物品', '公开', '否', '是' if item.is_public else '否')
             for user in item.allowed_users.all():
                 new_item.allowed_users.add(user)
+            add_log(tmp_user, new_item.id, '物品', '白名单', '', new_item.allowed_users_str())
+            set_extradata(new_item, template, item.extra_data, tmp_user)
             new_item.save()
         else:
             item.save()
@@ -427,7 +430,7 @@ class AddTemplateView(generic.View):
             new_template.save()
             message = "新建成功！"
             category = "物品属性" if request.GET.get('property') else "物品"
-            add_log(tmp_user, new_template.id, category, '名称', '', name)
+            add_log(tmp_user, new_template.id, category, '名称', '未创建', name)
             return redirect('inventory:template_edit', new_template.id)
         else:
             return render(request, 'inventory/template_add.html', locals())
@@ -586,9 +589,9 @@ class LocationView(generic.View):
                 is_public=public,
             )
             new_location.save()
-            add_log(tmp_user, new_location.id, '位置', '名称', '',
+            add_log(tmp_user, new_location.id, '位置', '名称', '未创建',
                     new_location.__str__())
-            add_log(tmp_user, new_location.id, '位置', '公开', '',
+            add_log(tmp_user, new_location.id, '位置', '公开', '否',
                     '是' if public else '否')
             self.message = "新建成功！"
             return self.get(request, *args, **kwargs)

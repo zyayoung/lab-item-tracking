@@ -136,8 +136,8 @@ def set_extradata(item, template, extra_data, user):
     if item.template != template:
         add_log(user, item.id, '物品', '模板', item.template.__str__(),
                 template.__str__())
-    extra_data_old = ''
-    extra_data_new = ''
+    extra_data_old = '{}'
+    extra_data_new = '{}'
     # unlink old relationships
     if item.template:
         extra_data_old = item.extra_data
