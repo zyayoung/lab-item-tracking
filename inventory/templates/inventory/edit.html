@@ -60,7 +60,6 @@
             },
             success: function (arg) {
                 $('#innerform').html(arg);
-                $('.selectpicker').selectpicker();
                 Object.keys(data).forEach(function (key) {
                     if (data[key] === True)
                         $('#id_' + key.replace(/ /g, '_')).prop("checked", true);
@@ -70,6 +69,7 @@
                         $('#id_' + key.replace(/ /g, '_')).val(data[key]);
                 });
                 $('#id_name').val('{{ item.name|safe }}');
+                $('.selectpicker').selectpicker();
             }
         });
     }
