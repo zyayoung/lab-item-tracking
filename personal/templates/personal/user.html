@@ -10,6 +10,12 @@
             <th class="col-4">用户名</th>
             <td class="col-8">{{ user.name }}</td>
         </tr>
+        {% if tmp_user.is_superadmin %}
+        <tr class="row mx-0">
+            <th class="col-4">邮箱</th>
+            <td class="col-8">{{ user.email }}</td>
+        </tr>
+        {% endif %}
         <tr class="row mx-0">
             <th class="col-4">权限</th>
             <td class="col-8">{{ permission }}</td>
@@ -48,7 +54,8 @@
 <a class="btn btn-outline-primary" role="button" href="{% url 'admin:login_user_change' user.id %}">
     <i class="fa fa-edit" aria-hidden="true"></i> 编辑
 </a>
-{% endif %}
 <a class="btn btn-outline-primary" href="{% url 'trace_item:traceUser' user.id %}">追踪</a>
+<a class="btn btn-outline-primary" href="{% url 'log:user_log' user.id %}">日志</a>
+{% endif %}
 {% endblock %}
 {% block script %}{% endblock %}

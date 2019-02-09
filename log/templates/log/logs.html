@@ -1,8 +1,8 @@
 {% extends "base.html" %}
 {% load staticfiles %}
-{% block title %}{{ user.name }}操作记录{% endblock %}
+{% block title %}日志{% endblock %}
 {% block content %}
-<span class="lead">{{ user.name }}操作记录：</span>
+<span class="lead">日志</span>
 <div class="pull-right">
     <button class="btn btn-outline-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
         aria-haspopup="true" aria-expanded="false">
@@ -24,6 +24,7 @@
         <th>从</th>
         <th>至</th>
         <th class="d-none d-md-table-cell">时间</th>
+        <th class="d-none d-md-table-cell">操作人</th>
     </thead>
     <tbody>
         {% for log in logs %}
@@ -47,6 +48,11 @@
             <td>{{ log.before }}</td>
             <td>{{ log.after }}</td>
             <td class="d-none d-md-table-cell">{{ log.time }}</td>
+            <td class="d-none d-sm-table-cell">
+                <a href="{% url 'personal:user' log.operator.id %}">
+                    {{ log.operator }}
+                </a>
+            </td>
         </tr>
         {% endfor %}
     </tbody>
@@ -57,7 +63,7 @@
 <script>
     function exportAll(type) {
         $('.table').tableExport({
-            filename: '{{ user.name }}操作记录_%YY%-%MM%-%DD%',
+            filename: '日志_%YY%-%MM%-%DD%',
             format: type
         });
     }

@@ -1,9 +1,18 @@
 from django.shortcuts import get_object_or_404, resolve_url
 from django.http import Http404
 from inventory.models import Item, Location, ItemTemplate
+from login.models import User as myUser
 from trace_item.models import ItemLog
 from log.utils import *
 
+
+def get_my_user(user_now, user_id):
+    user = get_object_or_404(myUser, id=user_id)
+    if not user_now or user_now.is_superadmin or user == user_now:
+        return user
+    if not user in user_now.staff.all():
+        raise Http404()
+    return user
 
 def get_my_item(user_now, item_id):
     item = get_object_or_404(Item, id=item_id)

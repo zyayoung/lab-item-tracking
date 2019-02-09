@@ -125,6 +125,7 @@
 <a class="btn btn-outline-primary" role="button" href="{% url 'inventory:location_root' %}?pending={{ item.id }}">存入</a>
 {% endif %}
 <a class="btn btn-outline-primary" href="{% url 'trace_item:traceItem' item.id %}">追踪</a>
+<a class="btn btn-outline-primary" href="{% url 'log:item_log' item.id %}">日志</a>
 {% endif %}
 {% if del_permission %}
 <a class="btn btn-outline-primary" role="button" href="#" onClick="cfm('{% url 'inventory:delete' item.id %}', '{{ item }}', '删除')">删除</a>

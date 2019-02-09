@@ -7,11 +7,11 @@ from .models import *
 class LogAdmin(admin.ModelAdmin):
     list_display = (
         'operator',
-        '_id',
+        'obj_id',
         'category',
         'attribute',
-        '_from',
-        '_to',
+        'before',
+        'after',
         'time',
     )
 

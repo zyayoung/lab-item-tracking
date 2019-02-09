@@ -12,7 +12,7 @@ class Log(models.Model):
         on_delete=models.SET_NULL,
     )
     time = models.DateTimeField('操作时间', auto_now_add=True)
-    _id = models.IntegerField(
+    obj_id = models.IntegerField(
         verbose_name='ID',
         default=0,
     )
@@ -26,12 +26,12 @@ class Log(models.Model):
         blank=True,
         null=True,
     )
-    _from = models.TextField(
+    before = models.TextField(
         verbose_name='操作前',
         blank=True,
         null=True,
     )
-    _to = models.TextField(
+    after = models.TextField(
         verbose_name='操作后',
         blank=True,
         null=True,

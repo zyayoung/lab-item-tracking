@@ -16,21 +16,14 @@ from inventory.models import LocationPermissionApplication as LocPmsnApp
 OBJ_PER_PAGE = 50
 
 
-class IndexView(generic.View):
-    def get(self, request, *args, **kwargs):
-        user = myUser.objects.get(id=request.session.get('user_id'))
-        staff_list = user.staff.all()
-        manager_list = user.user_manager.all()
-        permission = user.permission_str()
-        return render(request, 'personal/index.html', locals())
-
-
 class UserView(generic.View):
     def get(self, request, *args, **kwargs):
         tmp_user = myUser.objects.get(id=request.session.get('user_id'))
-        if int(kwargs.get('id')) == request.session.get('user_id'):
-            return redirect('personal:index')
-        user = get_object_or_404(myUser, id=kwargs.get('id'))
+        user_id = kwargs.get('id')
+        if user_id:
+            user = get_object_or_404(myUser, id=user_id)
+        else:
+            user = tmp_user
         staff_list = user.staff.all()
         manager_list = user.user_manager.all()
         permission = user.permission_str()
@@ -43,7 +36,8 @@ class LocReqView(generic.View):
         if not tmp_user.is_superadmin and not tmp_user.staff.exists():
             return redirect('personal:mylocreq')
         others_request_list = get_others_request_list(tmp_user)
-        others_request_list_count = others_request_list.filter(closed=False).count()
+        others_request_list_count = others_request_list.filter(
+            closed=False).count()
         paginator = Paginator(others_request_list, OBJ_PER_PAGE)
         page = request.GET.get('page')
         try:
@@ -58,7 +52,8 @@ class LocReqView(generic.View):
 class MyLocReqView(generic.View):
     def get(self, request, *args, **kwargs):
         tmp_user = myUser.objects.get(id=request.session.get('user_id'))
-        others_request_list_count = get_others_request_list(tmp_user).filter(closed=False).count()
+        others_request_list_count = get_others_request_list(tmp_user).filter(
+            closed=False).count()
         my_request_list = get_my_request_list(tmp_user)
         paginator = Paginator(my_request_list, OBJ_PER_PAGE)
         page = request.GET.get('page')
