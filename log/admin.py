@@ -5,7 +5,15 @@ from .models import *
 
 
 class LogAdmin(admin.ModelAdmin):
-    list_display = ('operator', '_id', 'category', '_from', '_to', 'time')
+    list_display = (
+        'operator',
+        '_id',
+        'category',
+        'attribute',
+        '_from',
+        '_to',
+        'time',
+    )
 
 
 admin.site.register(Log, LogAdmin)
