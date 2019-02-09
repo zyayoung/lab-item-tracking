@@ -118,7 +118,7 @@ def get_export_values(template,
             except Http404:
                 keys.append('')
             except ValueError:
-                inner_item = None
+                keys.append('')
     if not template.is_property:
         loc = item.location if item else ''
         keys.append(loc if loc else '')
