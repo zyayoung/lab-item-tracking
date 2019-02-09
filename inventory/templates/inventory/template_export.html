@@ -29,7 +29,7 @@
         {% for obj in full_info %}
             <tr>
             {% for value in obj %}
-                <td>{{ value }}</td>
+                <td>{% if value.href %}<a href="{{ value.href }}">{{ value.name }}</a>{% else %}{{ value.name }}{% endif %}</td>
             {% endfor %}
             </tr>
         {% endfor %}

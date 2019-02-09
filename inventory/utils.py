@@ -1,4 +1,4 @@
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, resolve_url
 from django.http import Http404
 from inventory.models import Item, Location, ItemTemplate
 from trace_item.models import ItemLog
@@ -89,12 +89,18 @@ def get_export_values(template,
                       include_links=True,
                       user=None):
     visited.append(template)
-    keys = [item.name if item else '']
+    keys = [{
+        'name': item.name if item else '',
+        'href': resolve_url('inventory:item', item.id) if item else '',
+    }]
     for ext_data in template.extra_data:
         int_data = item.extra_data[ext_data['name']] if item and ext_data[
             'name'] in item.extra_data.keys() else ''
         if ext_data['type'] in ['bool', 'int', 'float', 'text', 'date']:
-            keys.append(int_data if int_data else '')
+            keys.append({
+                'name': int_data if int_data else '',
+                'href': '',
+            })
         elif include_links:
             try:
                 inner_template = ItemTemplate.objects.get(
@@ -114,14 +120,64 @@ def get_export_values(template,
                 continue
         else:
             try:
-                keys.append(get_my_item(user, int_data) if int_data else '')
+                inner_item = get_my_item(user, int_data)
             except Http404:
-                keys.append('')
+                inner_item = None
             except ValueError:
-                keys.append('')
+                inner_item = None
+            keys.append({
+                'name': inner_item.name if inner_item else '',
+                'href': resolve_url('inventory:item', inner_item.id) if inner_item else '',
+            })
     if not template.is_property:
         loc = item.location if item else ''
-        keys.append(loc if loc else '')
+        keys.append({
+            'name': loc if loc else '',
+            'href': resolve_url('inventory:location', loc.id) if loc else '',
+        })
+    visited.pop()
+    return keys
+
+
+def get_export_ids(template,
+                      item,
+                      visited=[],
+                      include_links=True,
+                      user=None):
+    visited.append(template)
+    keys = [item.id if item else 0]
+    for ext_data in template.extra_data:
+        int_data = item.extra_data[ext_data['name']] if item and ext_data[
+            'name'] in item.extra_data.keys() else ''
+        if ext_data['type'] in ['bool', 'int', 'float', 'text', 'date']:
+            keys.append(0)
+        elif include_links:
+            try:
+                inner_template = ItemTemplate.objects.get(
+                    name=ext_data['type'])
+                try:
+                    inner_item = get_my_item(user,
+                                             int_data) if int_data else None
+                except Http404:
+                    inner_item = None
+                except ValueError:
+                    inner_item = None
+                for value in get_export_values(inner_template, inner_item,
+                                               visited,
+                                               inner_template not in visited):
+                    keys.append(value)
+            except ItemTemplate.DoesNotExist:
+                continue
+        else:
+            try:
+                keys.append(int_data if int_data else 0)
+            except Http404:
+                keys.append(0)
+            except ValueError:
+                keys.append(0)
+    if not template.is_property:
+        loc = item.location if item else ''
+        keys.append(0)
     visited.pop()
     return keys
 
