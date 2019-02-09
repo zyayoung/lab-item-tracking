@@ -52,6 +52,11 @@ class ItemTemplate(models.Model):
         default='名称',
         verbose_name="关键字段名称",
     )
+    key_name_placeholder = models.CharField(
+        max_length=128,
+        default='用于显示的名称',
+        verbose_name="关键字段占位符",
+    )
     extra_data = JSONField(default=dict, blank=True, verbose_name="扩展数据")
     is_property = models.BooleanField(default=False, verbose_name='不可存入')
     create_time = models.DateTimeField("create_time", auto_now_add=True)
