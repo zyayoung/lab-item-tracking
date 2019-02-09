@@ -89,6 +89,7 @@ def get_export_keys(template, visited=[], include_links=True):
     visited.pop()
     if not template.is_property:
         keys.append('位置')
+    keys.append('创建者')
     return keys
 
 
@@ -144,49 +145,10 @@ def get_export_values(template,
             'name': loc if loc else '',
             'href': resolve_url('inventory:location', loc.id) if loc else '',
         })
-    visited.pop()
-    return keys
-
-
-def get_export_ids(template,
-                      item,
-                      visited=[],
-                      include_links=True,
-                      user=None):
-    visited.append(template)
-    keys = [item.id if item else 0]
-    for ext_data in template.extra_data:
-        int_data = item.extra_data[ext_data['name']] if item and ext_data[
-            'name'] in item.extra_data.keys() else ''
-        if ext_data['type'] in ['bool', 'int', 'float', 'text', 'date']:
-            keys.append(0)
-        elif include_links:
-            try:
-                inner_template = ItemTemplate.objects.get(
-                    name=ext_data['type'])
-                try:
-                    inner_item = get_my_item(user,
-                                             int_data) if int_data else None
-                except Http404:
-                    inner_item = None
-                except ValueError:
-                    inner_item = None
-                for value in get_export_values(inner_template, inner_item,
-                                               visited,
-                                               inner_template not in visited):
-                    keys.append(value)
-            except ItemTemplate.DoesNotExist:
-                continue
-        else:
-            try:
-                keys.append(int_data if int_data else 0)
-            except Http404:
-                keys.append(0)
-            except ValueError:
-                keys.append(0)
-    if not template.is_property:
-        loc = item.location if item else ''
-        keys.append(0)
+    keys.append({
+        'name': item.owner if item else '',
+        'href': resolve_url('personal:user', item.owner.id) if item else '',
+    })
     visited.pop()
     return keys
 
