@@ -2,6 +2,7 @@ from django.shortcuts import get_object_or_404
 from django.http import Http404
 from inventory.models import Item, Location, ItemTemplate
 from trace_item.models import ItemLog
+from log.utils import *
 
 
 def get_my_item(user_now, item_id):
@@ -54,9 +55,10 @@ def set_location(item, location, user):
             location_from=item.location,
             location_to=location,
         )
-        log.save()
+        old_loc = item.location.__str__()
         item.location = location
         item.save()
+        add_log(user, item.id, '物品', '位置', old_loc, location.__str__())
 
 
 def get_export_keys(template, visited=[], include_links=True):
@@ -127,9 +129,14 @@ def set_extradata(item, template, extra_data, user):
         extra_data_to=extra_data,
     )
     log.save()
-
+    if item.template != template:
+        add_log(user, item.id, '物品', '模板', item.template.__str__(),
+                template.__str__())
+    extra_data_old = ''
+    extra_data_new = ''
     # unlink old relationships
     if item.template:
+        extra_data_old = item.extra_data
         item_keys = item.extra_data.keys()
         for data in item.template.extra_data:
             if data['name'] in item_keys:
@@ -162,6 +169,7 @@ def set_extradata(item, template, extra_data, user):
 
     # link new relationships
     if template:
+        extra_data_new = extra_data
         item_keys = extra_data.keys()
         for data in template.extra_data:
             if data['name'] in item_keys:
@@ -193,6 +201,8 @@ def set_extradata(item, template, extra_data, user):
     item.extra_data = extra_data
     item.template = template
     item.save()
+    if extra_data_old != extra_data_new:
+        add_log(user, item.id, '物品', '属性', extra_data_old, extra_data_new)
 
 
 def rebuild_related():

@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'personal',
     'silk',
     'traffic',
+    'log',
 ]
 
 MIDDLEWARE = [

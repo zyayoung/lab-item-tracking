@@ -32,30 +32,32 @@ python manage.py runserver
 ## Features
 
 - Users
-    - [x] Admin
-    - [x] Manager
-    - [x] Normal User
+  - [x] Admin
+  - [x] Manager
+  - [x] Normal User
 - Location
-    - [x] Tree structure
-    - [x] QR Code
+  - [x] Tree structure
+  - [x] QR Code
 - Items
-    - [x] Add
-    - [x] Attr
-    - [x] Modular
-    - [x] Link
-    - [x] Location
-    - [x] Owner
-    - [x] Share (link & unlink)
-    - [x] Edit
-    - [x] Delete
+  - [x] Add
+  - [x] Attr
+  - [x] Modular
+  - [x] Link
+  - [x] Location
+  - [x] Owner
+  - [x] Share (link & unlink)
+  - [x] Edit
+  - [x] Delete
 - Trace
-    - [x] Location
-    - [x] Quantity
-    - [x] Operater
-    - [x] Time
-    - [x] Attr
+  - [x] Location
+  - [x] Quantity
+  - [x] Operater
+  - [x] Time
+  - [x] Attr
 - Permission
-    - [x] Public
-    - [x] Private item
-    - [x] Secret location
-    - [x] Apply for permission
+  - [x] Public
+  - [x] Private item
+  - [x] Secret location
+  - [x] Apply for permission
+- Log
+  - [ ] All Changes

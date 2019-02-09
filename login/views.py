@@ -6,6 +6,7 @@ from captcha.models import CaptchaStore
 from captcha.helpers import captcha_image_url
 from . import forms
 from django.conf import settings
+from log.utils import *
 import hashlib
 import datetime
 from urllib import request, parse
@@ -39,7 +40,8 @@ def login(request):
                 user = models.User.objects.get(name=username)
                 if settings.EMAIL_ENABLE and not user.has_confirmed:
                     message = "该用户还未通过邮件确认！请查看收件箱（及垃圾邮件）"
-                if settings.EMAIL_WHITELIST_ENABLE and not models.AllowedEmails.objects.filter(email=user.email).exists():
+                if settings.EMAIL_WHITELIST_ENABLE and not models.AllowedEmails.objects.filter(
+                        email=user.email).exists():
                     message = "该用户不在白名单中，请联系网站管理员！"
                     return render(request, 'login/login.html', locals())
                 if user.password == hash_code(password):
@@ -90,6 +92,7 @@ def register(request):
             new_user.password = hash_code(password1)
             new_user.email = email
             new_user.save()
+            add_log(new_user, new_user.id, '用户', '用户名', '', username)
             if settings.EMAIL_ENABLE:
                 # Send confirm email
                 code = get_confirm_string(new_user)
@@ -117,7 +120,9 @@ def send_email(email, code):
                     '''.format(settings.SITE_DOMAIN, code,
                                settings.CONFIRM_DAYS)
     try:
-        url = settings.EMAIL_API + '?to=' + parse.quote(email) + '&title=' + parse.quote(subject) + '&body=' + parse.quote(text_content) + '&html=' + parse.quote(html_content)
+        url = settings.EMAIL_API + '?to=' + parse.quote(
+            email) + '&title=' + parse.quote(subject) + '&body=' + parse.quote(
+                text_content) + '&html=' + parse.quote(html_content)
         print(url)
         request.urlopen(url)
     except:
@@ -168,6 +173,7 @@ def user_confirm(request):
     else:
         confirm.user.has_confirmed = True
         confirm.user.save()
+        add_log(confirm.user, confirm.user.id, '用户', '邮件确认', '否', '是')
         confirm.delete()
         message = '感谢确认，请使用账户登录！'
     return render(request, 'login/confirm.html', locals())

@@ -6,6 +6,7 @@ from django.contrib import messages
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from inventory.utils import *
 from inventory import forms
+from log.utils import *
 import re
 
 from inventory.models import Item, Location, LocationPermissionApplication, ItemTemplate
@@ -116,7 +117,10 @@ class AddItemView(generic.View):
                 is_public=public,
                 template=None,
             )
+            add_log(tmp_user, item.id, '物品', '名称', '', name)
+            add_log(tmp_user, item.id, '物品', '公开', '', '是' if public else '否')
             item.allowed_users.add(tmp_user)
+            add_log(tmp_user, item.id, '物品', '白名单', '', tmp_user.__str__())
         else:
             return render(request, 'inventory/edit.html', locals())
         template_queryset = get_my_template_queryset(
@@ -143,7 +147,6 @@ class AddItemView(generic.View):
             set_extradata(item, template, data, tmp_user)
         else:
             return render(request, 'inventory/edit.html', locals())
-        item.save()
         message = "新建成功！"
         if request.POST.get('is_popup', False):
             select_id = request.POST.get('select_id', '')
@@ -242,11 +245,16 @@ class ItemView(generic.View):
         item = self.item
         action = request.GET['action']
         if action == 'user':
+            allowed_users_old = item.allowed_users_str()
             item.allowed_users.clear()
             item.allowed_users.add(item.owner)
             for user_id in request.POST.getlist('share'):
                 item.allowed_users.add(myUser.objects.get(id=user_id))
+            allowed_users_new = item.allowed_users_str()
             item.save()
+            if allowed_users_old != allowed_users_new:
+                add_log(self.tmp_user, item.id, '物品', '白名单', allowed_users_old,
+                        allowed_users_new)
             self.message = "保存成功！"
         return self.get(request, *args, **kwargs)
 
@@ -338,11 +346,10 @@ class EditItemView(generic.View):
             for user in item.allowed_users.all():
                 new_item.allowed_users.add(user)
             new_item.save()
-            return redirect('inventory:item', new_item.id)
         else:
             item.save()
             message = "修改成功！"
-            return redirect('inventory:item', item.id)
+        return redirect('inventory:item', item.id)
 
 
 class TemplatesView(generic.View):
@@ -413,6 +420,8 @@ class AddTemplateView(generic.View):
             )
             new_template.save()
             message = "新建成功！"
+            category = "物品属性" if request.GET.get('property') else "物品"
+            add_log(self.tmp_user, new_template.id, category, '名称', '', name)
             return redirect('inventory:template_edit', new_template.id)
         else:
             return render(request, 'inventory/template_add.html', locals())
@@ -571,6 +580,10 @@ class LocationView(generic.View):
                 is_public=public,
             )
             new_location.save()
+            add_log(tmp_user, new_location.id, '位置', '名称', '',
+                    new_location.__str__())
+            add_log(tmp_user, new_location.id, '位置', '公开', '',
+                    '是' if public else '否')
             self.message = "新建成功！"
             return self.get(request, *args, **kwargs)
 

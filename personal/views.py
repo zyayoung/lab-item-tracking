@@ -88,6 +88,5 @@ def ajax_submit(request):
     elif result == 0:
         req.reject()
     req.auditor = tmp_user
-    req.save()
     re_dict = {'status': 0}
     return JsonResponse(re_dict)

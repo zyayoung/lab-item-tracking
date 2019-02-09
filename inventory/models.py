@@ -68,6 +68,9 @@ class ItemTemplate(models.Model):
         return '全部' if not self.allowed_users.exists() else ' '.join([user.name for user in self.allowed_users.all()[:5]]) + \
                ('' if self.allowed_users.count() <= 5 else ' 等%d人' % self.allowed_users.count())
 
+    def category(self):
+        return "物品属性" if self.is_property else "物品"
+
     class Meta:
         ordering = ['-create_time']
         verbose_name = "物品模板"
@@ -111,6 +114,9 @@ class Item(models.Model):
 
     def __str__(self):
         return self.name
+
+    def allowed_users_str(self):
+        return '|'.join([user.__str__() for user in self.allowed_users.all()])
 
     def del_permission(self, tmp_user):
         return self.owner == tmp_user or \
