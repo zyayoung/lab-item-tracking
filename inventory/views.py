@@ -120,7 +120,7 @@ class AddItemView(generic.View):
             add_log(tmp_user, item.id, '物品', '名称', '未创建', name)
             add_log(tmp_user, item.id, '物品', '公开', '否', '是' if public else '否')
             item.allowed_users.add(tmp_user)
-            add_log(tmp_user, item.id, '物品', '白名单', '', tmp_user.__str__())
+            add_log(tmp_user, item.id, '物品', '白名单', '', tmp_user.name)
         else:
             return render(request, 'inventory/edit.html', locals())
         template_queryset = get_my_template_queryset(

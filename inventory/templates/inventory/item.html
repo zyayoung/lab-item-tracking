@@ -5,7 +5,13 @@
 {% if self.message %}
 <div class="alert alert-warning">{{ self.message }}</div>
 {% endif %}
-<p class="lead">物品{% if item.template.is_property %}属性{% endif %}详情：</p>
+<p class="lead">物品{% if item.template.is_property %}属性{% endif %}详情：
+    <span class="pull-right">
+        <a class="btn btn-outline-primary" href="{% url 'log:item_log' item.id %}">
+            <i class="fa fa-file-text" aria-hidden="true"></i> 日志
+        </a>
+    </span>
+</p>
 <table class="table table-striped row mx-0">
     <tbody class="w-100">
         {% if item.template %}
@@ -103,18 +109,18 @@
 {% if relation_info %}<p class="lead">相关物品/属性:</p>{% endif %}
 {% for key, items in relation_info.items %}
 <table class="table table-striped ">
-<thead>
-<th>{{ key }}</th>
-</thead>
-<tbody>
-{% for item in items %}
-    <tr>
-        <td>
-            <a href="{% url 'inventory:item' item.id %}">{{ item.name }}</a>
-        </td>
-    </tr>
-{% endfor %}
-</tbody>
+    <thead>
+        <th>{{ key }}</th>
+    </thead>
+    <tbody>
+        {% for item in items %}
+        <tr>
+            <td>
+                <a href="{% url 'inventory:item' item.id %}">{{ item.name }}</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
 </table>
 {% endfor %}
 {% if not item.template.is_property %}
@@ -124,7 +130,6 @@
 {% else %}
 <a class="btn btn-outline-primary" role="button" href="{% url 'inventory:location_root' %}?pending={{ item.id }}">存入</a>
 {% endif %}
-<a class="btn btn-outline-primary" href="{% url 'log:item_log' item.id %}">日志</a>
 {% endif %}
 {% if del_permission %}
 <a class="btn btn-outline-primary" role="button" href="#" onClick="cfm('{% url 'inventory:delete' item.id %}', '{{ item }}', '删除')">删除</a>

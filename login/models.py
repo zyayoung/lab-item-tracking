@@ -32,8 +32,8 @@ class User(models.Model):
             return "员工"
 
     def __str__(self):
-        return "{0} {1}".format(self.name,
-                                "(管理员)" if self.is_superadmin else "")
+        return "{0}{1}".format(self.name,
+                                " (管理员)" if self.is_superadmin else "")
 
     class Meta:
         ordering = ["-c_time"]

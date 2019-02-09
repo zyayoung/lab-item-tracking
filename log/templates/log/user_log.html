@@ -1,9 +1,14 @@
 {% extends "base.html" %}
 {% load staticfiles %}
-{% block title %}{{ user.name }}操作记录{% endblock %}
+{% block title %}{{ user.name }} 操作记录{% endblock %}
 {% block content %}
-<span class="lead">{{ user.name }}操作记录：</span>
+<span class="lead">{{ user.name }} 操作记录：</span>
 <div class="pull-right">
+    {% if logs.has_next %}
+    <a class="btn btn-outline-primary" href="?all" role="button">
+        显示全部
+    </a>
+    {% endif %}
     <button class="btn btn-outline-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
         aria-haspopup="true" aria-expanded="false">
         导出为...
@@ -51,6 +56,53 @@
         {% endfor %}
     </tbody>
 </table>
+{% if paginator %}
+<nav aria-label="page navigation">
+    <ul class="pagination justify-content-center">
+        <li class="page-item">
+            <a class="page-link" href="?page=1">
+                首页
+            </a>
+        </li>
+        {% if logs.has_previous %}
+        <li class="page-item">
+            <a class="page-link" href="?page={{ logs.previous_page_number }}">
+                上一页
+            </a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+            <a class="page-link" href="#">
+                上一页
+            </a>
+        </li>
+        {% endif %}
+        <li class="page-item active">
+            <a class="page-link" href="#">
+                {{ logs.number }}/{{ logs.paginator.num_pages }}
+            </a>
+        </li>
+        {% if logs.has_next %}
+        <li class="page-item">
+            <a class="page-link" href="?page={{ logs.next_page_number }}">
+                下一页
+            </a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+            <a class="page-link" href="#">
+                下一页
+            </a>
+        </li>
+        {% endif %}
+        <li class="page-item">
+            <a class="page-link" href="?page={{ logs.paginator.num_pages }}">
+                尾页
+            </a>
+        </li>
+    </ul>
+</nav>
+{% endif %}
 {% endblock %}
 {% block script %}
 <script src="{% static '/js/tableExport.min.js' %}"></script>

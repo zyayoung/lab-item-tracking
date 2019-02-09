@@ -3,7 +3,18 @@
 {% block title %}用户信息{% endblock %}
 {% block css %}{% endblock %}
 {% block content %}
-<p class="lead">个人信息：</p>
+<p class="lead">个人信息：
+    {% if tmp_user.is_superadmin %}
+    <span class="pull-right">
+        <a class="btn btn-outline-primary" role="button" href="{% url 'admin:login_user_change' user.id %}">
+            <i class="fa fa-edit" aria-hidden="true"></i> 编辑
+        </a>
+        <a class="btn btn-outline-primary" href="{% url 'log:user_log' user.id %}">
+            <i class="fa fa-file-text" aria-hidden="true"></i> 日志
+        </a>
+        {% endif %}
+    </span>
+</p>
 <table class="table table-striped row mx-0">
     <tbody class="w-100">
         <tr class="row mx-0">
@@ -50,11 +61,5 @@
         </tr>
     </tbody>
 </table>
-{% if tmp_user.is_superadmin %}
-<a class="btn btn-outline-primary" role="button" href="{% url 'admin:login_user_change' user.id %}">
-    <i class="fa fa-edit" aria-hidden="true"></i> 编辑
-</a>
-<a class="btn btn-outline-primary" href="{% url 'log:user_log' user.id %}">日志</a>
-{% endif %}
 {% endblock %}
 {% block script %}{% endblock %}

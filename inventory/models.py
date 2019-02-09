@@ -77,7 +77,7 @@ class ItemTemplate(models.Model):
         return "物品属性" if self.is_property else "物品"
 
     def allowed_users_str(self):
-        return '|'.join([user.__str__() for user in self.allowed_users.all()])
+        return '|'.join([user.name for user in self.allowed_users.all()])
     class Meta:
         ordering = ['-create_time']
         verbose_name = "物品模板"
@@ -123,7 +123,7 @@ class Item(models.Model):
         return self.name
 
     def allowed_users_str(self):
-        return '|'.join([user.__str__() for user in self.allowed_users.all()])
+        return '|'.join([user.name for user in self.allowed_users.all()])
 
     def del_permission(self, tmp_user):
         return self.owner == tmp_user or \
