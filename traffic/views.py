@@ -7,7 +7,6 @@ import numpy as np
 from .utils import *
 from traffic.models import *
 from inventory.models import LocationPermissionApplication, Location, Item
-from trace_item.models import ItemLog
 from login.models import User
 from django.views.decorators.cache import cache_page
 

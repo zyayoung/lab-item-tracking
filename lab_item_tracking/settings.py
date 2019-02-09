@@ -48,7 +48,6 @@ INSTALLED_APPS = [
     'inventory',
     'captcha',
     'login',
-    'trace_item',
     'personal',
     'silk',
     'traffic',

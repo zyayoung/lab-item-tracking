@@ -18,7 +18,7 @@ def show_urls(url_list, depth=0):
                 ret.update({str(entry.name): str(entry.pattern)})
         if hasattr(entry, 'url_patterns'):
             if entry.app_name in [
-                    'inventory', 'login', 'trace_item', 'personal', 'traffic'
+                    'inventory', 'login', 'log', 'personal', 'traffic'
             ]:
                 ret.update(show_urls(entry.url_patterns, depth + 1))
     return ret

@@ -54,7 +54,6 @@
 <a class="btn btn-outline-primary" role="button" href="{% url 'admin:login_user_change' user.id %}">
     <i class="fa fa-edit" aria-hidden="true"></i> 编辑
 </a>
-<a class="btn btn-outline-primary" href="{% url 'trace_item:traceUser' user.id %}">追踪</a>
 <a class="btn btn-outline-primary" href="{% url 'log:user_log' user.id %}">日志</a>
 {% endif %}
 {% endblock %}

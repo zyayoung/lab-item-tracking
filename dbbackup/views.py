@@ -41,9 +41,9 @@ def inventory(request):
 
 
 @check_admin
-def trace(request):
+def log(request):
     def file_iterator(file_name, chunk_size=512):
-        with subprocess.Popen(['python', 'manage.py', 'dumpdata', 'trace_item'], stdout=subprocess.PIPE) as f:
+        with subprocess.Popen(['python', 'manage.py', 'dumpdata', 'log'], stdout=subprocess.PIPE) as f:
             while True:
                 c = f.stdout.read(chunk_size)
                 if c:
@@ -51,7 +51,7 @@ def trace(request):
                 else:
                     break
 
-    the_file_name = "trace_item.json"
+    the_file_name = "log.json"
     response = StreamingHttpResponse(file_iterator(the_file_name))
     response['Content-Type'] = 'application/octet-stream'
     response['Content-Disposition'] = 'attachment;filename="{0}"'.format(the_file_name)

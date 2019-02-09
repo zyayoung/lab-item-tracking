@@ -2,7 +2,6 @@ from django.shortcuts import get_object_or_404, resolve_url
 from django.http import Http404
 from inventory.models import Item, Location, ItemTemplate
 from login.models import User as myUser
-from trace_item.models import ItemLog
 from log.utils import *
 
 
@@ -58,12 +57,6 @@ def get_my_template_queryset(user_now, all_obj):
 
 def set_location(item, location, user):
     if location != item.location:
-        log = ItemLog.objects.create(
-            item=item,
-            operator=user,
-            location_from=item.location,
-            location_to=location,
-        )
         old_loc = item.location.__str__()
         item.location = location
         item.save()
@@ -154,12 +147,6 @@ def get_export_values(template,
 
 
 def set_extradata(item, template, extra_data, user):
-    log = ItemLog.objects.create(
-        item=item,
-        operator=user,
-        extra_data_to=extra_data,
-    )
-    log.save()
     if item.template != template:
         add_log(user, item.id, '物品', '模板', item.template.__str__(),
                 template.__str__())

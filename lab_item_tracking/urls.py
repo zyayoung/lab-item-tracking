@@ -36,7 +36,6 @@ urlpatterns = [
     url(r'^captcha/', include('captcha.urls')),
     url(r'^', include('inventory.urls')),
     url(r'^', include('login.urls')),
-    url(r'^', include('trace_item.urls')),
     url(r'^', include('log.urls')),
     url(r'^', include('personal.urls')),
     url(r'^', include('traffic.urls')),
