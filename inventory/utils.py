@@ -147,6 +147,10 @@ def set_extradata(item, template, extra_data, user):
                 data_name = data['name']
                 if item.extra_data[data['name']] and \
                     data['type'] not in ['bool', 'int', 'float', 'text', 'date']:
+                    try:
+                        int(item.extra_data[data_name])
+                    except ValueError:
+                        continue
                     if int(item.extra_data[data_name]) != 0:
                         try:
                             ext_item = get_object_or_404(
@@ -227,6 +231,10 @@ def rebuild_related():
                 data_name = data['name']
                 if extra_data[data['name']] and \
                     data['type'] not in ['bool', 'int', 'float', 'text', 'date']:
+                    try:
+                        int(item.extra_data[data_name])
+                    except ValueError:
+                        continue
                     if int(extra_data[data_name]) != 0:
                         ext_item = get_object_or_404(
                             Item, id=item.extra_data[data_name])

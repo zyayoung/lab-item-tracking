@@ -415,6 +415,7 @@ class AddTemplateView(generic.View):
         return render(request, 'inventory/template_add.html', locals())
 
     def post(self, request):
+        tmp_user = myUser.objects.get(id=request.session.get('user_id'))
         add_form = forms.AddTemplateForm(request.POST)
         message = "请检查填写的内容！"
         if add_form.is_valid():
@@ -426,7 +427,7 @@ class AddTemplateView(generic.View):
             new_template.save()
             message = "新建成功！"
             category = "物品属性" if request.GET.get('property') else "物品"
-            add_log(self.tmp_user, new_template.id, category, '名称', '', name)
+            add_log(tmp_user, new_template.id, category, '名称', '', name)
             return redirect('inventory:template_edit', new_template.id)
         else:
             return render(request, 'inventory/template_add.html', locals())
