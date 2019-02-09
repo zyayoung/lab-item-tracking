@@ -303,7 +303,6 @@ class EditItemView(generic.View):
         tmp_user = myUser.objects.get(id=request.session.get('user_id'))
         item = get_my_item(tmp_user, kwargs.get('item_id'))
         is_property = item.template.is_property
-        name = "属性" if is_property else "物品"
         action = "编辑"
         if not item.del_permission(tmp_user):
             messages.error(request,
@@ -312,8 +311,10 @@ class EditItemView(generic.View):
         message = "请检查填写的内容！"
         add_form = forms.AddItemForm(request.POST)
         if add_form.is_valid():
-            item.name = add_form.cleaned_data['name']
-            item.is_public = add_form.cleaned_data['public']
+            name_old = item.name
+            name_new = add_form.cleaned_data['name']
+            is_public_old = item.is_public
+            is_public_new = add_form.cleaned_data['public']
         else:
             return render(request, 'inventory/edit.html', locals())
         template_queryset = get_my_template_queryset(
@@ -337,24 +338,34 @@ class EditItemView(generic.View):
                     elif dictionary['type'] == 'date':
                         data[dictionary['name']] = data[
                             dictionary['name']].strftime("%Y-%m-%d")
-            set_extradata(item, template, data, tmp_user)
         else:
             return render(request, 'inventory/edit.html', locals())
         if 'save_as_new' in request.POST:
             new_item = Item.objects.create(
-                name=item.name,
+                name=name_new,
                 location=None,
                 owner=tmp_user,
-                is_public=item.is_public,
+                is_public=is_public_new,
             )
-            add_log(tmp_user, new_item.id, '物品', '名称', '未创建', item.name)
-            add_log(tmp_user, new_item.id, '物品', '公开', '否', '是' if item.is_public else '否')
+            add_log(tmp_user, new_item.id, '物品', '名称', '未创建', name_new)
+            add_log(tmp_user, new_item.id, '物品', '公开', '否',
+                    '是' if is_public_new else '否')
             for user in item.allowed_users.all():
                 new_item.allowed_users.add(user)
-            add_log(tmp_user, new_item.id, '物品', '白名单', '', new_item.allowed_users_str())
+            add_log(tmp_user, new_item.id, '物品', '白名单', '',
+                    new_item.allowed_users_str())
             set_extradata(new_item, template, item.extra_data, tmp_user)
             new_item.save()
         else:
+            if name_old != name_new:
+                add_log(tmp_user, new_item.id, '物品', '名称', name_old, name_new)
+            if is_public_old != is_public_new:
+                add_log(tmp_user, new_item.id, '物品', '公开',
+                        '是' if is_public_old else '否',
+                        '是' if is_public_new else '否')
+            item.name = add_form.cleaned_data['name']
+            item.is_public = add_form.cleaned_data['public']
+            set_extradata(item, template, data, tmp_user)
             item.save()
             message = "修改成功！"
         return redirect('inventory:item', item.id)
@@ -454,6 +465,7 @@ class EditTemplateView(generic.View):
         return render(request, 'inventory/template_edit.html', locals())
 
     def post(self, request, *args, **kwargs):
+        tmp_user = myUser.objects.get(id=request.session.get('user_id'))
         choices = ['text', 'bool', 'int', 'float', 'date']
         choices.extend([
             name[0] for name in ItemTemplate.objects.all().values_list('name')
@@ -462,11 +474,25 @@ class EditTemplateView(generic.View):
         template = get_object_or_404(ItemTemplate, id=kwargs.get('id'))
         my_list = []
         idx_list = []
-        template.key_name = request.POST.get('key_name', '名称')
-        template.key_name_placeholder = request.POST.get('key_name_placeholder', '用于显示的名称')
+        key_name_new = request.POST.get('key_name', '名称')
+        if template.key_name != key_name_new:
+            add_log(tmp_user, template.id, '模板', '名称', template.key_name,
+                    key_name_new)
+        template.key_name = key_name_new
+        key_name_placeholder_new = request.POST.get('key_name_placeholder',
+                                                    '用于显示的名称')
+        if template.key_name_placeholder != key_name_placeholder_new:
+            add_log(tmp_user, template.id, '模板', '用于显示的名称',
+                    template.key_name_placeholder, key_name_placeholder_new)
+        template.key_name_placeholder = key_name_placeholder_new
+        allowed_users_old = template.allowed_users_str()
         template.allowed_users.clear()
         for user_id in request.POST.getlist('share'):
             template.allowed_users.add(myUser.objects.get(id=user_id))
+        allowed_users_new = template.allowed_users_str()
+        if allowed_users_old != allowed_users_new:
+            add_log(tmp_user, template.id, '模板', '白名单', allowed_users_old,
+                    allowed_users_new)
         for key in request.POST.keys():
             index = re.findall(r"^name_(\d+)$", key)
             if index:
@@ -489,8 +515,13 @@ class EditTemplateView(generic.View):
                 'placeholder':
                 request.POST.get('placeholder_{}'.format(index), '')
             })
+        extra_data_old = template.extra_data
         template.extra_data = my_list
         template.save()
+        extra_data_new = template.extra_data
+        if extra_data_old != extra_data_new:
+            add_log(tmp_user, template.id, '模板', '扩展数据', extra_data_old,
+                    extra_data_new)
         message = "保存成功"
         return redirect('inventory:template', kwargs.get('id'))
 
@@ -510,6 +541,10 @@ def alt_template(request, template_id):
         raise Http404()
     template = get_object_or_404(ItemTemplate, id=template_id)
     template.is_property = not template.is_property
+    if template.is_property:
+        add_log(tmp_user, template.id, '模板', '不可存入', '否', '是')
+    else:
+        add_log(tmp_user, template.id, '模板', '不可存入', '是', '否')
     template.save()
     return redirect('inventory:template', template_id)
 
@@ -637,10 +672,14 @@ def unlink_item(request, item_id):
     user_id = request.session.get('user_id')
     tmp_user = myUser.objects.get(id=user_id)
     item = get_my_item(tmp_user, item_id)
+    allowed_users_old = item.allowed_users_str()
     if item.unlink_permission(tmp_user):
         messages.error(request, "您不能取消关联该物品！")
         return render(request, 'inventory/info.html', locals())
     item.allowed_users.remove(tmp_user)
+    allowed_users_new = item.allowed_users_str()
+    add_log(tmp_user, item.id, '物品', '白名单', allowed_users_old,
+            allowed_users_new)
     item.save()
     return redirect('inventory:items')
 
