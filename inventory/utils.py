@@ -104,6 +104,8 @@ def get_export_values(template,
                                              int_data) if int_data else None
                 except Http404:
                     inner_item = None
+                except ValueError:
+                    inner_item = None
                 for value in get_export_values(inner_template, inner_item,
                                                visited,
                                                inner_template not in visited):

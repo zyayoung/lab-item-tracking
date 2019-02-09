@@ -207,6 +207,11 @@ class ItemView(generic.View):
                                     'data': '无权限或已删除',
                                     'type': 'warning',
                                 }))
+                            except ValueError:
+                                extra_info.append((data_name, {
+                                    'data': '数据未更新',
+                                    'type': 'warning',
+                                }))
                         else:
                             extra_info.append((data_name, {
                                 'data':
