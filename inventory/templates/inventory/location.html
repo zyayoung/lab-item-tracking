@@ -68,10 +68,10 @@
                 {% endfor %}
                 {% for sublocation in unallow_locs %}
                 <tr class="row mx-0">
-                    <td class="col-3">
+                    <td class="col-6">
                         {{ sublocation.path }}
                     </td>
-                    <td class="col-9">
+                    <td class="col-6">
                         <a href="{% url 'inventory:applyloc' sublocation.id %}" style="color: #6c757d;">
                             <i class="fa fa-file-o" aria-hidden="true"></i> 申请权限
                         </a>
