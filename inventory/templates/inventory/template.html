@@ -6,17 +6,17 @@
 <div class="alert alert-warning">{{ message }}</div>
 {% endif %}
 <p class="lead">物品{% if template.is_property %}属性{% endif %}模板详情：{{ template }}</p>
+{% if tmp_user.is_superadmin %}
 <span class="lead pull-left">可使用该模板用户：</span>
 {% if template.allowed_users.exists %}
-{% if tmp_user.is_superadmin %}
 <div id="userArea">
     {% for user in template.allowed_users.all %}
     {{ user.name }}
     {% endfor %}
 </div>
-{% endif %}
 {% else %}
 <span class="lead">全部</span>
+{% endif %}
 {% endif %}
 <p></p>
 <table class="table table-striped">
@@ -90,11 +90,11 @@
     </thead>
     <tbody>
         {% for obj in full_info %}
-            <tr>
+        <tr>
             {% for value in obj %}
-                <td>{% if value.href %}<a href="{{ value.href }}">{{ value.name }}</a>{% else %}{{ value.name }}{% endif %}</td>
+            <td>{% if value.href %}<a href="{{ value.href }}">{{ value.name }}</a>{% else %}{{ value.name }}{% endif %}</td>
             {% endfor %}
-            </tr>
+        </tr>
         {% endfor %}
     </tbody>
 </table>
