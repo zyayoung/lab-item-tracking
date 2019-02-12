@@ -66,10 +66,9 @@ class Log(models.Model):
 
     def get_html(self, name):
         html = name
-        id = re.search(r'^id__(\d+)$', name)
-        if id and id[1] != 0:
+        if re.match(r'^id__(\d+)$', name):
             try:
-                id = id[1]
+                id = int(name[4:])
                 item = Item.objects.get(id=id)
                 html = '<a href="' + resolve_url('inventory:item', item.id) + '">' + escape(item.name) + '</a>'
             except KeyError as e:
