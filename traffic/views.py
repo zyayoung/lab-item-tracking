@@ -8,6 +8,7 @@ from .utils import *
 from traffic.models import *
 from inventory.models import LocationPermissionApplication, Location, Item
 from login.models import User
+from log.models import Log
 from django.views.decorators.cache import cache_page
 
 
@@ -20,8 +21,8 @@ def page_view(requset):
     maxt = {}
     totalTime = {}
     totalTimes = {}
-    traffic = Traffic.objects.filter(id__gt=Traffic.objects.count() -
-                                        int(requset.GET.get('count', 2500)))
+    traffic = Traffic.objects.filter(
+        id__gt=Traffic.objects.count() - int(requset.GET.get('count', 2500)))
     for name in urlpatterns.keys():
         r = wash_regex(urlpatterns[name].replace('^', '^/'))
         objects = traffic.filter(url__regex=r)
@@ -71,13 +72,12 @@ def calender_view(request):
                     datetime__range=(start, end)).count(),
                 locreq_cnt=LocationPermissionApplication.objects.filter(
                     time__range=(start, end)).count(),
-                itemlog_cnt=ItemLog.objects.filter(
-                    time__range=(start, end)).count(),
+                itemlog_cnt=Log.objects.filter(time__range=(start,
+                                                            end)).count(),
                 need_update=start.strftime("%Y-%m-%d") == datetime.date.
                 today().strftime("%Y-%m-%d"))
             new_cache.save()
-        cache = CalenderCache.objects.get(
-            date_str=start.strftime("%Y-%m-%d"))
+        cache = CalenderCache.objects.get(date_str=start.strftime("%Y-%m-%d"))
         traffic_data.append([
             start.strftime("%Y-%m-%d"),
             cache.traffic_cnt,
@@ -115,17 +115,17 @@ def users_view(request):
         'Other',
         'value':
         Traffic.objects.filter(datetime__range=(start, end),
-                                user=None).count(),
+                               user=None).count(),
     }]
     series_hour_data = []
     for hour in range(25):
-        d = datetime.datetime(start.year, start.month, start.day) + datetime.timedelta(hours=hour)
+        d = datetime.datetime(start.year, start.month,
+                              start.day) + datetime.timedelta(hours=hour)
         series_hour_data.append(
             Traffic.objects.filter(
-                datetime__range=(d, d+datetime.timedelta(hours=1)),
+                datetime__range=(d, d + datetime.timedelta(hours=1)),
                 user=None,
-            ).count()
-        )
+            ).count())
     series_hour = [{
         'name': 'Other',
         'type': 'line',
@@ -142,13 +142,14 @@ def users_view(request):
             user_data.append({'name': user.name, 'value': count})
             series_hour_data = []
             for hour in range(24):
-                d = datetime.datetime(start.year, start.month, start.day) + datetime.timedelta(hours=hour)
+                d = datetime.datetime(
+                    start.year, start.month,
+                    start.day) + datetime.timedelta(hours=hour)
                 series_hour_data.append(
                     Traffic.objects.filter(
-                        datetime__range=(d, d+datetime.timedelta(hours=1)),
+                        datetime__range=(d, d + datetime.timedelta(hours=1)),
                         user=user,
-                    ).count()
-                )
+                    ).count())
             legend.append(user.name)
             series_hour.append({
                 'name': user.name,
@@ -176,6 +177,7 @@ def users_view(request):
                 })
     return render(request, 'traffic/users.html', locals())
 
+
 @check_admin
 @cache_page(60 * 15)
 def locations_view(request):
@@ -183,8 +185,10 @@ def locations_view(request):
     end = start + datetime.timedelta(days=1)
     loc_data = []
     for idx, loc in enumerate(Location.objects.all()):
-        # count = ItemLog.objects.filter(time__range=(start, end), location_from=loc).count() + \
-        count = ItemLog.objects.filter(time__range=(start, end), location_to=loc).count()
+        count = Log.objects.filter(
+            time__range=(start, end), category='位置', before=loc.id).count()
+        count += Log.objects.filter(
+            time__range=(start, end), category='位置', after=loc.id).count()
         if count:
             loc_data.append({
                 'name': loc.__str__(),
