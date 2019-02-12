@@ -738,6 +738,8 @@ class Apply4Loc(generic.View):
                         closed=False,
                 ).exists():
                     message = "请勿重复提交"
+                    return render(request, 'inventory/location_apply.html',
+                                  locals())
                 else:
                     new_form = LocationPermissionApplication.objects.create(
                         applicant=tmp_user,
@@ -746,8 +748,7 @@ class Apply4Loc(generic.View):
                     )
                     new_form.save()
                     message = "提交成功"
-                return render(request, 'inventory/location_apply.html',
-                              locals())
+                    return redirect('personal:mylocreq')
             else:
                 return self.get(request)
         return redirect('inventory:location', loc_id)
