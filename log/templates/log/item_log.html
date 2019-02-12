@@ -34,8 +34,8 @@
         {% for log in logs %}
         <tr>
             <td>{{ log.attribute }}</td>
-            <td>{{ log.before }}</td>
-            <td>{{ log.after }}</td>
+            <td>{{ log.get_before_html|safe }}</td>
+            <td>{{ log.get_after_html|safe }}</td>
             <td class="d-none d-md-table-cell">{{ log.time }}</td>
             <td class="d-none d-sm-table-cell">
                 <a href="{% url 'personal:user' log.operator.id %}">
