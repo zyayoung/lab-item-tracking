@@ -234,9 +234,9 @@ def set_extradata(item, template, extra_data, user):
             after = ''
             if key in new_item_keys:
                 after = extra_data_new[key]
-                if True in [t['name'] == key and t['type'] not in ['bool', 'int', 'float', 'text', 'date'] for t in template_new.extra_data]:
+                if after and True in [t['name'] == key and t['type'] not in ['bool', 'int', 'float', 'text', 'date'] for t in template_new.extra_data]:
                     after = 'id__' + after
-            if True in [t['name'] == key and t['type'] not in ['bool', 'int', 'float', 'text', 'date'] for t in template_old.extra_data]:
+            if before and True in [t['name'] == key and t['type'] not in ['bool', 'int', 'float', 'text', 'date'] for t in template_old.extra_data]:
                 before = 'id__' + before
             if before != after:
                 add_log(user, item.id, '物品', key, before, after)
