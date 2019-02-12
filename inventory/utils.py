@@ -230,22 +230,27 @@ def set_extradata(item, template, extra_data, user):
         old_item_keys = list(extra_data_old.keys())
         new_item_keys = list(extra_data_new.keys())
         for key in old_item_keys:
-            before = str(extra_data_old[key])
+            before = extra_data_old[key]
+            before = before if before else ''
             after = ''
             if key in new_item_keys:
                 after = extra_data_new[key]
-                if after and True in [t['name'] == key and t['type'] not in ['bool', 'int', 'float', 'text', 'date'] for t in template_new.extra_data]:
-                    after = 'id__' + after
-            if before and True in [t['name'] == key and t['type'] not in ['bool', 'int', 'float', 'text', 'date'] for t in template_old.extra_data]:
-                before = 'id__' + before
+                after = after if after else ''
+                if True in [t['name'] == key and t['type'] not in ['bool', 'int', 'float', 'text', 'date'] for t in template_new.extra_data]:
+                    after = ('id__' + after) if after not in [0, '0', None, ''] else ''
+            if True in [t['name'] == key and t['type'] not in ['bool', 'int', 'float', 'text', 'date'] for t in template_old.extra_data]:
+                before = ('id__' + before) if before not in [0, '0', None, ''] else ''
             if before != after:
                 add_log(user, item.id, '物品', key, before, after)
         for key in new_item_keys:
             if key not in old_item_keys:
-                after = str(extra_data_new[key])
+                before = ''
+                after = extra_data_new[key]
+                after = after if after else ''
                 if True in [t['name'] == key and t['type'] not in ['bool', 'int', 'float', 'text', 'date'] for t in template_new.extra_data]:
-                    after = 'id__' + after
-                add_log(user, item.id, '物品', key, '', after)
+                    after = ('id__' + after) if after not in [0, '0', None, ''] else ''
+                if before != after:
+                    add_log(user, item.id, '物品', key, before, after)
 
 
 def rebuild_related():

@@ -138,12 +138,13 @@ class AddItemView(generic.View):
                 for dictionary in template.extra_data:
                     data[dictionary['name']] = edit_form.cleaned_data[
                         dictionary['name'].replace(' ', '_')]
-                    if dictionary['type'] == 'link':
-                        data[dictionary['name']] = int(
-                            data[dictionary['name']])
-                    elif dictionary['type'] == 'date':
-                        data[dictionary['name']] = data[
-                            dictionary['name']].strftime("%Y-%m-%d")
+                    if data[dictionary['name']]:
+                        if dictionary['type'] == 'link':
+                            data[dictionary['name']] = int(
+                                data[dictionary['name']])
+                        elif dictionary['type'] == 'date':
+                            data[dictionary['name']] = data[
+                                dictionary['name']].strftime("%Y-%m-%d")
             set_extradata(item, template, data, tmp_user)
         else:
             return render(request, 'inventory/edit.html', locals())
@@ -332,12 +333,13 @@ class EditItemView(generic.View):
                 for dictionary in template.extra_data:
                     data[dictionary['name']] = edit_form.cleaned_data[
                         dictionary['name'].replace(' ', '_')]
-                    if dictionary['type'] == 'link':
-                        data[dictionary['name']] = int(
-                            data[dictionary['name']])
-                    elif dictionary['type'] == 'date':
-                        data[dictionary['name']] = data[
-                            dictionary['name']].strftime("%Y-%m-%d")
+                    if data[dictionary['name']]:
+                        if dictionary['type'] == 'link':
+                            data[dictionary['name']] = int(
+                                data[dictionary['name']])
+                        elif dictionary['type'] == 'date':
+                            data[dictionary['name']] = data[
+                                dictionary['name']].strftime("%Y-%m-%d")
         else:
             return render(request, 'inventory/edit.html', locals())
         if 'save_as_new' in request.POST:
@@ -354,7 +356,7 @@ class EditItemView(generic.View):
                 new_item.allowed_users.add(user)
             add_log(tmp_user, new_item.id, '物品', '白名单', '',
                     new_item.allowed_users_str())
-            set_extradata(new_item, template, item.extra_data, tmp_user)
+            set_extradata(new_item, template, data, tmp_user)
             new_item.save()
         else:
             if name_old != name_new:
