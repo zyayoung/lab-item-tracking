@@ -358,9 +358,9 @@ class EditItemView(generic.View):
             new_item.save()
         else:
             if name_old != name_new:
-                add_log(tmp_user, new_item.id, '物品', '名称', name_old, name_new)
+                add_log(tmp_user, item.id, '物品', '名称', name_old, name_new)
             if is_public_old != is_public_new:
-                add_log(tmp_user, new_item.id, '物品', '公开',
+                add_log(tmp_user, item.id, '物品', '公开',
                         '是' if is_public_old else '否',
                         '是' if is_public_new else '否')
             item.name = add_form.cleaned_data['name']
