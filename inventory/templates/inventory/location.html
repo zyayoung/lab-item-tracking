@@ -90,10 +90,6 @@
                 <a class="btn btn-outline-primary" role="button" href="{% url 'inventory:additem2loc' location_id %}">
                     <i class="fa fa-archive" aria-hidden="true"></i> 存入
                 </a>
-                {% if loc_now_str != 'root' %}
-                    <i class="fa fa-search" aria-hidden="true"></i> 追踪
-                </a>
-                {% endif %}
                 {% else %}
                 <a class="btn btn-outline-primary" href="#" role="button" onClick="cfm()">
                     将{{ pending }}存入此位置
