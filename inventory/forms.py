@@ -104,7 +104,7 @@ class EditItemForm(forms.Form):
                         label=tmp_label,
                         required=tmp_required,
                         widget=forms.TextInput(
-                            attrs={'class': 'form_datetime form-control'}),
+                            attrs={'class': 'form_datetime form-control','autocomplete': 'off'}),
                     )
                 else:
                     objects = Item.objects.filter(template__name=tmp_type)
