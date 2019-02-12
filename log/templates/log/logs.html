@@ -22,46 +22,50 @@
     </div>
 </div>
 <p></p>
-<table class="table table-striped table-sm">
-    <thead>
-        <th>对象</th>
-        <th>调整</th>
-        <th>从</th>
-        <th>至</th>
-        <th class="d-none d-md-table-cell">时间</th>
-        <th class="d-none d-md-table-cell">操作人</th>
-    </thead>
-    <tbody>
-        {% for log in logs %}
-        <tr>
-            <td>
-                <a href="
-                    {% if log.category == '物品' or log.category == '物品属性' %}
-                    {% url 'inventory:item' log.obj_id %}
-                    {% elif log.category == '模板' %}
-                    {% url 'inventory:template' log.obj_id %}
-                    {% elif log.category == '位置' %}
-                    {% url 'inventory:location' log.obj_id %}
-                    {% elif log.category == '用户' %}
-                    {% url 'personal:user' log.obj_id %}
-                    {% endif %}
-                ">
-                    {{ log.category }}:{{ log.obj_id }}
-                </a>
-            </td>
-            <td>{{ log.attribute }}</td>
-            <td>{{ log.before }}</td>
-            <td>{{ log.after }}</td>
-            <td class="d-none d-md-table-cell">{{ log.time }}</td>
-            <td class="d-none d-sm-table-cell">
-                <a href="{% url 'personal:user' log.operator.id %}">
-                    {{ log.operator }}
-                </a>
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+<div class="table-responsive">
+    <nobr>
+        <table class="table table-striped table-sm">
+            <thead>
+                <th>对象</th>
+                <th>调整</th>
+                <th>从</th>
+                <th>至</th>
+                <th class="d-none d-md-table-cell">时间</th>
+                <th class="d-none d-md-table-cell">操作人</th>
+            </thead>
+            <tbody>
+                {% for log in logs %}
+                <tr>
+                    <td>
+                        <a href="
+                        {% if log.category == '物品' or log.category == '物品属性' %}
+                        {% url 'inventory:item' log.obj_id %}
+                        {% elif log.category == '模板' %}
+                        {% url 'inventory:template' log.obj_id %}
+                        {% elif log.category == '位置' %}
+                        {% url 'inventory:location' log.obj_id %}
+                        {% elif log.category == '用户' %}
+                        {% url 'personal:user' log.obj_id %}
+                        {% endif %}
+                    ">
+                            {{ log.category }}:{{ log.obj_id }}
+                        </a>
+                    </td>
+                    <td>{{ log.attribute }}</td>
+                    <td>{{ log.before }}</td>
+                    <td>{{ log.after }}</td>
+                    <td class="d-none d-md-table-cell">{{ log.time }}</td>
+                    <td class="d-none d-sm-table-cell">
+                        <a href="{% url 'personal:user' log.operator.id %}">
+                            {{ log.operator }}
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </nobr>
+</div>
 {% if paginator %}
 <nav aria-label="page navigation">
     <ul class="pagination justify-content-center">
