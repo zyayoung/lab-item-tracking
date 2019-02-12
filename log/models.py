@@ -3,6 +3,7 @@ from login.models import User as myUser
 from django.utils.html import escape
 from inventory.models import *
 import re
+from django.utils.translation import gettext_lazy as _
 
 from django.shortcuts import resolve_url
 

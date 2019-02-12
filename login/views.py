@@ -93,7 +93,7 @@ def register(request):
             new_user.password = hash_code(password1)
             new_user.email = email
             new_user.save()
-            add_log(new_user, new_user.id, '用户', '用户名', '未创建', username)
+            add_log(new_user, new_user.id, '用户', '用户名', '', username)
             if settings.EMAIL_ENABLE:
                 # Send confirm email
                 code = get_confirm_string(new_user)
@@ -174,7 +174,7 @@ def user_confirm(request):
     else:
         confirm.user.has_confirmed = True
         confirm.user.save()
-        add_log(confirm.user, confirm.user.id, '用户', '邮件确认', '否', '是')
+        add_log(confirm.user, confirm.user.id, '用户', '邮件确认', 'False', 'True')
         confirm.delete()
         message = '感谢确认，请使用账户登录！'
     return render(request, 'login/confirm.html', locals())

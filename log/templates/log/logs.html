@@ -38,13 +38,13 @@
             <tbody>
                 {% for log in logs %}
                 <tr>
-                    <td>{{ log.category }}</td>
+                    <td>{% trans log.category %}</td>
                     <td>
                         <a href="{{ log.obj_url }}">
                             {{ log.obj }}
                         </a>
                     </td>
-                    <td>{{ log.attribute }}</td>
+                    <td>{% trans log.attribute %}</td>
                     <td>{{ log.get_before_html|safe }}</td>
                     <td>{{ log.get_after_html|safe }}</td>
                     <td class="d-none d-md-table-cell">{{ log.time }}</td>

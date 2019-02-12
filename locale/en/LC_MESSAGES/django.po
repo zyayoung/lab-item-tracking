@@ -43,7 +43,7 @@ msgstr "Public"
 #: .\inventory\templates\inventory\templates.html:32
 #: .\log\templates\log\logs.html:30 .\log\templates\log\user_log.html:28
 msgid "类型"
-msgstr "type"
+msgstr "Type"
 
 #: .\inventory\forms.py:195
 msgid "备注"
@@ -98,7 +98,7 @@ msgstr "No Available Item"
 #: .\personal\templates\personal\locreq.html:83
 #: .\personal\templates\personal\mylocreq.html:80
 msgid "首页"
-msgstr "Front Page"
+msgstr "Front"
 
 #: .\inventory\templates\inventory\additem2loc.html:44
 #: .\inventory\templates\inventory\additem2loc.html:50
@@ -134,7 +134,7 @@ msgstr "Last"
 #: .\personal\templates\personal\mylocreq.html:104
 #: .\personal\templates\personal\mylocreq.html:110
 msgid "下一页"
-msgstr "one page"
+msgstr "Next"
 
 #: .\inventory\templates\inventory\additem2loc.html:74
 #: .\inventory\templates\inventory\items.html:102
@@ -145,7 +145,7 @@ msgstr "one page"
 #: .\personal\templates\personal\locreq.html:119
 #: .\personal\templates\personal\mylocreq.html:116
 msgid "尾页"
-msgstr "page"
+msgstr "End"
 
 #: .\inventory\templates\inventory\additem2loc.html:84
 #: .\inventory\templates\inventory\index.html:142

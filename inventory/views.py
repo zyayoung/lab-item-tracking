@@ -120,8 +120,8 @@ class AddItemView(generic.View):
                 is_public=public,
                 template=None,
             )
-            add_log(tmp_user, item.id, '物品', '名称', '未创建', name)
-            add_log(tmp_user, item.id, '物品', '公开', '否', '是' if public else '否')
+            add_log(tmp_user, item.id, '物品', '名称', '', name)
+            add_log(tmp_user, item.id, '物品', '公开', 'False', 'True' if public else 'False')
             item.allowed_users.add(tmp_user)
             add_log(tmp_user, item.id, '物品', '白名单', '', tmp_user.name)
         else:
@@ -354,9 +354,9 @@ class EditItemView(generic.View):
                 owner=tmp_user,
                 is_public=is_public_new,
             )
-            add_log(tmp_user, new_item.id, '物品', '名称', '未创建', name_new)
-            add_log(tmp_user, new_item.id, '物品', '公开', '否',
-                    '是' if is_public_new else '否')
+            add_log(tmp_user, new_item.id, '物品', '名称', '', name_new)
+            add_log(tmp_user, new_item.id, '物品', '公开', 'False',
+                    'True' if is_public_new else 'False')
             for user in item.allowed_users.all():
                 new_item.allowed_users.add(user)
             add_log(tmp_user, new_item.id, '物品', '白名单', '',
@@ -369,8 +369,8 @@ class EditItemView(generic.View):
                 add_log(tmp_user, item.id, '物品', '名称', name_old, name_new)
             if is_public_old != is_public_new:
                 add_log(tmp_user, item.id, '物品', '公开',
-                        '是' if is_public_old else '否',
-                        '是' if is_public_new else '否')
+                        'True' if is_public_old else 'False',
+                        'True' if is_public_new else 'False')
             item.name = add_form.cleaned_data['name']
             item.is_public = add_form.cleaned_data['public']
             set_extradata(item, template, data, tmp_user)
@@ -450,8 +450,8 @@ class AddTemplateView(generic.View):
             )
             new_template.save()
             message = "新建成功！"
-            category = _("物品属性") if request.GET.get('property') else _("物品")
-            add_log(tmp_user, new_template.id, category, '名称', '未创建', name)
+            category = "物品属性" if request.GET.get('property') else "物品"
+            add_log(tmp_user, new_template.id, category, '名称', '', name)
             return redirect('inventory:template_edit', new_template.id)
         else:
             return render(request, 'inventory/template_add.html', locals())
@@ -552,9 +552,9 @@ def alt_template(request, template_id):
     template = get_object_or_404(ItemTemplate, id=template_id)
     template.is_property = not template.is_property
     if template.is_property:
-        add_log(tmp_user, template.id, '模板', '不可存入', '否', '是')
+        add_log(tmp_user, template.id, '模板', '不可存入', 'False', 'True')
     else:
-        add_log(tmp_user, template.id, '模板', '不可存入', '是', '否')
+        add_log(tmp_user, template.id, '模板', '不可存入', 'True', 'False')
     template.save()
     return redirect('inventory:template', template_id)
 
@@ -635,10 +635,10 @@ class LocationView(generic.View):
                 is_public=public,
             )
             new_location.save()
-            add_log(tmp_user, new_location.id, '位置', '名称', '未创建',
+            add_log(tmp_user, new_location.id, '位置', '名称', '',
                     new_location.__str__())
-            add_log(tmp_user, new_location.id, '位置', '公开', '否',
-                    '是' if public else '否')
+            add_log(tmp_user, new_location.id, '位置', '公开', 'False',
+                    'True' if public else 'False')
             self.message = "新建成功！"
             return self.get(request, *args, **kwargs)
 
