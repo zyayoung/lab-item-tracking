@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-02-12 23:27+0800\n"
+"POT-Creation-Date: 2019-02-13 00:04+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -53,7 +53,7 @@ msgstr ""
 #: .\inventory\templates\inventory\add.html:14
 #: .\inventory\templates\inventory\items.html:21
 #: .\inventory\templates\inventory\location.html:21
-#: .\inventory\templates\inventory\select_with_add.html:6
+#: .\inventory\templates\inventory\select_with_add.html:7
 #: .\inventory\templates\inventory\templates.html:18
 msgid "新建"
 msgstr ""
@@ -230,7 +230,7 @@ msgstr ""
 #: .\inventory\templates\inventory\template_export.html:4
 #: .\inventory\templates\inventory\template_export.html:9
 #: .\inventory\views.py:40 .\inventory\views.py:97 .\inventory\views.py:110
-#: .\inventory\views.py:293 .\inventory\views.py:453 .\templates\base.html:55
+#: .\inventory\views.py:293 .\templates\base.html:55
 msgid "物品"
 msgstr ""
 
@@ -246,7 +246,7 @@ msgid "新建物品"
 msgstr ""
 
 #: .\inventory\templates\inventory\index.html:34 .\inventory\views.py:40
-#: .\inventory\views.py:97 .\inventory\views.py:110 .\inventory\views.py:453
+#: .\inventory\views.py:97 .\inventory\views.py:110
 msgid "物品属性"
 msgstr ""
 
