@@ -3,17 +3,18 @@ from .models import Item, ItemTemplate
 from .utils import get_my_list, get_my_template_queryset
 from django.template.loader import render_to_string
 import re
+from django.utils.translation import gettext_lazy as _
 
 
 class AddItemForm(forms.Form):
     name = forms.CharField(
-        label="名称",
+        label=_("名称"),
         max_length=128,
         required=False,
         widget=forms.TextInput(attrs={'class': 'form-control'}),
     )
     public = forms.BooleanField(
-        label="公开",
+        label=_("公开"),
         required=False,
         widget=forms.CheckboxInput(attrs={'class': 'form-check-input'}),
         initial=True,
@@ -130,7 +131,7 @@ class EditItemForm(forms.Form):
 
 class AddTemplateForm(forms.Form):
     name = forms.CharField(
-        label="名称",
+        label=_("名称"),
         max_length=64,
         widget=forms.TextInput(attrs={'class': 'form-control'}),
     )
@@ -158,7 +159,7 @@ class EditTemplateForm(forms.Form):
 
 class ChooseTemplateForm(forms.Form):
     template = forms.ChoiceField(
-        label="类型",
+        label=_("类型"),
         required=False,
         widget=forms.Select(attrs={'class': 'form-control'}),
     )
@@ -177,12 +178,12 @@ class ChooseTemplateForm(forms.Form):
 
 class AddLocationForm(forms.Form):
     name = forms.CharField(
-        label="名称",
+        label=_("名称"),
         max_length=128,
         widget=forms.TextInput(attrs={'class': 'form-control'}),
     )
     public = forms.BooleanField(
-        label="公开",
+        label=_("公开"),
         required=False,
         widget=forms.CheckboxInput(attrs={'class': 'form-check-input'}),
         initial=True,
@@ -191,7 +192,7 @@ class AddLocationForm(forms.Form):
 
 class ApplyLocationForm(forms.Form):
     note = forms.CharField(
-        label="备注",
+        label=_("备注"),
         max_length=256,
         required=False,
         widget=forms.TextInput(attrs={'class': 'form-control'}),

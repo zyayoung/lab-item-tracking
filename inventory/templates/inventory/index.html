@@ -8,7 +8,7 @@
         {% if request.session.is_login %}
         {% trans "您好" %}，{{ request.session.user_name }}！
         {% else %}
-        {% trans "您尚未登录" %}，{% trans "只能访问公开内容" %}！
+        {% trans "您尚未登录" %}!
         {% endif %}
     </p>
     <div class="row text-center justify-content-md-center">
@@ -162,7 +162,7 @@
 {% if tmp_user.is_superadmin %}
 <script>
     function cfm() {
-        $('#modalNotice').html('{% trans "您确认要备份数据库吗" %}？（{% trans "该过程可能需要数分钟" %}）');
+        $('#modalNotice').html('{% trans "您确认要备份数据库吗" %}?（{% trans "该过程可能需要数分钟" %}）');
         $('#actions').html(
             '<button type="button" class="btn btn-outline-secondary" data-dismiss="modal">{% trans "取消" %}</button>\n' +
             '<button type="button" class="btn btn-outline-primary" onClick="batch_download()">{% trans "确定" %}</button>'

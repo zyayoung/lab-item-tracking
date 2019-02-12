@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-02-12 22:44+0800\n"
+"POT-Creation-Date: 2019-02-12 23:27+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,6 +17,37 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
+
+#: .\inventory\forms.py:11 .\inventory\forms.py:134 .\inventory\forms.py:181
+#: .\inventory\templates\inventory\additem2loc.html:10
+#: .\inventory\templates\inventory\item.html:33
+#: .\inventory\templates\inventory\items.html:28
+#: .\inventory\templates\inventory\location.html:104
+#: .\inventory\templates\inventory\templates.html:31 .\inventory\views.py:447
+msgid "名称"
+msgstr ""
+
+#: .\inventory\forms.py:17 .\inventory\forms.py:186
+msgid "公开"
+msgstr ""
+
+#: .\inventory\forms.py:162
+#: .\inventory\templates\inventory\additem2loc.html:11
+#: .\inventory\templates\inventory\edit.html:22
+#: .\inventory\templates\inventory\item.html:20
+#: .\inventory\templates\inventory\item.html:29
+#: .\inventory\templates\inventory\items.html:32
+#: .\inventory\templates\inventory\location.html:105
+#: .\inventory\templates\inventory\template.html:26
+#: .\inventory\templates\inventory\template_edit.html:23
+#: .\inventory\templates\inventory\templates.html:32
+#: .\log\templates\log\logs.html:30 .\log\templates\log\user_log.html:28
+msgid "类型"
+msgstr ""
+
+#: .\inventory\forms.py:195
+msgid "备注"
+msgstr ""
 
 #: .\inventory\templates\inventory\add.html:4
 #: .\inventory\templates\inventory\add.html:14
@@ -38,27 +69,6 @@ msgstr ""
 
 #: .\inventory\templates\inventory\additem2loc.html:7
 msgid "存入物品到"
-msgstr ""
-
-#: .\inventory\templates\inventory\additem2loc.html:10
-#: .\inventory\templates\inventory\item.html:33
-#: .\inventory\templates\inventory\items.html:28
-#: .\inventory\templates\inventory\location.html:104
-#: .\inventory\templates\inventory\templates.html:31
-msgid "名称"
-msgstr ""
-
-#: .\inventory\templates\inventory\additem2loc.html:11
-#: .\inventory\templates\inventory\edit.html:22
-#: .\inventory\templates\inventory\item.html:20
-#: .\inventory\templates\inventory\item.html:29
-#: .\inventory\templates\inventory\items.html:32
-#: .\inventory\templates\inventory\location.html:105
-#: .\inventory\templates\inventory\template.html:26
-#: .\inventory\templates\inventory\template_edit.html:23
-#: .\inventory\templates\inventory\templates.html:32
-#: .\log\templates\log\logs.html:30 .\log\templates\log\user_log.html:28
-msgid "类型"
 msgstr ""
 
 #: .\inventory\templates\inventory\additem2loc.html:12
@@ -195,7 +205,7 @@ msgid "另存为新"
 msgstr ""
 
 #: .\inventory\templates\inventory\index.html:4 .\templates\base.html:42
-#: .\templates\base.html:138 .\traffic\templates\traffic\calendar.html:4
+#: .\templates\base.html:144 .\traffic\templates\traffic\calendar.html:4
 #: .\traffic\templates\traffic\locations.html:4
 #: .\traffic\templates\traffic\pages.html:4
 #: .\traffic\templates\traffic\users.html:4
@@ -210,10 +220,6 @@ msgstr ""
 msgid "您尚未登录"
 msgstr ""
 
-#: .\inventory\templates\inventory\index.html:11
-msgid "只能访问公开内容"
-msgstr ""
-
 #: .\inventory\templates\inventory\index.html:17
 #: .\inventory\templates\inventory\item.html:4
 #: .\inventory\templates\inventory\item.html:9
@@ -224,7 +230,7 @@ msgstr ""
 #: .\inventory\templates\inventory\template_export.html:4
 #: .\inventory\templates\inventory\template_export.html:9
 #: .\inventory\views.py:40 .\inventory\views.py:97 .\inventory\views.py:110
-#: .\inventory\views.py:293 .\inventory\views.py:451 .\templates\base.html:55
+#: .\inventory\views.py:293 .\inventory\views.py:453 .\templates\base.html:55
 msgid "物品"
 msgstr ""
 
@@ -240,7 +246,7 @@ msgid "新建物品"
 msgstr ""
 
 #: .\inventory\templates\inventory\index.html:34 .\inventory\views.py:40
-#: .\inventory\views.py:97 .\inventory\views.py:110 .\inventory\views.py:451
+#: .\inventory\views.py:97 .\inventory\views.py:110 .\inventory\views.py:453
 msgid "物品属性"
 msgstr ""
 
@@ -584,12 +590,8 @@ msgstr ""
 msgid "没有符合条件的物品模板"
 msgstr ""
 
-#: .\inventory\views.py:247
-msgid "作为以下"
-msgstr ""
-
-#: .\inventory\views.py:247
-msgid "的"
+#: .\inventory\views.py:448
+msgid "用于显示的名称"
 msgstr ""
 
 #: .\lab_item_tracking\settings.py:135
@@ -633,12 +635,33 @@ msgstr ""
 msgid "对象"
 msgstr ""
 
+#: .\login\forms.py:7 .\login\forms.py:19
+#: .\personal\templates\personal\user.html:22
+msgid "用户名"
+msgstr ""
+
+#: .\login\forms.py:11 .\login\forms.py:23
+msgid "密码"
+msgstr ""
+
+#: .\login\forms.py:14 .\login\forms.py:32
+msgid "验证码(点击图片更换)"
+msgstr ""
+
+#: .\login\forms.py:27
+msgid "确认密码"
+msgstr ""
+
+#: .\login\forms.py:31
+msgid "邮箱地址"
+msgstr ""
+
 #: .\login\templates\login\confirm.html:3
 msgid "注册确认"
 msgstr ""
 
 #: .\login\templates\login\login.html:4 .\login\templates\login\login.html:14
-#: .\templates\base.html:108
+#: .\templates\base.html:114
 msgid "登录"
 msgstr ""
 
@@ -647,7 +670,7 @@ msgid "记住我"
 msgstr ""
 
 #: .\login\templates\login\register.html:4
-#: .\login\templates\login\register.html:14 .\templates\base.html:114
+#: .\login\templates\login\register.html:14 .\templates\base.html:120
 msgid "注册"
 msgstr ""
 
@@ -741,10 +764,6 @@ msgstr ""
 msgid "个人信息"
 msgstr ""
 
-#: .\personal\templates\personal\user.html:22
-msgid "用户名"
-msgstr ""
-
 #: .\personal\templates\personal\user.html:27
 msgid "邮箱"
 msgstr ""
@@ -769,20 +788,20 @@ msgstr ""
 msgid "数据库"
 msgstr ""
 
-#: .\templates\base.html:101
+#: .\templates\base.html:82
+msgid "切换语言"
+msgstr ""
+
+#: .\templates\base.html:107
 msgid "登出"
 msgstr ""
 
-#: .\templates\base.html:144
+#: .\templates\base.html:150
 msgid "使用手册"
 msgstr ""
 
-#: .\templates\base.html:147
+#: .\templates\base.html:153
 msgid "反馈问题"
-msgstr ""
-
-#: .\templates\base.html:149
-msgid "切换语言"
 msgstr ""
 
 #: .\traffic\templates\traffic\calendar.html:10

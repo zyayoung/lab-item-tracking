@@ -444,6 +444,8 @@ class AddTemplateView(generic.View):
             name = add_form.cleaned_data['name']
             new_template = ItemTemplate.objects.create(
                 name=name,
+                key_name=_("名称"),
+                key_name_placeholder=_("用于显示的名称"),
                 is_property=request.GET.get('property') is not None,
             )
             new_template.save()

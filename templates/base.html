@@ -77,6 +77,12 @@
                 <div class="dropdown-divider"></div>
                 <ul class="navbar-nav mr-right">
                     <li class="nav-item">
+                        <a class="nav-link" href="#" onclick="document.getElementById('switch_language').submit();">
+                            <i class="fa fa-language fa-lg"></i>
+                            <span class="d-lg-none">{% trans "切换语言" %}</span>
+                        </a>
+                    </li>
+                    <li>
                         <a class="nav-link" href="https://github.com/zyayoung/lab-item-tracking">
                             <i class="fa fa-github fa-lg"></i>
                             <span class="d-lg-none">Github</span>
@@ -145,8 +151,7 @@
                 </a>&nbsp;
                 <a href="https://github.com/zyayoung/lab-item-tracking/issues">
                     {% trans "反馈问题" %}
-                </a>&nbsp;
-                <a href="#" onclick="document.getElementById('switch_language').submit();">{% trans "切换语言" %}</a>
+                </a>
             </span>
         </div>
     </footer>
