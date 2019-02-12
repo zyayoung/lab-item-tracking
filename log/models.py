@@ -49,7 +49,7 @@ class Log(models.Model):
         elif self.category == '位置':
             return resolve_url('inventory:location', self.obj_id)
         elif self.category == '用户':
-            return resolve_url('inventory:user', self.obj_id)
+            return resolve_url('personal:user', self.obj_id)
 
     def obj(self):
         try:
