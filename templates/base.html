@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 {% load staticfiles %}
-
+{% load i18n %}
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -39,7 +39,7 @@
             <!-- Brand and toggle get grouped for better mobile display -->
             <a class="navbar-brand" href="/">
                 <!-- <img src="{% static 'img/favicon.png' %}" width="30" height="30" class="d-inline-block align-top" alt=""> -->
-                实验室物品管理
+                {% trans "实验室物品管理" %}
             </a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
                 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -124,6 +124,12 @@
         {% block content %}{% endblock %}
     </div>
 
+    <form action="{% url 'set_language' %}" method="post" id="switch_language">{% csrf_token %}
+        <input name="next" type="hidden" value="{{ redirect_to }}">
+        {% get_current_language as LANGUAGE_CODE %}
+        <input type="text" name="language" value="{% if LANGUAGE_CODE == 'en' %}zh-hans{% else %}en{% endif %}" hidden>
+    </form>
+
     <footer class="footer text-center">
         <div class="container">
             <span class="text-muted mr-3">
@@ -139,7 +145,8 @@
                 </a>&nbsp;
                 <a href="https://github.com/zyayoung/lab-item-tracking/issues">
                     反馈问题
-                </a>
+                </a>&nbsp;
+                <a href="#" onclick="document.getElementById('switch_language').submit();">切换语言</a>
             </span>
         </div>
     </footer>

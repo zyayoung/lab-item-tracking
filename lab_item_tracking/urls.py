@@ -41,5 +41,6 @@ urlpatterns = [
     url(r'^', include('traffic.urls')),
     url(r'^silk/', include('silk.urls', namespace='silk')),
     url(r'^dbbackup/', include('dbbackup.urls', namespace='dbbackup')),
-    url(SSL_CERTIFICATION_URL, ssl_certification)
+    url(SSL_CERTIFICATION_URL, ssl_certification),
+    path('i18n/', include('django.conf.urls.i18n')),
 ]

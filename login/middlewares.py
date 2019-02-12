@@ -14,6 +14,7 @@ class AuthMD(MiddlewareMixin):
         r"^register/$",
         r"^captcha/.*",
         r"^confirm/",
+        r"^i18n/.*",
         r"^admin/.*",
         SSL_CERTIFICATION_URL,
     ]
