@@ -358,6 +358,7 @@ class EditItemView(generic.View):
                     new_item.allowed_users_str())
             set_extradata(new_item, template, data, tmp_user)
             new_item.save()
+            return redirect('inventory:item', new_item.id)
         else:
             if name_old != name_new:
                 add_log(tmp_user, item.id, '物品', '名称', name_old, name_new)
@@ -370,7 +371,7 @@ class EditItemView(generic.View):
             set_extradata(item, template, data, tmp_user)
             item.save()
             message = "修改成功！"
-        return redirect('inventory:item', item.id)
+            return redirect('inventory:item', item.id)
 
 
 class TemplatesView(generic.View):
