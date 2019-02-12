@@ -150,8 +150,8 @@ def set_extradata(item, template, extra_data, user):
     if item.template != template:
         add_log(user, item.id, '物品', '模板', item.template.__str__(),
                 template.__str__())
-    extra_data_old = '{}'
-    extra_data_new = '{}'
+    extra_data_old = {}
+    extra_data_new = {}
     # unlink old relationships
     if item.template:
         extra_data_old = item.extra_data
@@ -224,7 +224,17 @@ def set_extradata(item, template, extra_data, user):
     item.template = template
     item.save()
     if extra_data_old != extra_data_new:
-        add_log(user, item.id, '物品', '属性', extra_data_old, extra_data_new)
+        # Log Property Changes
+        old_item_keys = list(extra_data_old.keys())
+        new_item_keys = list(extra_data_new.keys())
+        for key in old_item_keys:
+            if key in new_item_keys:
+                add_log(user, item.id, '物品', key, extra_data_old[key], extra_data_new[key])
+            else:
+                add_log(user, item.id, '物品', key, extra_data_old[key], '')
+        for key in new_item_keys:
+            if key not in old_item_keys:
+                add_log(user, item.id, '物品', key, '', extra_data_new[key])
 
 
 def rebuild_related():
