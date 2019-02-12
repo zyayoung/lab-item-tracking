@@ -1,13 +1,14 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
+{% load i18n %}
 {% load staticfiles %}
-{% block title %}物品{% if template.is_property %}属性{% endif %}模板详情：{{ template }} {% endblock %}
+{% block title %}{% trans "物品" %}{% if template.is_property %}{% trans "属性" %}{% endif %}{% trans "模板详情" %}：{{ template }} {% endblock %}
 {% block content %}
 {% if message %}
 <div class="alert alert-warning">{{ message }}</div>
 {% endif %}
-<p class="lead">物品{% if template.is_property %}属性{% endif %}模板详情：{{ template }}</p>
+<p class="lead">{% trans "物品" %}{% if template.is_property %}{% trans "属性" %}{% endif %}{% trans "模板详情" %}：{{ template }}</p>
 {% if tmp_user.is_superadmin %}
-<span class="lead pull-left">可使用该模板用户：</span>
+<span class="lead pull-left">{% trans "可使用该模板用户" %}：</span>
 {% if template.allowed_users.exists %}
 <div id="userArea">
     {% for user in template.allowed_users.all %}
@@ -15,29 +16,29 @@
     {% endfor %}
 </div>
 {% else %}
-<span class="lead">全部</span>
+<span class="lead">{% trans "全部" %}</span>
 {% endif %}
 {% endif %}
 <p></p>
 <table class="table table-striped">
     <thead>
-        <th>属性名称</th>
-        <th>类型</th>
-        <th>必填</th>
-        <th>提示信息</th>
+        <th>{% trans "属性名称" %}</th>
+        <th>{% trans "类型" %}</th>
+        <th>{% trans "必填" %}</th>
+        <th>{% trans "提示信息" %}</th>
     </thead>
     <tbody>
         <tr>
             <td>{{ template.key_name }}</td>
             <td>text</td>
-            <td>是</td>
+            <td>{% trans "是" %}</td>
             <td>{{ template.key_name_placeholder }}</td>
         </tr>
         {% for value in template.extra_data %}
         <tr>
             <td>{{ value.name }}</td>
             <td>{{ value.type }}</td>
-            <td>{% if value.required %}是{% else %}否{% endif %}</td>
+            <td>{% if value.required %}{% trans "是" %}{% else %}{% trans "否" %}{% endif %}</td>
             <td>{{ value.placeholder }}</td>
         </tr>
         {% endfor %}
@@ -45,17 +46,17 @@
 </table>
 {% if request.session.is_superadmin %}
 <a class="btn btn-outline-primary" role="button" href="{% url 'inventory:template_edit' template.id %}">
-    <i class="fa fa-edit" aria-hidden="true"></i> 编辑
+    <i class="fa fa-edit" aria-hidden="true"></i> {% trans "编辑" %}
 </a>
 <a class="btn btn-outline-primary" role="button" href="#" onClick="cfm('{% url 'inventory:template_delete' template.id %}', '{{ template }}')">
-    <i class="fa fa-trash" aria-hidden="true"></i> 删除
+    <i class="fa fa-trash" aria-hidden="true"></i> {% trans "删除" %}
 </a>
 <a class="btn btn-outline-primary" role="button" href="{% url 'inventory:template_alter' template.id %}">
-    <i class="fa fa-refresh" aria-hidden="true"></i> 转换为物品{% if not template.is_property %}属性{% endif %}
+    <i class="fa fa-refresh" aria-hidden="true"></i> {% trans "转换为物品" %}{% if not template.is_property %}{% trans "属性" %}{% endif %}
 </a>
 {% endif %}
 <a class="btn btn-outline-primary" role="button" href="{% url 'inventory:template_export' template.id %}">
-    <i class="fa fa-share" aria-hidden="true"></i> 导出
+    <i class="fa fa-share" aria-hidden="true"></i> {% trans "导出" %}
 </a>
 <p></p>
 {% if request.session.is_superadmin %}
@@ -64,7 +65,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="cfmModalTitle">
-                    <i class="fa fa-info" aria-hidden="true"></i> 提示信息
+                    <i class="fa fa-info" aria-hidden="true"></i> {% trans "提示信息" %}
                 </h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
@@ -75,8 +76,8 @@
             </div>
             <div class="modal-footer">
                 <input type="hidden" id="cfmUrl" />
-                <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">取消</button>
-                <button type="button" class="btn btn-outline-primary" onClick="urlSubmit()">确定</button>
+                <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">{% trans "取消" %}</button>
+                <button type="button" class="btn btn-outline-primary" onClick="urlSubmit()">{% trans "确定" %}</button>
             </div>
         </div>
     </div>
@@ -102,7 +103,7 @@
 {% block script %}
 <script>
     function cfm(url, item) {
-        $('#modalNotice').html('您确认要删除模板<b>' + item + '</b>吗？');
+        $('#modalNotice').html('{% trans "您确认要删除模板" %}<b>' + item + '</b>{% trans "吗" %}？');
         $('#cfmUrl').val(url);
         $('#cfmModal').modal();
     }
@@ -116,7 +117,7 @@
 <script>
     function exportAll(type) {
         $('#export_data').tableExport({
-            filename: '{{ user.name }}操作记录_%YY%-%MM%-%DD%',
+            filename: '{{ user.name }}{% trans "操作记录" %}_%YY%-%MM%-%DD%',
             format: type
         });
     }

@@ -1,14 +1,15 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
+{% load i18n %}
 {% load staticfiles %}
-{% block title %}物品{% if template.is_property %}属性{% endif %}模板编辑：{{ template }} {% endblock %}
+{% block title %}{% trans "物品" %}{% if template.is_property %}{% trans "属性" %}{% endif %}{% trans "模板编辑" %}：{{ template }} {% endblock %}
 {% block content %}
 {% if message %}
 <div class="alert alert-warning">{{ message }}</div>
 {% endif %}
-<p class="lead">物品{% if template.is_property %}属性{% endif %}模板编辑：{{ template }}</p>
+<p class="lead">{% trans "物品" %}{% if template.is_property %}{% trans "属性" %}{% endif %}{% trans "模板编辑" %}：{{ template }}</p>
 <form method="post" action="">
-    <span class="lead pull-left">可使用该模板用户：</span>
-    <select name="share" id="share_id" class="selectpicker" data-live-search="true" multiple title="允许全部用户">
+    <span class="lead pull-left">{% trans "可使用该模板用户" %}：</span>
+    <select name="share" id="share_id" class="selectpicker" data-live-search="true" multiple title="{% trans "允许全部用户" %}">
         {% for user in all_users %}
         <option value="{{ user.id }}" {% if user in template.allowed_users.all %} selected {% endif %}>
             {{ user.name }}
@@ -18,10 +19,10 @@
     <p></p>
     <table class="table table-striped" id="editTable">
         <thead>
-            <th>属性名称</th>
-            <th>类型</th>
-            <th>必填</th>
-            <th>提示信息</th>
+            <th>{% trans "属性名称" %}</th>
+            <th>{% trans "类型" %}</th>
+            <th>{% trans "必填" %}</th>
+            <th>{% trans "提示信息" %}</th>
             <th></th>
         </thead>
         <tbody>
@@ -37,14 +38,14 @@
                 </td>
                 <td>
                     <select class="form-control" disabled>
-                        <option selected="selected">是</option>
+                        <option selected="selected">{% trans "是" %}</option>
                     </select>
                 </td>
                 <td>
                     <input type="text" class="form-control" name="key_name_placeholder" value="{{ template.key_name_placeholder }}">
                 </td>
                 <td>
-                    <button type="button" class="btn text-muted" disabled>删除</button>
+                    <button type="button" class="btn text-muted" disabled>{% trans "删除" %}</button>
                 </td>
             </tr>
             {% for value in template.extra_data %}
@@ -61,8 +62,8 @@
                 </td>
                 <td>
                     <select name="required_{{ forloop.counter }}" class="form-control">
-                        <option value="1" {% if value.required %} selected="selected" {% endif %}>是</option>
-                        <option value="0" {% if not value.required %} selected="selected" {% endif %}>否</option>
+                        <option value="1" {% if value.required %} selected="selected" {% endif %}>{% trans "是" %}</option>
+                        <option value="0" {% if not value.required %} selected="selected" {% endif %}>{% trans "否" %}</option>
                     </select>
                 </td>
                 <td>
@@ -70,17 +71,17 @@
                         value="{{ value.placeholder }}">
                 </td>
                 <td>
-                    <button type="button" class="btn btn-outline-primary" onclick="del_row({{ forloop.counter }})">删除</button>
+                    <button type="button" class="btn btn-outline-primary" onclick="del_row({{ forloop.counter }})">{% trans "删除" %}</button>
                 </td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
     <button type="button" class="btn btn-outline-primary" onClick="addRow()">
-        <i class="fa fa-plus" aria-hidden="true"></i> 新建属性
+        <i class="fa fa-plus" aria-hidden="true"></i> {% trans "新建属性" %}
     </button>
     <button type="submit" class="btn btn-outline-primary">
-        <i class="fa fa-save" aria-hidden="true"></i> 保存
+        <i class="fa fa-save" aria-hidden="true"></i> {% trans "保存" %}
     </button>
 </form>
 {% endblock %}
@@ -102,15 +103,15 @@
                 '    </td>',
                 '    <td>',
                 '        <select name="required_' + index + '" class="form-control">',
-                '            <option value="1" selected="selected">是</option>',
-                '            <option value="0">否</option>',
+                '            <option value="1" selected="selected">{% trans "是" %}</option>',
+                '            <option value="0">{% trans "否" %}</option>',
                 '        </select>',
                 '    </td>',
                 '    <td>',
                 '        <input type="text" name="placeholder_' + index + '" class="form-control" maxlength="128">',
                 '    </td>',
                 '    <td>',
-                '        <button type="button" class="btn btn-outline-primary" onclick="del_row(' + index + ')">删除</button>',
+                '        <button type="button" class="btn btn-outline-primary" onclick="del_row(' + index + ')">{% trans "删除" %}</button>',
                 '    </td>',
                 '</tr>'].join("");
         $("#editTable").append(myHtml);

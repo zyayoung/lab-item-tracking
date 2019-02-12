@@ -1,25 +1,26 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
+{% load i18n %}
 
-{% block title %} 实验室物品管理 {% endblock %}
+{% block title %} {% trans "实验室物品管理" %} {% endblock %}
 
 {% block content %}
 <nav class="mb-3">
     <div class="nav nav-tabs" role="tablist">
         <a class="nav-item nav-link active" href="#" aria-selected="true">
-            用户
+            {% trans "用户" %}
         </a>
         <a class="nav-item nav-link" href="{% url 'traffic:locationAnalyze' %}" aria-selected="false">
-            位置
+            {% trans "位置" %}
         </a>
         <a class="nav-item nav-link" href="{% url 'traffic:calender' %}" aria-selected="false">
-            日历
+            {% trans "日历" %}
         </a>
         <a class="nav-item nav-link" href="{% url 'traffic:performance' %}" aria-selected="false">
-            性能
+            {% trans "性能" %}
         </a>
     </div>
 </nav>
-<p class="lead">{% if bias %}{{ start }}{% else %}今日{% endif %}活跃</p>
+<p class="lead">{% if bias %}{{ start }}{% else %}{% trans "今日" %}{% endif %}{% trans "活跃" %}</p>
 <div class="row">
     <div id="main1" class="col-sm-6 chart" style="height: 300px;"></div>
     <div class="col-sm-6">
@@ -28,29 +29,29 @@
             <ul class="pagination justify-content-center">
                 <li class="page-item">
                     <a class="page-link" href="?bias={{ bias|add:-1 }}">
-                        前一天
+                        {% trans "前一天" %}
                     </a>
                 </li>
                 {% if bias < 0 %}
                 <li class="page-item">
                     <a class="page-link" href="?bias={{ bias|add:1 }}">
-                        后一天
+                        {% trans "后一天" %}
                     </a>
                 </li>
                 <li class="page-item">
                     <a class="page-link" href="?bias=0">
-                        今天
+                        {% trans "今天" %}
                     </a>
                 </li>
                 {% else %}
                 <li class="page-item disabled">
                     <a class="page-link" href="?bias=0">
-                        后一天
+                        {% trans "后一天" %}
                     </a>
                 </li>
                 <li class="page-item disabled">
                     <a class="page-link" href="?bias=0">
-                        今天
+                        {% trans "今天" %}
                     </a>
                 </li>
                 {% endif %}
@@ -58,7 +59,7 @@
         </nav>
     </div>
 </div>
-<p class="lead">用户关系</p>
+<p class="lead">{% trans "用户关系" %}</p>
 <div id="main2" class="col-sm-12 border chart" style="height: 600px;"></div>
 
 
@@ -72,7 +73,7 @@ option = {
     tooltip: {},
     series : [
         {
-            name: '访问来源',
+            name: '{% trans "访问来源" %}',
             type: 'pie',
             radius: '55%',
             data: {{ user_data|safe }}
@@ -156,7 +157,7 @@ option = {
             },
             data: data,
             links: {{ relation_links|safe }},
-            categories: [{name: "主管"}, {name: "员工"}],
+            categories: [{name: "{% trans "主管" %}"}, {name: "{% trans "员工" %}"}],
             roam: true,
             focusNodeAdjacency: true,
             itemStyle: {

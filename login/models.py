@@ -1,7 +1,6 @@
 from django.db import models
 from django.contrib.postgres.fields import JSONField
-
-# Create your models here.
+from django.utils.translation import gettext as _
 
 
 class User(models.Model):
@@ -33,7 +32,7 @@ class User(models.Model):
 
     def __str__(self):
         return "{0}{1}".format(self.name,
-                                " (管理员)" if self.is_superadmin else "")
+                                " (Admin)" if self.is_superadmin else "")
 
     class Meta:
         ordering = ["-c_time"]

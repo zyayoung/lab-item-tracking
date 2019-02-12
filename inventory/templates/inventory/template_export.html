@@ -1,15 +1,16 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
+{% load i18n %}
 {% load staticfiles %}
-{% block title %}物品{% if template.is_property %}属性{% endif %}模板详情：{{ template }} {% endblock %}
+{% block title %}{% trans "物品" %}{% if template.is_property %}{% trans "属性" %}{% endif %}{% trans "模板详情" %}：{{ template }} {% endblock %}
 {% block content %}
 {% if message %}
 <div class="alert alert-warning">{{ message }}</div>
 {% endif %}
-<p class="lead pull-left">物品{% if template.is_property %}属性{% endif %}模板详情导出：{{ template }}</p>
+<p class="lead pull-left">{% trans "物品" %}{% if template.is_property %}{% trans "属性" %}{% endif %}{% trans "模板详情导出" %}：{{ template }}</p>
 <div class="pull-right">
     <button class="btn btn-outline-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
         aria-haspopup="true" aria-expanded="false">
-        导出为...
+        {% trans "导出为" %}...
     </button>
     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
         <a class="dropdown-item" href="javascript://" onclick="exportAll('csv');">CSV</a>
@@ -43,7 +44,7 @@
 
 <script>
     function cfm(url, item) {
-        $('#modalNotice').html('您确认要删除模板<b>' + item + '</b>吗？');
+        $('#modalNotice').html('{% trans "您确认要删除模板" %}<b>' + item + '</b>{% trans "吗" %}？');
         $('#cfmUrl').val(url);
         $('#cfmModal').modal();
     }
@@ -57,7 +58,7 @@
 <script>
     function exportAll(type) {
         $('#export_data').tableExport({
-            filename: '{{ user.name }}操作记录_%YY%-%MM%-%DD%',
+            filename: '{{ user.name }}{% trans "操作记录" %}_%YY%-%MM%-%DD%',
             format: type
         });
     }

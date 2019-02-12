@@ -1,11 +1,12 @@
 {% extends 'base.html' %}
+{% load i18n %}
 {% load staticfiles %}
 {% block title %}{{ action }}{{ name }}{% endblock %}
 {% block css %}
 <link href="https://cdn.bootcss.com/jqueryui/1.12.1/jquery-ui.min.css" rel="stylesheet">
 {% endblock %}
 {% block content %}
-<p class="lead">{{ action }}{{ name }}：</p>
+<p class="lead">{{ action_translated }}{{ name }}：</p>
 <form class="form-add" action="" method="post" id="main_form">
     {% csrf_token %}
     <div class="form-group row">
@@ -18,7 +19,7 @@
         </div>
     </div>
     <div class="form-group row">
-        <label class="col-3 col-form-label"><b>类型</b></label>
+        <label class="col-3 col-form-label"><b>{% trans "类型" %}</b></label>
         <div class="col-9">{{ choose_form.template }}</div>
     </div>
     <div id="innerform">
@@ -29,11 +30,11 @@
         <input name="select_id" value="{{ select_id }}" hidden>
     {% endif %}
     <button type="submit" class="btn btn-outline-primary">
-        <i class="fa fa-save" aria-hidden="true"></i> 提交
+        <i class="fa fa-save" aria-hidden="true"></i> {% trans "提交" %}
     </button>
     {% if is_edit %}
     <button type="submit" class="btn btn-outline-primary" name="save_as_new">
-        <i class="fa fa-plus" aria-hidden="true"></i> 另存为新
+        <i class="fa fa-plus" aria-hidden="true"></i> {% trans "另存为新" %}
     </button>
     {% endif %}
 </form>

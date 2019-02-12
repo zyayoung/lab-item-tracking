@@ -9,6 +9,7 @@ from inventory import forms
 from log.utils import *
 import re
 
+from django.utils.translation import gettext_lazy as _
 from inventory.models import Item, Location, LocationPermissionApplication, ItemTemplate
 from login.models import User as myUser
 from personal.utils import get_others_request_list
@@ -36,7 +37,7 @@ class ItemsView(generic.View):
         template_queryset = ItemTemplate.objects.all()
         choose_form = forms.ChooseTemplateForm(
             is_property=is_property, template_queryset=template_queryset)
-        name = "物品属性" if is_property else "物品"
+        name = _("物品属性") if is_property else _("物品")
         choices = choose_form.fields["template"].choices
         if 'filter' not in tmp_user.settings.keys():
             tmp_user.settings['filter'] = []
@@ -82,6 +83,7 @@ class ItemsView(generic.View):
 class AddItemView(generic.View):
     def get(self, request):
         action = "新建"
+        action_translated = _(action) + ' '
         if 'template' in request.GET.keys(
         ) and 'select_id' in request.GET.keys():
             template = get_object_or_404(
@@ -92,7 +94,7 @@ class AddItemView(generic.View):
             template_id = template.id
         else:
             is_property = 'prop' in request.path
-        name = "物品属性" if is_property else "物品"
+        name = _("物品属性") if is_property else _("物品")
         tmp_user = myUser.objects.get(id=request.session.get('user_id'))
         template_queryset = get_my_template_queryset(
             tmp_user, ItemTemplate.objects.all())
@@ -103,8 +105,9 @@ class AddItemView(generic.View):
 
     def post(self, request):
         action = "新建"
+        action_translated = _(action) + ' '
         is_property = 'prop' in request.path
-        name = "物品属性" if is_property else "物品"
+        name = _("物品属性") if is_property else _("物品")
         message = "请检查填写的内容！"
         add_form = forms.AddItemForm(request.POST)
         tmp_user = myUser.objects.get(id=request.session.get('user_id'))
@@ -287,8 +290,9 @@ class EditItemView(generic.View):
         template_id = item.template.id
         is_property = item.template.is_property
         is_edit = True
-        name = "属性" if is_property else "物品"
+        name = "属性" if is_property else _("物品")
         action = "编辑"
+        action_translated = _(action) + ' '
         if not item.del_permission(tmp_user):
             messages.error(request,
                            "只有创建人（{}）及其管理员可以编辑物品！".format(item.owner.name))
@@ -305,6 +309,7 @@ class EditItemView(generic.View):
         item = get_my_item(tmp_user, kwargs.get('item_id'))
         is_property = item.template.is_property
         action = "编辑"
+        action_translated = _(action) + ' '
         if not item.del_permission(tmp_user):
             messages.error(request,
                            "只有创建人（{}）及其管理员可以编辑物品！".format(item.owner.name))
@@ -443,7 +448,7 @@ class AddTemplateView(generic.View):
             )
             new_template.save()
             message = "新建成功！"
-            category = "物品属性" if request.GET.get('property') else "物品"
+            category = _("物品属性") if request.GET.get('property') else _("物品")
             add_log(tmp_user, new_template.id, category, '名称', '未创建', name)
             return redirect('inventory:template_edit', new_template.id)
         else:

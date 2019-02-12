@@ -1,12 +1,13 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
+{% load i18n %}
 {% load staticfiles %}
-{% block title %}位置列表{% endblock %}
+{% block title %}{% trans "位置列表" %}{% endblock %}
 {% block content %}
 {% if message %}
 <div class="alert alert-warning">{{ message }}</div>
 {% endif %}
 {% if pending %}
-<p class="lead">选择想存入{{ pending }}的位置：</p>
+<p class="lead">{% trans "选择想存入" %}{{ pending }}{% trans "的位置" %}：</p>
 {% endif %}
 <div class="row">
     <div class="col-lg">
@@ -17,11 +18,11 @@
                 {% if add_loc_form %}
                 <a class="btn btn-outline-primary" role="button" href="#" onClick="addLocMdl()">
                     <i class="fa fa-plus" aria-hidden="true"></i>
-                    <span class="d-none d-md-inline">新建</span>
+                    <span class="d-none d-md-inline">{% trans "新建" %}</span>
                 </a>
                 {% endif %}
                 <a class="btn btn-outline-primary" role="button" href="#" onClick="qrcodeMdl('{{ QRCode }}')">
-                    <i class="fa fa-qrcode" aria-hidden="true"></i> 二维码
+                    <i class="fa fa-qrcode" aria-hidden="true"></i> {% trans "二维码" %}
                 </a>
             </span>
             {% endif %}
@@ -29,8 +30,8 @@
         <table class="table table-striped table-sm row mx-0">
             <thead class="w-100">
                 <tr class="row mx-0">
-                    <th class="col-6">路径</th>
-                    <th class="col-6">可使用用户</th>
+                    <th class="col-6">{% trans "路径" %}</th>
+                    <th class="col-6">{% trans "可使用用户" %}</th>
                 </tr>
             </thead>
             <tbody class="w-100">
@@ -59,7 +60,7 @@
                     </td>
                     <td class="col-6">
                         {% if sublocation.is_public %}
-                        全部
+                        {% trans "全部" %}
                         {% else %}
                         {{ sublocation.allowed_users_summary }}
                         {% endif %}
@@ -73,7 +74,7 @@
                     </td>
                     <td class="col-6">
                         <a href="{% url 'inventory:applyloc' sublocation.id %}" style="color: #6c757d;">
-                            <i class="fa fa-file-o" aria-hidden="true"></i> 申请权限
+                            <i class="fa fa-file-o" aria-hidden="true"></i> {% trans "申请权限" %}
                         </a>
                     </td>
                 </tr>
@@ -84,15 +85,15 @@
     {% if loc_now %}
     <div class="col-lg">
         <p class="lead">
-            已存放物品：
+            {% trans "已存放物品" %}：
             <span class="pull-right">
                 {% if not pending %}
                 <a class="btn btn-outline-primary" role="button" href="{% url 'inventory:additem2loc' location_id %}">
-                    <i class="fa fa-archive" aria-hidden="true"></i> 存入
+                    <i class="fa fa-archive" aria-hidden="true"></i> {% trans "存入" %}
                 </a>
                 {% else %}
                 <a class="btn btn-outline-primary" href="#" role="button" onClick="cfm()">
-                    将{{ pending }}存入此位置
+                    {% trans "将" %}{{ pending }}{% trans "存入此位置" %}
                 </a>
                 {% endif %}
             </span>
@@ -100,8 +101,8 @@
         <table class="table table-striped table-sm">
             <thead class="w-100">
                 <tr class="row mx-0">
-                    <th class="col-6">名称</th>
-                    <th class="col-6">类型</th>
+                    <th class="col-6">{% trans "名称" %}</th>
+                    <th class="col-6">{% trans "类型" %}</th>
                 </tr>
             </thead>
             {% if item_list %}
@@ -128,19 +129,19 @@
             <ul class="pagination justify-content-center">
                 <li class="page-item">
                     <a class="page-link" href="?page=1">
-                        首页
+                        {% trans "首页" %}
                     </a>
                 </li>
                 {% if item_list.has_previous %}
                 <li class="page-item">
                     <a class="page-link" href="?page={{ item_list.previous_page_number }}">
-                        上一页
+                        {% trans "上一页" %}
                     </a>
                 </li>
                 {% else %}
                 <li class="page-item disabled">
                     <a class="page-link" href="#">
-                        上一页
+                        {% trans "上一页" %}
                     </a>
                 </li>
                 {% endif %}
@@ -152,19 +153,19 @@
                 {% if item_list.has_next %}
                 <li class="page-item">
                     <a class="page-link" href="?page={{ item_list.next_page_number }}">
-                        下一页
+                        {% trans "下一页" %}
                     </a>
                 </li>
                 {% else %}
                 <li class="page-item disabled">
                     <a class="page-link" href="#">
-                        下一页
+                        {% trans "下一页" %}
                     </a>
                 </li>
                 {% endif %}
                 <li class="page-item">
                     <a class="page-link" href="?page={{ item_list.paginator.num_pages }}">
-                        尾页
+                        {% trans "尾页" %}
                     </a>
                 </li>
             </ul>
@@ -180,7 +181,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="cfmModalTitle">
-                    <i class="fa fa-info" aria-hidden="true"></i> 提示信息
+                    <i class="fa fa-info" aria-hidden="true"></i> {% trans "提示信息" %}
                 </h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
@@ -188,13 +189,13 @@
             </div>
             <div class="modal-body">
                 <p id="modalNotice">
-                    您确认要将<b>{{ pending }}</b>存入<b>{{ loc_now_str }}</b>吗？
+                    {% trans "您确认要将" %}<b>{{ pending }}</b>{% trans "存入" %}<b>{{ loc_now_str }}</b>{% trans "吗" %}？
                 </p>
             </div>
             <div class="modal-footer">
                 <input type="hidden" id="cfmUrl" value="{% url 'inventory:put' pending.pk location_id %}" />
-                <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">取消</button>
-                <button type="button" class="btn btn-outline-primary" onClick="urlSubmit()">确定</button>
+                <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">{% trans "取消" %}</button>
+                <button type="button" class="btn btn-outline-primary" onClick="urlSubmit()">{% trans "确定" %}</button>
             </div>
         </div>
     </div>
@@ -205,14 +206,14 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="qrcodeModalTitle">
-                    <i class="fa fa-qrcode" aria-hidden="true"></i> 二维码
+                    <i class="fa fa-qrcode" aria-hidden="true"></i> {% trans "二维码" %}
                 </h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body text-center">
-                <img id="qrcodeId" class="img-responsive" src="#" alt="二维码">
+                <img id="qrcodeId" class="img-responsive" src="#" alt="{% trans "二维码" %}">
             </div>
         </div>
     </div>
@@ -225,7 +226,7 @@
                 {% csrf_token %}
                 <div class="modal-header">
                     <h5 class="modal-title" id="addLocModalTitle">
-                        <i class="fa fa-plus" aria-hidden="true"></i> 新建路径
+                        <i class="fa fa-plus" aria-hidden="true"></i> {% trans "新建路径" %}
                     </h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
@@ -241,8 +242,8 @@
                         <b>{{ add_loc_form.public.label }}</b>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">取消</button>
-                        <button type="submit" class="btn btn-outline-primary">确认</button>
+                        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">{% trans "取消" %}</button>
+                        <button type="submit" class="btn btn-outline-primary">{% trans "确认" %}</button>
                     </div>
                 </div>
             </form>

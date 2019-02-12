@@ -52,23 +52,23 @@
                     {% block navbar %}
                     <li class="nav-item">
                         <a href="{% url 'inventory:items' %}" class="nav-link">
-                            物品
+                            {% trans "物品" %}
                         </a>
                     </li>
                     <li class="nav-item">
                         <a href="{% url 'inventory:location_root' %}" class="nav-link">
-                            位置
+                            {% trans "位置" %}
                         </a>
                     </li>
                     <li class="nav-item">
                         <a href="{% url 'inventory:templates' %}" class="nav-link">
-                            模板
+                            {% trans "模板" %}
                         </a>
                     </li>
                     {% if request.session.is_superadmin %}
                     <li class="nav-item">
                         <a href="{% url 'admin:index' %}" class="nav-link">
-                            数据库
+                            {% trans "数据库" %}
                         </a>
                     </li>
                     {% endif %}
@@ -98,20 +98,20 @@
                     <li class="nav-item">
                         <a class="nav-link" href="/logout/">
                             <i class="fa fa-sign-out fa-lg" aria-hidden="true"></i>
-                            登出
+                            {% trans "登出" %}
                         </a>
                     </li>
                     {% else %}
                     <li class="nav-item">
                         <a class="nav-link" href="/login/">
                             <i class="fa fa-sign-in fa-lg" aria-hidden="true"></i>
-                            登录
+                            {% trans "登录" %}
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="/register/">
                             <i class="fa fa-user-plus" aria-hidden="true"></i>
-                            注册
+                            {% trans "注册" %}
                         </a>
                     </li>
                     {% endif %}
@@ -135,18 +135,18 @@
             <span class="text-muted mr-3">
                 Copyright © 2018-2019
                 <a href="https://zyayoung.oicp.io/">
-                    实验室物品管理
+                    {% trans "实验室物品管理" %}
                 </a>
                 All Rights Reserved.
             </span>
             <span class="text-muted">
                 <a href="https://github.com/zyayoung/lab-item-tracking/wiki">
-                    使用手册
+                    {% trans "使用手册" %}
                 </a>&nbsp;
                 <a href="https://github.com/zyayoung/lab-item-tracking/issues">
-                    反馈问题
+                    {% trans "反馈问题" %}
                 </a>&nbsp;
-                <a href="#" onclick="document.getElementById('switch_language').submit();">切换语言</a>
+                <a href="#" onclick="document.getElementById('switch_language').submit();">{% trans "切换语言" %}</a>
             </span>
         </div>
     </footer>

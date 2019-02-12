@@ -1,28 +1,29 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
+{% load i18n %}
 {% load staticfiles %}
-{% block title %} 实验室物品管理 {% endblock %}
+{% block title %} {% trans "实验室物品管理" %} {% endblock %}
 {% block content %}
 <div class="container">
     <p class="lead">
         {% if request.session.is_login %}
-        您好，{{ request.session.user_name }}！
+        {% trans "您好" %}，{{ request.session.user_name }}！
         {% else %}
-        您尚未登录，只能访问公开内容！
+        {% trans "您尚未登录" %}，{% trans "只能访问公开内容" %}！
         {% endif %}
     </p>
     <div class="row text-center justify-content-md-center">
         <div class="col-lg-3 col-sm-6 section mb-3">
             <div class="card">
-                <h5 class="card-title mt-3">物品</h5>
+                <h5 class="card-title mt-3">{% trans "物品" %}</h5>
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item">
                         <a href="{% url 'inventory:items' %}" class="card-link">
-                            <i class="fa fa-list-ul" aria-hidden="true"></i> 物品列表
+                            <i class="fa fa-list-ul" aria-hidden="true"></i> {% trans "物品列表" %}
                         </a>
                     </li>
                     <li class="list-group-item">
                         <a href="{% url 'inventory:add' %}" class="card-link">
-                            <i class="fa fa-plus" aria-hidden="true"></i> 新建物品
+                            <i class="fa fa-plus" aria-hidden="true"></i> {% trans "新建物品" %}
                         </a>
                     </li>
                 </ul>
@@ -30,16 +31,16 @@
         </div>
         <div class="col-lg-3 col-sm-6 section mb-3">
             <div class="card">
-                <h5 class="card-title mt-3">物品属性</h5>
+                <h5 class="card-title mt-3">{% trans "物品属性" %}</h5>
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item">
                         <a href="{% url 'inventory:properties' %}" class="card-link">
-                            <i class="fa fa-list-ul" aria-hidden="true"></i> 物品属性列表
+                            <i class="fa fa-list-ul" aria-hidden="true"></i> {% trans "物品属性列表" %}
                         </a>
                     </li>
                     <li class="list-group-item">
                         <a href="{% url 'inventory:add_property' %}" class="card-link">
-                            <i class="fa fa-plus" aria-hidden="true"></i> 新建物品属性
+                            <i class="fa fa-plus" aria-hidden="true"></i> {% trans "新建物品属性" %}
                         </a>
                     </li>
                 </ul>
@@ -47,11 +48,11 @@
         </div>
         <div class="col-lg-3 col-sm-6 section mb-3">
             <div class="card">
-                <h5 class="card-title mt-3">位置</h5>
+                <h5 class="card-title mt-3">{% trans "位置" %}</h5>
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item">
                         <a href="{% url 'inventory:location_root' %}" class="card-link">
-                            <i class="fa fa-list-ul" aria-hidden="true"></i> 位置列表
+                            <i class="fa fa-list-ul" aria-hidden="true"></i> {% trans "位置列表" %}
                         </a>
                     </li>
                     <li class="list-group-item">
@@ -60,11 +61,11 @@
                             <span class="badge badge-danger">
                                 {{ others_request_list_count }}
                             </span>
-                            位置申请
+                            {% trans "位置申请" %}
                         </a>
                         {% else %}
                         <a href="{% url 'personal:mylocreq' %}" class="card-link">
-                            <i class="fa fa-file" aria-hidden="true"></i> 位置申请
+                            <i class="fa fa-file" aria-hidden="true"></i> {% trans "位置申请" %}
                         </a>
                         {% endif %}
                     </li>
@@ -73,11 +74,11 @@
         </div>
         <div class="col-lg-3 col-sm-6 section mb-3">
             <div class="card">
-                <h5 class="card-title mt-3">模板</h5>
+                <h5 class="card-title mt-3">{% trans "模板" %}</h5>
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item">
                         <a href="{% url 'inventory:templates' %}" class="card-link">
-                            <i class="fa fa-list-ul" aria-hidden="true"></i> 模板列表
+                            <i class="fa fa-list-ul" aria-hidden="true"></i> {% trans "模板列表" %}
                         </a>
                     </li>
                     {% if tmp_user.is_superadmin %}
@@ -86,11 +87,11 @@
                         <a class="dropdown-toggle card-link" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown"
                             aria-haspopup="true" aria-expanded="false">
                             <i class="fa fa-plus" aria-hidden="true"></i>
-                            新建模板
+                            {% trans "新建模板" %}
                         </a>
                         <div class="dropdown-menu" style="min-width: 0px;" aria-labelledby="dropdownMenuButton">
-                            <a class="dropdown-item" href="{% url 'inventory:add_template' %}">物品模板</a>
-                            <a class="dropdown-item" href="{% url 'inventory:add_template' %}?property=true">物品属性模板</a>
+                            <a class="dropdown-item" href="{% url 'inventory:add_template' %}">{% trans "物品模板" %}</a>
+                            <a class="dropdown-item" href="{% url 'inventory:add_template' %}?property=true">{% trans "物品属性模板" %}</a>
                         </div>
                     </li>
                     {% endif %}
@@ -100,31 +101,31 @@
         {% if tmp_user.is_superadmin %}
         <div class="col-lg-3 col-sm-6 section mb-3">
             <div class="card">
-                <h5 class="card-title mt-3">管理</h5>
+                <h5 class="card-title mt-3">{% trans "管理" %}</h5>
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item">
                         <a href="{% url 'traffic:userAnalyze' %}" class="card-link">
-                            <i class="fa fa-pie-chart" aria-hidden="true"></i> 图表分析
+                            <i class="fa fa-pie-chart" aria-hidden="true"></i> {% trans "图表分析" %}
                         </a>
                     </li>
                     <li class="list-group-item">
                         <a href="{% url 'admin:login_user_changelist' %}" class="card-link">
-                            <i class="fa fa-user" aria-hidden="true"></i> 用户管理
+                            <i class="fa fa-user" aria-hidden="true"></i> {% trans "用户管理" %}
                         </a>
                     </li>
                     <li class="list-group-item">
                         <a href="{% url 'admin:index' %}" class="card-link">
-                            <i class="fa fa-database" aria-hidden="true"></i> 数据管理
+                            <i class="fa fa-database" aria-hidden="true"></i> {% trans "数据管理" %}
                         </a>
                     </li>
                     <li class="list-group-item">
                         <a href="#" class="card-link" onclick="cfm()">
-                            <i class="fa fa-download" aria-hidden="true"></i> 数据备份
+                            <i class="fa fa-download" aria-hidden="true"></i> {% trans "数据备份" %}
                         </a>
                     </li>
                     <li class="list-group-item">
                         <a href="{% url 'log:logs' %}" class="card-link">
-                            <i class="fa fa-file-text" aria-hidden="true"></i> 操作日志
+                            <i class="fa fa-file-text" aria-hidden="true"></i> {% trans "操作日志" %}
                         </a>
                     </li>
                 </ul>
@@ -138,7 +139,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="cfmModalTitle">
-                        <i class="fa fa-info" aria-hidden="true"></i> 提示信息
+                        <i class="fa fa-info" aria-hidden="true"></i> {% trans "提示信息" %}
                     </h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
@@ -148,8 +149,8 @@
                     <p id="modalNotice"></p>
                 </div>
                 <div class="modal-footer" id="actions">
-                    <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">取消</button>
-                    <button type="button" class="btn btn-outline-primary" onClick="batch_download()">确定</button>
+                    <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">{% trans "取消" %}</button>
+                    <button type="button" class="btn btn-outline-primary" onClick="batch_download()">{% trans "确定" %}</button>
                 </div>
             </div>
         </div>
@@ -161,10 +162,10 @@
 {% if tmp_user.is_superadmin %}
 <script>
     function cfm() {
-        $('#modalNotice').html('您确认要备份数据库吗？（该过程可能需要数分钟）');
+        $('#modalNotice').html('{% trans "您确认要备份数据库吗" %}？（{% trans "该过程可能需要数分钟" %}）');
         $('#actions').html(
-            '<button type="button" class="btn btn-outline-secondary" data-dismiss="modal">取消</button>\n' +
-            '<button type="button" class="btn btn-outline-primary" onClick="batch_download()">确定</button>'
+            '<button type="button" class="btn btn-outline-secondary" data-dismiss="modal">{% trans "取消" %}</button>\n' +
+            '<button type="button" class="btn btn-outline-primary" onClick="batch_download()">{% trans "确定" %}</button>'
         );
         $('#cfmModal').modal();
     }
@@ -180,8 +181,8 @@
         $("iframe").remove();
         window.ids_array = tmp_array;
         download();
-        $('#modalNotice').html('请耐心等待全部' + (tmp_array.length + 1) + '个文件下载完成');
-        $('#actions').html('<button type="button" class="btn btn-outline-primary" data-dismiss="modal">确定</button>')
+        $('#modalNotice').html('{% trans "请耐心等待全部" %}' + (tmp_array.length + 1) + '{% trans "个文件下载完成" %}');
+        $('#actions').html('<button type="button" class="btn btn-outline-primary" data-dismiss="modal">{% trans "确定" %}</button>')
     }
 
     function download() {

@@ -12,6 +12,7 @@ docker run --name postgresql -e POSTGRES_PASSWORD=password -p 5432:5432 -d postg
 
 ```bash
 python manage.py migrate
+python manage.py compilemessages
 python manage.py createsuperuser
 python manage.py runserver
 ```

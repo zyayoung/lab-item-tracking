@@ -1,14 +1,15 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
+{% load i18n %}
 {% load staticfiles %}
-{% block title %}物品{% if item.template.is_property %}属性{% endif %}详情：{{ item }} {% endblock %}
+{% block title %}{% trans "物品" %}{% if item.template.is_property %}{% trans "属性" %}{% endif %}{% trans "详情" %}：{{ item }} {% endblock %}
 {% block content %}
 {% if self.message %}
 <div class="alert alert-warning">{{ self.message }}</div>
 {% endif %}
-<p class="lead">物品{% if item.template.is_property %}属性{% endif %}详情：
+<p class="lead">{% trans "物品" %}{% if item.template.is_property %}{% trans "属性" %}{% endif %}{% trans "详情" %}：
     <span class="pull-right">
         <a class="btn btn-outline-primary" href="{% url 'log:item_log' item.id %}">
-            <i class="fa fa-file-text" aria-hidden="true"></i> 日志
+            <i class="fa fa-file-text" aria-hidden="true"></i> {% trans "日志" %}
         </a>
     </span>
 </p>
@@ -16,7 +17,7 @@
     <tbody class="w-100">
         {% if item.template %}
         <tr class="row mx-0">
-            <th class="col-3">类型</th>
+            <th class="col-3">{% trans "类型" %}</th>
             <td class="col-9"><a href="{% url 'inventory:template' item.template.id %}">{{ item.template }}</a></td>
         </tr>
         <tr class="row mx-0">
@@ -25,20 +26,20 @@
         </tr>
         {% else %}
         <tr class="row mx-0">
-            <th class="col-3">类型</th>
+            <th class="col-3">{% trans "类型" %}</th>
             <td class="col-9">--</td>
         </tr>
         <tr class="row mx-0">
-            <th class="col-3">名称</th>
+            <th class="col-3">{% trans "名称" %}</th>
             <td class="col-9">{{ item }}</td>
         </tr>
         {% endif %}
         {% for key, value in extra_info %}
         <tr class="row mx-0">
             {% if value.type == 'extra' %}
-            <th class="col-3 text-muted">{{ key }}</td>
+            <th class="col-3 text-muted">{{ key }}</th>
             {% else %}
-            <th class="col-3">{{ key }}</td>
+            <th class="col-3">{{ key }}</th>
             {% endif %}
             <td class="col-9">
                 {% if value.type == 'link' %}
@@ -55,18 +56,18 @@
         {% endfor %}
         {% if not item.template.is_property %}
         <tr class="row mx-0">
-            <th class="col-3">位置</th>
+            <th class="col-3">{% trans "位置" %}</th>
             <td class="col-9">
                 {% if item.location %}
                 <a href="{% url 'inventory:location' item.location.id %}">{{ item.location }}</a>
                 {% else %}
-                未放入
+                {% trans "未放入" %}
                 {% endif %}
             </td>
         </tr>
         {% endif %}
         <tr class="row mx-0">
-            <th class="col-3">创建用户</th>
+            <th class="col-3">{% trans "创建用户" %}</th>
             <td class="col-9">
                 <a href="{% url 'personal:user' item.owner.id %}">
                     {{ item.owner }}
@@ -74,10 +75,10 @@
             </td>
         </tr>
         <tr class="row mx-0">
-            <th class="col-3">关联用户
+            <th class="col-3">{% trans "关联用户" %}
                 {% if not item.is_public %}
                 <span style="font-weight:normal;">
-                    (<a href="#" onClick="toggleSelect()">编辑</a>)
+                    (<a href="#" onClick="toggleSelect()">{% trans "编辑" %}</a>)
                 </span>
                 {% endif %}
             </th>
@@ -99,14 +100,14 @@
                         </option>
                         {% endfor %}
                     </select>
-                    <button type="submit" class="btn btn-outline-primary">确认</button>
+                    <button type="submit" class="btn btn-outline-primary">{% trans "确认" %}</button>
                 </form>
                 {% endif %}
             </td>
         </tr>
     </tbody>
 </table>
-{% if relation_info %}<p class="lead">相关物品/属性:</p>{% endif %}
+{% if relation_info %}<p class="lead">{% trans "相关物品/属性" %}:</p>{% endif %}
 {% for key, items in relation_info.items %}
 <table class="table table-striped ">
     <thead>
@@ -125,24 +126,24 @@
 {% endfor %}
 {% if not item.template.is_property %}
 {% if item.location %}
-<a class="btn btn-outline-primary" role="button" href="{% url 'inventory:location' item.location.id %}?pending={{ item.id }}">移动</a>
-<a class="btn btn-outline-primary" role="button" href="#" onclick="cfm('{% url 'inventory:put' item.id 0 %}', '{{ item }}', '取出')">取出</a>
+<a class="btn btn-outline-primary" role="button" href="{% url 'inventory:location' item.location.id %}?pending={{ item.id }}">{% trans "移动" %}</a>
+<a class="btn btn-outline-primary" role="button" href="#" onclick="cfm('{% url 'inventory:put' item.id 0 %}', '{{ item }}', '{% trans "取出" %}')">{% trans "取出" %}</a>
 {% else %}
-<a class="btn btn-outline-primary" role="button" href="{% url 'inventory:location_root' %}?pending={{ item.id }}">存入</a>
+<a class="btn btn-outline-primary" role="button" href="{% url 'inventory:location_root' %}?pending={{ item.id }}">{% trans "存入" %}</a>
 {% endif %}
 {% endif %}
 {% if del_permission %}
-<a class="btn btn-outline-primary" role="button" href="#" onClick="cfm('{% url 'inventory:delete' item.id %}', '{{ item }}', '删除')">删除</a>
-<a class="btn btn-outline-primary" href="{% url 'inventory:edit' item.id %}">编辑</a>
+<a class="btn btn-outline-primary" role="button" href="#" onClick="cfm('{% url 'inventory:delete' item.id %}', '{{ item }}', '{% trans "删除" %}')">{% trans "删除" %}</a>
+<a class="btn btn-outline-primary" href="{% url 'inventory:edit' item.id %}">{% trans "编辑" %}</a>
 {% elif unlink_permission %}
-<a class="btn btn-outline-primary" role="button" href="#" onClick="cfm('{% url 'inventory:unlink' item.id %}', '{{ item }}', '取消关联')">取关</a>
+<a class="btn btn-outline-primary" role="button" href="#" onClick="cfm('{% url 'inventory:unlink' item.id %}', '{{ item }}', '{% trans "取消关联" %}')">{% trans "取关" %}</a>
 {% endif %}
 <div class="modal fade" id="cfmModal" tabindex="-1" role="dialog" aria-labelledby="cfmModalTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="cfmModalTitle">
-                    <i class="fa fa-info" aria-hidden="true"></i> 提示信息
+                    <i class="fa fa-info" aria-hidden="true"></i> {% trans "提示信息" %}
                 </h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
@@ -153,8 +154,8 @@
             </div>
             <div class="modal-footer">
                 <input type="hidden" id="cfmUrl" />
-                <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">取消</button>
-                <button type="button" class="btn btn-outline-primary" onClick="urlSubmit()">确定</button>
+                <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">{% trans "取消" %}</button>
+                <button type="button" class="btn btn-outline-primary" onClick="urlSubmit()">{% trans "确定" %}</button>
             </div>
         </div>
     </div>
@@ -171,7 +172,7 @@
     }
 
     function cfm(url, item, action) {
-        $('#modalNotice').html('您确认要' + action + '<b>' + item + '</b>吗？');
+        $('#modalNotice').html('{% trans "您确认要" %}' + action + '<b>' + item + '</b>{% trans "吗" %}？');
         $('#cfmUrl').val(url);
         $('#cfmModal').modal();
     }
