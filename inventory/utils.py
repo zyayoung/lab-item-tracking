@@ -147,11 +147,13 @@ def get_export_values(template,
 
 
 def set_extradata(item, template, extra_data, user):
-    if item.template != template:
+    template_old = item.template
+    extra_data_old = {}
+    template_new = template
+    extra_data_new = {}
+    if template_old != template_new:
         add_log(user, item.id, '物品', '模板', item.template.__str__(),
                 template.__str__())
-    extra_data_old = {}
-    extra_data_new = {}
     # unlink old relationships
     if item.template:
         extra_data_old = item.extra_data
@@ -228,13 +230,21 @@ def set_extradata(item, template, extra_data, user):
         old_item_keys = list(extra_data_old.keys())
         new_item_keys = list(extra_data_new.keys())
         for key in old_item_keys:
+            before = extra_data_old[key]
+            after = ''
             if key in new_item_keys:
-                add_log(user, item.id, '物品', key, extra_data_old[key], extra_data_new[key])
-            else:
-                add_log(user, item.id, '物品', key, extra_data_old[key], '')
+                after = extra_data_new[key]
+                if True in [t['name'] == key and t['type'] not in ['bool', 'int', 'float', 'text', 'date'] for t in template_new.extra_data]:
+                    after = 'id__' + after
+            if True in [t['name'] == key and t['type'] not in ['bool', 'int', 'float', 'text', 'date'] for t in template_old.extra_data]:
+                before = 'id__' + before
+            add_log(user, item.id, '物品', key, before, after)
         for key in new_item_keys:
             if key not in old_item_keys:
-                add_log(user, item.id, '物品', key, '', extra_data_new[key])
+                after = extra_data_new[key]
+                if True in [t['name'] == key and t['type'] not in ['bool', 'int', 'float', 'text', 'date'] for t in template_new.extra_data]:
+                    after = 'id__' + after
+                add_log(user, item.id, '物品', key, '', after)
 
 
 def rebuild_related():
