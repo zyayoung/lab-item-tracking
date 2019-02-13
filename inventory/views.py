@@ -51,6 +51,8 @@ class ItemsView(generic.View):
         if keyword:
             keyword_iri = quote(keyword)
             item_list = item_list.filter(name__contains=keyword)
+        else:
+            keyword = ''
         paginator = Paginator(item_list, OBJ_PER_PAGE)
         page = request.GET.get('page', 1)
         try:
@@ -387,6 +389,8 @@ class TemplatesView(generic.View):
         if keyword:
             keyword_iri = quote(keyword)
             template_list = template_list.filter(name__contains=keyword)
+        else:
+            keyword = ''
         paginator = Paginator(template_list, OBJ_PER_PAGE)
         page = request.GET.get('page', 1)
         try:

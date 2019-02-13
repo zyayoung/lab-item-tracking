@@ -368,12 +368,12 @@ msgstr "Backward return"
 #: .\inventory\templates\inventory\template_export.html:9
 #: .\inventory\templates\inventory\templates.html:33
 msgid "属性"
-msgstr "nature"
+msgstr "Property"
 
 #: .\inventory\templates\inventory\item.html:4
 #: .\inventory\templates\inventory\item.html:9
 msgid "详情"
-msgstr "feeling"
+msgstr "Detail"
 
 #: .\inventory\templates\inventory\item.html:12
 #: .\log\templates\log\logs.html:4 .\log\templates\log\logs.html:6
@@ -385,7 +385,7 @@ msgstr "Logs"
 #: .\inventory\templates\inventory\item.html:64
 #: .\inventory\templates\inventory\items.html:44
 msgid "未放入"
-msgstr "Put in"
+msgstr "--"
 
 #: .\inventory\templates\inventory\item.html:78
 msgid "关联用户"
@@ -402,7 +402,7 @@ msgstr "Edit"
 #: .\inventory\templates\inventory\items.html:119
 #: .\inventory\templates\inventory\location.html:246
 msgid "确认"
-msgstr "Yes"
+msgstr "Confirm"
 
 #: .\inventory\templates\inventory\item.html:110
 msgid "相关物品/属性"
@@ -426,20 +426,20 @@ msgstr "Delete"
 
 #: .\inventory\templates\inventory\item.html:139
 msgid "取消关联"
-msgstr "Elimination correlation"
+msgstr "unlink"
 
 #: .\inventory\templates\inventory\item.html:139
 msgid "取关"
-msgstr "shut"
+msgstr "Unlink"
 
 #: .\inventory\templates\inventory\item.html:175
 #: .\personal\templates\personal\locreq.html:155
 msgid "您确认要"
-msgstr "Confirm that"
+msgstr "Do you confirm to "
 
 #: .\inventory\templates\inventory\items.html:4
 msgid "列表"
-msgstr "surface"
+msgstr "List"
 
 #: .\inventory\templates\inventory\items.html:13
 #: .\inventory\templates\inventory\templates.html:8
