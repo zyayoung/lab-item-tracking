@@ -943,7 +943,7 @@ msgstr "Daily activity"
 
 #: .\traffic\templates\traffic\locations.html:27
 msgid "位置关系"
-msgstr "Place relation"
+msgstr "Locations"
 
 #: .\traffic\templates\traffic\locations.html:40
 msgid "操作次数"
@@ -951,7 +951,7 @@ msgstr "Operations"
 
 #: .\traffic\templates\traffic\pages.html:74
 msgid "平均加载时间"
-msgstr "Average loading time"
+msgstr "Average Load Time "
 
 #: .\traffic\templates\traffic\pages.html:74
 #: .\traffic\templates\traffic\pages.html:78
@@ -961,11 +961,11 @@ msgstr "ms"
 
 #: .\traffic\templates\traffic\pages.html:78
 msgid "最大加载时间"
-msgstr "Max loading time"
+msgstr "Max Load Time "
 
 #: .\traffic\templates\traffic\pages.html:239
 msgid "各页面加载总耗时"
-msgstr "Total loading time"
+msgstr "Total Load Time "
 
 #: .\traffic\templates\traffic\pages.html:240
 #: .\traffic\templates\traffic\pages.html:247
@@ -986,7 +986,7 @@ msgstr "Today"
 
 #: .\traffic\templates\traffic\users.html:23
 msgid "活跃"
-msgstr " Activity"
+msgstr " VIsits"
 
 #: .\traffic\templates\traffic\users.html:32
 msgid "前一天"
