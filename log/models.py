@@ -42,6 +42,14 @@ class Log(models.Model):
         null=True,
     )
 
+    def get_obj_html(self):
+        url = self.obj_url();
+        obj = self.obj();
+        if obj is not None:
+            return '<a href="{}">{}</a>'.format(url,obj)
+        else:
+            return _('已删除')
+
     def obj_url(self):
         if self.category == '物品' or self.category == '物品属性':
             return resolve_url('inventory:item', self.obj_id)
@@ -63,7 +71,7 @@ class Log(models.Model):
             elif self.category == '用户':
                 return myUser.objects.get(id=self.obj_id)
         except:
-            return _('已删除')
+            return None
 
     def get_html(self, name):
         if not name:

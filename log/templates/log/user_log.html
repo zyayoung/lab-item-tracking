@@ -37,9 +37,7 @@
         <tr>
             <td>{% trans log.category %}</td>
             <td>
-                <a href="{{ log.obj_url }}">
-                    {{ log.obj }}
-                </a>
+                {{ log.get_obj_html|safe }}
             </td>
             <td>{% trans log.attribute %}</td>
             <td>{{ log.get_before_html|safe }}</td>
