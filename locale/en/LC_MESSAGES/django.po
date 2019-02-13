@@ -156,7 +156,7 @@ msgstr "End"
 #: .\inventory\templates\inventory\template_edit.html:25
 #: .\personal\templates\personal\locreq.html:131
 msgid "提示信息"
-msgstr "Show information"
+msgstr "Placehoder"
 
 #: .\inventory\templates\inventory\additem2loc.html:95
 #: .\inventory\templates\inventory\index.html:152
@@ -237,7 +237,7 @@ msgstr "Item"
 #: .\inventory\templates\inventory\index.html:21
 #: .\inventory\templates\inventory\templates.html:4
 msgid "物品列表"
-msgstr "List of Items"
+msgstr "Item List"
 
 #: .\inventory\templates\inventory\index.html:26
 #: .\inventory\templates\inventory\template_add.html:4
@@ -248,11 +248,11 @@ msgstr "Add Item"
 #: .\inventory\templates\inventory\index.html:34 .\inventory\views.py:40
 #: .\inventory\views.py:97 .\inventory\views.py:110
 msgid "物品属性"
-msgstr "Item Propertys"
+msgstr "Propertys"
 
 #: .\inventory\templates\inventory\index.html:38
 msgid "物品属性列表"
-msgstr "List of Item Propertys"
+msgstr "Property List"
 
 #: .\inventory\templates\inventory\index.html:43
 msgid "新建物品属性"
@@ -271,7 +271,7 @@ msgstr "Location"
 #: .\inventory\templates\inventory\index.html:55
 #: .\inventory\templates\inventory\location.html:4
 msgid "位置列表"
-msgstr "List of Locations"
+msgstr "Location List"
 
 #: .\inventory\templates\inventory\index.html:64
 #: .\inventory\templates\inventory\index.html:68
@@ -289,7 +289,7 @@ msgstr "Templates"
 
 #: .\inventory\templates\inventory\index.html:81
 msgid "模板列表"
-msgstr "List of Templates"
+msgstr "Template List"
 
 #: .\inventory\templates\inventory\index.html:90
 msgid "新建模板"
@@ -341,19 +341,19 @@ msgstr "The process may take several minutes."
 
 #: .\inventory\templates\inventory\index.html:184
 msgid "请耐心等待全部"
-msgstr "Wait patiently for all"
+msgstr "Pleace wait until "
 
 #: .\inventory\templates\inventory\index.html:184
 msgid "个文件下载完成"
-msgstr "File download completed"
+msgstr " files download."
 
 #: .\inventory\templates\inventory\info.html:4
 msgid "消息"
-msgstr "interest"
+msgstr "Info"
 
 #: .\inventory\templates\inventory\info.html:15
 msgid "秒后返回"
-msgstr "Backward return"
+msgstr "seconds"
 
 #: .\inventory\templates\inventory\item.html:4
 #: .\inventory\templates\inventory\item.html:9
@@ -389,7 +389,7 @@ msgstr "--"
 
 #: .\inventory\templates\inventory\item.html:78
 msgid "关联用户"
-msgstr "Related user"
+msgstr "Related Users"
 
 #: .\inventory\templates\inventory\item.html:81
 #: .\inventory\templates\inventory\item.html:137
