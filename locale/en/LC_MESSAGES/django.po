@@ -389,7 +389,7 @@ msgstr "Item template"
 #: .\inventory\templates\inventory\templates.html:22
 #: .\inventory\templates\inventory\templates.html:40
 msgid "物品属性模板"
-msgstr "Item Property Template"
+msgstr "Property Template"
 
 #: .\inventory\templates\inventory\index.html:104
 msgid "管理"
