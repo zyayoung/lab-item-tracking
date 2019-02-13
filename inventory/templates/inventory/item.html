@@ -126,17 +126,17 @@
 {% endfor %}
 {% if not item.template.is_property %}
 {% if item.location %}
-<a class="btn btn-outline-primary" role="button" href="{% url 'inventory:location' item.location.id %}?pending={{ item.id }}">{% trans "移动" %}</a>
-<a class="btn btn-outline-primary" role="button" href="#" onclick="cfm('{% url 'inventory:put' item.id 0 %}', '{{ item }}', '{% trans "取出" %}')">{% trans "取出" %}</a>
+<a class="btn btn-outline-primary" role="button" href="{% url 'inventory:location' item.location.id %}?pending={{ item.id }}"><i class="fa fa-archive" aria-hidden="true"></i> {% trans "移动" %}</a>
+<a class="btn btn-outline-primary" role="button" href="#" onclick="cfm('{% url 'inventory:put' item.id 0 %}', '{{ item }}', '{% trans "取出" %}')"><i class="fa fa-sign-out" aria-hidden="true"></i> {% trans "取出" %}</a>
 {% else %}
-<a class="btn btn-outline-primary" role="button" href="{% url 'inventory:location_root' %}?pending={{ item.id }}">{% trans "存入" %}</a>
+<a class="btn btn-outline-primary" role="button" href="{% url 'inventory:location_root' %}?pending={{ item.id }}"><i class="fa fa-archive" aria-hidden="true"></i> {% trans "存入" %}</a>
 {% endif %}
 {% endif %}
 {% if del_permission %}
-<a class="btn btn-outline-primary" role="button" href="#" onClick="cfm('{% url 'inventory:delete' item.id %}', '{{ item }}', '{% trans "删除" %}')">{% trans "删除" %}</a>
-<a class="btn btn-outline-primary" href="{% url 'inventory:edit' item.id %}">{% trans "编辑" %}</a>
+<a class="btn btn-outline-primary" role="button" href="#" onClick="cfm('{% url 'inventory:delete' item.id %}', '{{ item }}', '{% trans "删除" %}')"><i class="fa fa-trash" aria-hidden="true"></i> {% trans "删除" %}</a>
+<a class="btn btn-outline-primary" href="{% url 'inventory:edit' item.id %}"><i class="fa fa-edit" aria-hidden="true"></i> {% trans "编辑" %}</a>
 {% elif unlink_permission %}
-<a class="btn btn-outline-primary" role="button" href="#" onClick="cfm('{% url 'inventory:unlink' item.id %}', '{{ item }}', '{% trans "取消关联" %}')">{% trans "取关" %}</a>
+<a class="btn btn-outline-primary" role="button" href="#" onClick="cfm('{% url 'inventory:unlink' item.id %}', '{{ item }}', '{% trans "取消关联" %}')"><i class="fa fa-unlink" aria-hidden="true"></i> {% trans "取关" %}</a>
 {% endif %}
 <div class="modal fade" id="cfmModal" tabindex="-1" role="dialog" aria-labelledby="cfmModalTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
