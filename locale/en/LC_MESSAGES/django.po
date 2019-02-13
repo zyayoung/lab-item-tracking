@@ -248,7 +248,7 @@ msgstr "Add Item"
 #: .\inventory\templates\inventory\index.html:34 .\inventory\views.py:40
 #: .\inventory\views.py:97 .\inventory\views.py:110
 msgid "物品属性"
-msgstr "Propertys"
+msgstr "Property"
 
 #: .\inventory\templates\inventory\index.html:38
 msgid "物品属性列表"
@@ -333,11 +333,11 @@ msgstr "Log"
 
 #: .\inventory\templates\inventory\index.html:165
 msgid "您确认要备份数据库吗"
-msgstr "Are you sure you want to backup the database"
+msgstr "Do you confirm to download the database"
 
 #: .\inventory\templates\inventory\index.html:165
 msgid "该过程可能需要数分钟"
-msgstr "The process may take several minutes."
+msgstr "This process may take several minutes"
 
 #: .\inventory\templates\inventory\index.html:184
 msgid "请耐心等待全部"
