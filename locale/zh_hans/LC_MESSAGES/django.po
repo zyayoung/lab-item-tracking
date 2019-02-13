@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-02-13 10:26+0800\n"
+"POT-Creation-Date: 2019-02-13 15:47+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -32,7 +32,7 @@ msgstr ""
 #: .\inventory\templates\inventory\item.html:33
 #: .\inventory\templates\inventory\items.html:28
 #: .\inventory\templates\inventory\location.html:104
-#: .\inventory\templates\inventory\templates.html:31 .\inventory\views.py:452
+#: .\inventory\templates\inventory\templates.html:31 .\inventory\views.py:453
 msgid "名称"
 msgstr ""
 
@@ -129,6 +129,8 @@ msgstr ""
 #: .\inventory\templates\inventory\item.html:9
 #: .\inventory\templates\inventory\template.html:4
 #: .\inventory\templates\inventory\template.html:9
+#: .\inventory\templates\inventory\template_add.html:4
+#: .\inventory\templates\inventory\template_add.html:14
 #: .\inventory\templates\inventory\template_edit.html:4
 #: .\inventory\templates\inventory\template_edit.html:9
 #: .\inventory\templates\inventory\template_export.html:4
@@ -183,6 +185,8 @@ msgstr ""
 #: .\inventory\templates\inventory\items.html:21
 #: .\inventory\templates\inventory\location.html:21
 #: .\inventory\templates\inventory\select_with_add.html:7
+#: .\inventory\templates\inventory\template_add.html:4
+#: .\inventory\templates\inventory\template_add.html:14
 #: .\inventory\templates\inventory\templates.html:18
 msgid "新建"
 msgstr ""
@@ -328,7 +332,7 @@ msgid "另存为新"
 msgstr ""
 
 #: .\inventory\templates\inventory\index.html:4 .\templates\base.html:42
-#: .\templates\base.html:144 .\traffic\templates\traffic\calendar.html:4
+#: .\templates\base.html:146 .\traffic\templates\traffic\calendar.html:4
 #: .\traffic\templates\traffic\locations.html:4
 #: .\traffic\templates\traffic\pages.html:4
 #: .\traffic\templates\traffic\users.html:4
@@ -349,13 +353,19 @@ msgid "物品列表"
 msgstr ""
 
 #: .\inventory\templates\inventory\index.html:26
-#: .\inventory\templates\inventory\template_add.html:4
-#: .\inventory\templates\inventory\template_add.html:14
 msgid "新建物品"
 msgstr ""
 
-#: .\inventory\templates\inventory\index.html:34 .\inventory\views.py:41
-#: .\inventory\views.py:100 .\inventory\views.py:113
+#: .\inventory\templates\inventory\index.html:34
+#: .\inventory\templates\inventory\template.html:4
+#: .\inventory\templates\inventory\template.html:9
+#: .\inventory\templates\inventory\template_add.html:4
+#: .\inventory\templates\inventory\template_add.html:14
+#: .\inventory\templates\inventory\template_edit.html:4
+#: .\inventory\templates\inventory\template_edit.html:9
+#: .\inventory\templates\inventory\template_export.html:4
+#: .\inventory\templates\inventory\template_export.html:9
+#: .\inventory\views.py:41 .\inventory\views.py:100 .\inventory\views.py:113
 msgid "物品属性"
 msgstr ""
 
@@ -442,15 +452,7 @@ msgstr ""
 
 #: .\inventory\templates\inventory\item.html:4
 #: .\inventory\templates\inventory\item.html:9
-#: .\inventory\templates\inventory\template.html:4
-#: .\inventory\templates\inventory\template.html:9
 #: .\inventory\templates\inventory\template.html:55
-#: .\inventory\templates\inventory\template_add.html:4
-#: .\inventory\templates\inventory\template_add.html:14
-#: .\inventory\templates\inventory\template_edit.html:4
-#: .\inventory\templates\inventory\template_edit.html:9
-#: .\inventory\templates\inventory\template_export.html:4
-#: .\inventory\templates\inventory\template_export.html:9
 #: .\inventory\templates\inventory\templates.html:33 .\log\models.py:30
 msgid "属性"
 msgstr ""
@@ -671,6 +673,16 @@ msgstr ""
 msgid "没有符合条件的物品模板"
 msgstr ""
 
+#: .\inventory\views.py:114 .\inventory\views.py:320 .\inventory\views.py:447
+#: .\inventory\views.py:492 .\inventory\views.py:752 .\login\views.py:36
+#: .\login\views.py:75
+msgid "请检查填写的内容！"
+msgstr ""
+
+#: .\inventory\views.py:157 .\inventory\views.py:458 .\inventory\views.py:651
+msgid "新建成功！"
+msgstr ""
+
 #: .\inventory\views.py:250
 msgid "作为以下"
 msgstr ""
@@ -679,8 +691,36 @@ msgstr ""
 msgid "的"
 msgstr ""
 
-#: .\inventory\views.py:453
+#: .\inventory\views.py:270
+msgid "保存成功！"
+msgstr ""
+
+#: .\inventory\views.py:381
+msgid "修改成功！"
+msgstr ""
+
+#: .\inventory\views.py:454
 msgid "用于显示的名称"
+msgstr ""
+
+#: .\inventory\views.py:460
+msgid "模板名称重复！"
+msgstr ""
+
+#: .\inventory\views.py:544
+msgid "保存成功"
+msgstr ""
+
+#: .\inventory\views.py:639
+msgid "路径名称重复！"
+msgstr ""
+
+#: .\inventory\views.py:759
+msgid "请勿重复提交"
+msgstr ""
+
+#: .\inventory\views.py:769
+msgid "提交成功"
 msgstr ""
 
 #: .\lab_item_tracking\settings.py:135
@@ -779,6 +819,7 @@ msgid "主管"
 msgstr ""
 
 #: .\login\models.py:32 .\traffic\templates\traffic\users.html:160
+#: .\traffic\views.py:170
 msgid "员工"
 msgstr ""
 
@@ -813,6 +854,34 @@ msgstr ""
 #: .\login\templates\login\register.html:4
 #: .\login\templates\login\register.html:14 .\templates\base.html:120
 msgid "注册"
+msgstr ""
+
+#: .\login\views.py:43
+msgid "该用户还未通过邮件确认！请查看收件箱（及垃圾邮件）"
+msgstr ""
+
+#: .\login\views.py:47
+msgid "该用户不在白名单中，请联系网站管理员！"
+msgstr ""
+
+#: .\login\views.py:56
+msgid "密码不正确！"
+msgstr ""
+
+#: .\login\views.py:58
+msgid "用户不存在！"
+msgstr ""
+
+#: .\login\views.py:61 .\login\views.py:110
+msgid "验证码不能为空"
+msgstr ""
+
+#: .\login\views.py:82
+msgid "两次输入的密码不同！"
+msgstr ""
+
+#: .\login\views.py:105
+msgid "请前往注册邮箱，进行邮件确认！（注意检查垃圾邮件）"
 msgstr ""
 
 #: .\personal\templates\personal\locreq.html:6
@@ -904,11 +973,11 @@ msgstr ""
 msgid "登出"
 msgstr ""
 
-#: .\templates\base.html:150
+#: .\templates\base.html:152
 msgid "使用手册"
 msgstr ""
 
-#: .\templates\base.html:153
+#: .\templates\base.html:155
 msgid "反馈问题"
 msgstr ""
 
@@ -1009,4 +1078,8 @@ msgstr ""
 
 #: .\traffic\templates\traffic\users.html:76
 msgid "访问来源"
+msgstr ""
+
+#: .\traffic\views.py:134 .\traffic\views.py:159
+msgid "总量"
 msgstr ""

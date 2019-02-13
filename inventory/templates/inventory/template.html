@@ -1,12 +1,12 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% load staticfiles %}
-{% block title %}{% trans "物品" %}{% if template.is_property %}{% trans "属性" %}{% endif %}{% trans "模板详情" %}：{{ template }} {% endblock %}
+{% block title %}{% if is_property %}{% trans "物品属性" %}{% else %}{% trans "物品" %}{% endif %} {% trans "模板详情" %}：{{ template }} {% endblock %}
 {% block content %}
 {% if message %}
 <div class="alert alert-warning">{{ message }}</div>
 {% endif %}
-<p class="lead">{% trans "物品" %}{% if template.is_property %}{% trans "属性" %}{% endif %}{% trans "模板详情" %}：{{ template }}</p>
+<p class="lead">{% if is_property %}{% trans "物品属性" %}{% else %}{% trans "物品" %}{% endif %} {% trans "模板详情" %}：{{ template }}</p>
 {% if tmp_user.is_superadmin %}
 <span class="lead pull-left">{% trans "可使用该模板用户" %}：</span>
 {% if template.allowed_users.exists %}

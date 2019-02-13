@@ -8,7 +8,7 @@ from inventory.utils import *
 from inventory import forms
 from log.utils import *
 import re
-
+from django.db import IntegrityError
 from django.utils.translation import gettext_lazy as _
 from django.utils.translation import gettext
 from inventory.models import Item, Location, LocationPermissionApplication, ItemTemplate
@@ -111,7 +111,7 @@ class AddItemView(generic.View):
         action_translated = _(action) + ' '
         is_property = 'prop' in request.path
         name = _("物品属性") if is_property else _("物品")
-        message = "请检查填写的内容！"
+        message = _("请检查填写的内容！")
         add_form = forms.AddItemForm(request.POST)
         tmp_user = myUser.objects.get(id=request.session.get('user_id'))
         if add_form.is_valid():
@@ -154,7 +154,7 @@ class AddItemView(generic.View):
             set_extradata(item, template, data, tmp_user)
         else:
             return render(request, 'inventory/edit.html', locals())
-        message = "新建成功！"
+        message = _("新建成功！")
         if request.POST.get('is_popup', False):
             select_id = request.POST.get('select_id', '')
             return render(request, 'inventory/fill_form_in_parent.html',
@@ -267,7 +267,7 @@ class ItemView(generic.View):
             if allowed_users_old != allowed_users_new:
                 add_log(self.tmp_user, item.id, '物品', '白名单', allowed_users_old,
                         allowed_users_new)
-            self.message = "保存成功！"
+            self.message = _("保存成功！")
         return self.get(request, *args, **kwargs)
 
 
@@ -317,7 +317,7 @@ class EditItemView(generic.View):
             messages.error(request,
                            "只有创建人（{}）及其管理员可以编辑物品！".format(item.owner.name))
             return render(request, 'inventory/info.html', locals())
-        message = "请检查填写的内容！"
+        message = _("请检查填写的内容！")
         add_form = forms.AddItemForm(request.POST)
         if add_form.is_valid():
             name_old = item.name
@@ -378,7 +378,7 @@ class EditItemView(generic.View):
             item.is_public = add_form.cleaned_data['public']
             set_extradata(item, template, data, tmp_user)
             item.save()
-            message = "修改成功！"
+            message = _("修改成功！")
             return redirect('inventory:item', item.id)
 
 
@@ -444,17 +444,21 @@ class AddTemplateView(generic.View):
     def post(self, request):
         tmp_user = myUser.objects.get(id=request.session.get('user_id'))
         add_form = forms.AddTemplateForm(request.POST)
-        message = "请检查填写的内容！"
+        message = _("请检查填写的内容！")
         if add_form.is_valid():
             name = add_form.cleaned_data['name']
-            new_template = ItemTemplate.objects.create(
-                name=name,
-                key_name=_("名称"),
-                key_name_placeholder=_("用于显示的名称"),
-                is_property=request.GET.get('property') is not None,
-            )
-            new_template.save()
-            message = "新建成功！"
+            try:
+                new_template = ItemTemplate.objects.create(
+                    name=name,
+                    key_name=_("名称"),
+                    key_name_placeholder=_("用于显示的名称"),
+                    is_property=request.GET.get('property') is not None,
+                )
+                new_template.save()
+                message = _("新建成功！")
+            except IntegrityError:
+                message = _("模板名称重复！")
+                return render(request, 'inventory/template_add.html', locals())
             category = "物品属性" if request.GET.get('property') else "物品"
             add_log(tmp_user, new_template.id, category, '名称', '', name)
             return redirect('inventory:template_edit', new_template.id)
@@ -485,7 +489,7 @@ class EditTemplateView(generic.View):
         choices.extend([
             name[0] for name in ItemTemplate.objects.all().values_list('name')
         ])
-        message = "请检查填写的内容！"
+        message = _("请检查填写的内容！")
         template = get_object_or_404(ItemTemplate, id=kwargs.get('id'))
         my_list = []
         idx_list = []
@@ -537,7 +541,7 @@ class EditTemplateView(generic.View):
         if extra_data_old != extra_data_new:
             add_log(tmp_user, template.id, '模板', '扩展数据', extra_data_old,
                     extra_data_new)
-        message = "保存成功"
+        message = _("保存成功")
         return redirect('inventory:template', kwargs.get('id'))
 
 
@@ -632,7 +636,7 @@ class LocationView(generic.View):
                     path=path,
                     parent=loc_now,
             ).exists():
-                self.message = "路径名称重复！"
+                self.message = _("路径名称重复！")
                 return self.get(request, *args, **kwargs)
             new_location = Location.objects.create(
                 path=path,
@@ -644,7 +648,7 @@ class LocationView(generic.View):
                     new_location.__str__())
             add_log(tmp_user, new_location.id, '位置', '公开', 'False',
                     'True' if public else 'False')
-            self.message = "新建成功！"
+            self.message = _("新建成功！")
             return self.get(request, *args, **kwargs)
 
 
@@ -745,14 +749,14 @@ class Apply4Loc(generic.View):
             get_my_loc(tmp_user, loc_id)
         except Http404:
             apply_form = forms.ApplyLocationForm(request.POST)
-            message = "请检查填写的内容！"
+            message = _("请检查填写的内容！")
             if apply_form.is_valid():
                 if LocationPermissionApplication.objects.filter(
                         applicant=tmp_user,
                         location=loc,
                         closed=False,
                 ).exists():
-                    message = "请勿重复提交"
+                    message = _("请勿重复提交")
                     return render(request, 'inventory/location_apply.html',
                                   locals())
                 else:
@@ -762,7 +766,7 @@ class Apply4Loc(generic.View):
                         explanation=apply_form.cleaned_data['note'],
                     )
                     new_form.save()
-                    message = "提交成功"
+                    message = _("提交成功")
                     return redirect('personal:mylocreq')
             else:
                 return self.get(request)
