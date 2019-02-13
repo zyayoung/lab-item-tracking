@@ -191,7 +191,7 @@ msgstr "Do you sure"
 #: .\inventory\templates\inventory\template.html:106
 #: .\inventory\templates\inventory\template_export.html:47
 msgid "吗"
-msgstr ""
+msgstr " "
 
 #: .\inventory\templates\inventory\edit.html:33
 #: .\inventory\templates\inventory\location_apply.html:21
@@ -460,13 +460,13 @@ msgstr "Choose where to put "
 
 #: .\inventory\templates\inventory\location.html:10
 msgid "的位置"
-msgstr ""
+msgstr " "
 
 #: .\inventory\templates\inventory\location.html:25
 #: .\inventory\templates\inventory\location.html:209
 #: .\inventory\templates\inventory\location.html:216
 msgid "二维码"
-msgstr "QR code"
+msgstr "QR"
 
 #: .\inventory\templates\inventory\location.html:33
 msgid "路径"
@@ -474,18 +474,18 @@ msgstr "Path"
 
 #: .\inventory\templates\inventory\location.html:34
 msgid "可使用用户"
-msgstr "User use"
+msgstr "Available"
 
 #: .\inventory\templates\inventory\location.html:63
 #: .\inventory\templates\inventory\template.html:19
 msgid "全部"
-msgstr "ministry"
+msgstr "All"
 
 #: .\inventory\templates\inventory\location.html:77
 #: .\inventory\templates\inventory\location_apply.html:4
 #: .\inventory\templates\inventory\location_apply.html:16
 msgid "申请权限"
-msgstr "Please authority"
+msgstr "Apply for Permission"
 
 #: .\inventory\templates\inventory\location.html:88
 msgid "已存放物品"
