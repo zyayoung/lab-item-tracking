@@ -246,7 +246,7 @@ class ItemView(generic.View):
                 }))
         relation_info = {}
         for key, values in item.related_items.items():
-            relation_info['作为以下' + key.replace('__', '的')] = get_my_list(
+            relation_info[_('作为以下') + key.replace('__', _('的'))] = get_my_list(
                 tmp_user, Item.objects.filter(id__in=values))
         del_permission = item.del_permission(tmp_user)
         unlink_permission = item.unlink_permission(tmp_user)

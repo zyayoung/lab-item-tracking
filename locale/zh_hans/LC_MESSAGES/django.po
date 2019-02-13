@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-02-13 00:04+0800\n"
+"POT-Creation-Date: 2019-02-13 09:55+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -23,7 +23,7 @@ msgstr ""
 #: .\inventory\templates\inventory\item.html:33
 #: .\inventory\templates\inventory\items.html:28
 #: .\inventory\templates\inventory\location.html:104
-#: .\inventory\templates\inventory\templates.html:31 .\inventory\views.py:447
+#: .\inventory\templates\inventory\templates.html:31 .\inventory\views.py:451
 msgid "名称"
 msgstr ""
 
@@ -229,8 +229,8 @@ msgstr ""
 #: .\inventory\templates\inventory\template_edit.html:9
 #: .\inventory\templates\inventory\template_export.html:4
 #: .\inventory\templates\inventory\template_export.html:9
-#: .\inventory\views.py:40 .\inventory\views.py:97 .\inventory\views.py:110
-#: .\inventory\views.py:293 .\templates\base.html:55
+#: .\inventory\views.py:40 .\inventory\views.py:99 .\inventory\views.py:112
+#: .\inventory\views.py:295 .\templates\base.html:55
 msgid "物品"
 msgstr ""
 
@@ -246,7 +246,7 @@ msgid "新建物品"
 msgstr ""
 
 #: .\inventory\templates\inventory\index.html:34 .\inventory\views.py:40
-#: .\inventory\views.py:97 .\inventory\views.py:110
+#: .\inventory\views.py:99 .\inventory\views.py:112
 msgid "物品属性"
 msgstr ""
 
@@ -590,7 +590,15 @@ msgstr ""
 msgid "没有符合条件的物品模板"
 msgstr ""
 
-#: .\inventory\views.py:448
+#: .\inventory\views.py:249
+msgid "作为以下"
+msgstr ""
+
+#: .\inventory\views.py:249
+msgid "的"
+msgstr ""
+
+#: .\inventory\views.py:452
 msgid "用于显示的名称"
 msgstr ""
 
@@ -786,10 +794,6 @@ msgstr ""
 
 #: .\templates\base.html:71
 msgid "数据库"
-msgstr ""
-
-#: .\templates\base.html:82
-msgid "切换语言"
 msgstr ""
 
 #: .\templates\base.html:107
