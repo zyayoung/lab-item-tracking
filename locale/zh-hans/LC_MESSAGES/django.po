@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-02-13 10:26+0800\n"
+"POT-Creation-Date: 2019-02-13 10:02+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,18 +16,8 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
-
-#: .\inventory\admin.py:35
-msgid "实验室物品数据库"
-msgstr ""
-
-#: .\inventory\admin.py:36 .\templates\base.html:71
-msgid "数据库"
-msgstr ""
 
 #: .\inventory\forms.py:11 .\inventory\forms.py:134 .\inventory\forms.py:181
-#: .\inventory\models.py:89
 #: .\inventory\templates\inventory\additem2loc.html:10
 #: .\inventory\templates\inventory\item.html:33
 #: .\inventory\templates\inventory\items.html:28
@@ -36,8 +26,7 @@ msgstr ""
 msgid "名称"
 msgstr ""
 
-#: .\inventory\forms.py:17 .\inventory\forms.py:186 .\inventory\models.py:24
-#: .\inventory\models.py:115
+#: .\inventory\forms.py:17 .\inventory\forms.py:186
 msgid "公开"
 msgstr ""
 
@@ -50,132 +39,13 @@ msgstr ""
 #: .\inventory\templates\inventory\location.html:105
 #: .\inventory\templates\inventory\template.html:26
 #: .\inventory\templates\inventory\template_edit.html:23
-#: .\inventory\templates\inventory\templates.html:32 .\log\models.py:25
+#: .\inventory\templates\inventory\templates.html:32
 #: .\log\templates\log\logs.html:30 .\log\templates\log\user_log.html:28
 msgid "类型"
 msgstr ""
 
 #: .\inventory\forms.py:195
 msgid "备注"
-msgstr ""
-
-#: .\inventory\models.py:15 .\inventory\templates\inventory\location.html:33
-msgid "路径"
-msgstr ""
-
-#: .\inventory\models.py:21
-msgid "父位置"
-msgstr ""
-
-#: .\inventory\models.py:29 .\inventory\models.py:67 .\inventory\models.py:119
-msgid "白名单"
-msgstr ""
-
-#: .\inventory\models.py:45 .\inventory\models.py:105
-#: .\inventory\templates\inventory\index.html:51
-#: .\inventory\templates\inventory\item.html:59
-#: .\inventory\templates\inventory\items.html:30 .\templates\base.html:60
-#: .\traffic\templates\traffic\calendar.html:13
-#: .\traffic\templates\traffic\locations.html:13
-#: .\traffic\templates\traffic\pages.html:13
-#: .\traffic\templates\traffic\users.html:13
-msgid "位置"
-msgstr ""
-
-#: .\inventory\models.py:50
-msgid "模块名称"
-msgstr ""
-
-#: .\inventory\models.py:54
-msgid "关键字段名称"
-msgstr ""
-
-#: .\inventory\models.py:59
-msgid "关键字段占位符"
-msgstr ""
-
-#: .\inventory\models.py:61 .\inventory\models.py:98
-msgid "扩展数据"
-msgstr ""
-
-#: .\inventory\models.py:62
-msgid "不可存入"
-msgstr ""
-
-#: .\inventory\models.py:84 .\inventory\templates\inventory\index.html:77
-#: .\inventory\templates\inventory\template_add.html:4
-#: .\inventory\templates\inventory\template_add.html:14
-#: .\inventory\templates\inventory\templates.html:6 .\templates\base.html:65
-msgid "模板"
-msgstr ""
-
-#: .\inventory\models.py:95
-msgid "扩展数据模板"
-msgstr ""
-
-#: .\inventory\models.py:99
-msgid "关联物品"
-msgstr ""
-
-#: .\inventory\models.py:112
-#: .\inventory\templates\inventory\additem2loc.html:12
-#: .\inventory\templates\inventory\item.html:70
-#: .\inventory\templates\inventory\items.html:33
-msgid "创建用户"
-msgstr ""
-
-#: .\inventory\models.py:140 .\inventory\templates\inventory\index.html:17
-#: .\inventory\templates\inventory\item.html:4
-#: .\inventory\templates\inventory\item.html:9
-#: .\inventory\templates\inventory\template.html:4
-#: .\inventory\templates\inventory\template.html:9
-#: .\inventory\templates\inventory\template_edit.html:4
-#: .\inventory\templates\inventory\template_edit.html:9
-#: .\inventory\templates\inventory\template_export.html:4
-#: .\inventory\templates\inventory\template_export.html:9
-#: .\inventory\views.py:41 .\inventory\views.py:100 .\inventory\views.py:113
-#: .\inventory\views.py:296 .\templates\base.html:55
-msgid "物品"
-msgstr ""
-
-#: .\inventory\models.py:147 .\personal\templates\personal\locreq.html:27
-#: .\personal\templates\personal\mylocreq.html:31
-msgid "申请人"
-msgstr ""
-
-#: .\inventory\models.py:155 .\personal\templates\personal\locreq.html:28
-#: .\personal\templates\personal\mylocreq.html:32
-msgid "申请位置"
-msgstr ""
-
-#: .\inventory\models.py:164 .\personal\templates\personal\locreq.html:29
-#: .\personal\templates\personal\mylocreq.html:33
-msgid "申请理由"
-msgstr ""
-
-#: .\inventory\models.py:166
-msgid "是否同意"
-msgstr ""
-
-#: .\inventory\models.py:167 .\inventory\models.py:168
-msgid "是否拒绝"
-msgstr ""
-
-#: .\inventory\models.py:169 .\personal\templates\personal\locreq.html:30
-#: .\personal\templates\personal\mylocreq.html:34
-msgid "申请时间"
-msgstr ""
-
-#: .\inventory\models.py:172 .\personal\templates\personal\locreq.html:31
-#: .\personal\templates\personal\mylocreq.html:35
-msgid "处理人"
-msgstr ""
-
-#: .\inventory\models.py:199 .\inventory\templates\inventory\index.html:64
-#: .\inventory\templates\inventory\index.html:68
-#: .\personal\templates\personal\locreq.html:4
-#: .\personal\templates\personal\mylocreq.html:4
-msgid "位置申请"
 msgstr ""
 
 #: .\inventory\templates\inventory\add.html:4
@@ -198,6 +68,12 @@ msgstr ""
 
 #: .\inventory\templates\inventory\additem2loc.html:7
 msgid "存入物品到"
+msgstr ""
+
+#: .\inventory\templates\inventory\additem2loc.html:12
+#: .\inventory\templates\inventory\item.html:70
+#: .\inventory\templates\inventory\items.html:33
+msgid "创建用户"
 msgstr ""
 
 #: .\inventory\templates\inventory\additem2loc.html:24
@@ -343,6 +219,20 @@ msgstr ""
 msgid "您尚未登录"
 msgstr ""
 
+#: .\inventory\templates\inventory\index.html:17
+#: .\inventory\templates\inventory\item.html:4
+#: .\inventory\templates\inventory\item.html:9
+#: .\inventory\templates\inventory\template.html:4
+#: .\inventory\templates\inventory\template.html:9
+#: .\inventory\templates\inventory\template_edit.html:4
+#: .\inventory\templates\inventory\template_edit.html:9
+#: .\inventory\templates\inventory\template_export.html:4
+#: .\inventory\templates\inventory\template_export.html:9
+#: .\inventory\views.py:41 .\inventory\views.py:100 .\inventory\views.py:113
+#: .\inventory\views.py:296 .\templates\base.html:55
+msgid "物品"
+msgstr ""
+
 #: .\inventory\templates\inventory\index.html:21
 #: .\inventory\templates\inventory\templates.html:4
 msgid "物品列表"
@@ -367,9 +257,33 @@ msgstr ""
 msgid "新建物品属性"
 msgstr ""
 
+#: .\inventory\templates\inventory\index.html:51
+#: .\inventory\templates\inventory\item.html:59
+#: .\inventory\templates\inventory\items.html:30 .\templates\base.html:60
+#: .\traffic\templates\traffic\calendar.html:13
+#: .\traffic\templates\traffic\locations.html:13
+#: .\traffic\templates\traffic\pages.html:13
+#: .\traffic\templates\traffic\users.html:13
+msgid "位置"
+msgstr ""
+
 #: .\inventory\templates\inventory\index.html:55
 #: .\inventory\templates\inventory\location.html:4
 msgid "位置列表"
+msgstr ""
+
+#: .\inventory\templates\inventory\index.html:64
+#: .\inventory\templates\inventory\index.html:68
+#: .\personal\templates\personal\locreq.html:4
+#: .\personal\templates\personal\mylocreq.html:4
+msgid "位置申请"
+msgstr ""
+
+#: .\inventory\templates\inventory\index.html:77
+#: .\inventory\templates\inventory\template_add.html:4
+#: .\inventory\templates\inventory\template_add.html:14
+#: .\inventory\templates\inventory\templates.html:6 .\templates\base.html:65
+msgid "模板"
 msgstr ""
 
 #: .\inventory\templates\inventory\index.html:81
@@ -451,7 +365,7 @@ msgstr ""
 #: .\inventory\templates\inventory\template_edit.html:9
 #: .\inventory\templates\inventory\template_export.html:4
 #: .\inventory\templates\inventory\template_export.html:9
-#: .\inventory\templates\inventory\templates.html:33 .\log\models.py:30
+#: .\inventory\templates\inventory\templates.html:33
 msgid "属性"
 msgstr ""
 
@@ -460,7 +374,7 @@ msgstr ""
 msgid "详情"
 msgstr ""
 
-#: .\inventory\templates\inventory\item.html:12 .\log\models.py:87
+#: .\inventory\templates\inventory\item.html:12
 #: .\log\templates\log\logs.html:4 .\log\templates\log\logs.html:6
 #: .\log\templates\log\logs.html:115
 #: .\personal\templates\personal\user.html:14
@@ -551,6 +465,10 @@ msgstr ""
 #: .\inventory\templates\inventory\location.html:209
 #: .\inventory\templates\inventory\location.html:216
 msgid "二维码"
+msgstr ""
+
+#: .\inventory\templates\inventory\location.html:33
+msgid "路径"
 msgstr ""
 
 #: .\inventory\templates\inventory\location.html:34
@@ -685,31 +603,10 @@ msgstr ""
 
 #: .\lab_item_tracking\settings.py:135
 msgid "Chinese"
-msgstr "中文"
+msgstr ""
 
 #: .\lab_item_tracking\settings.py:136
 msgid "English"
-msgstr "英文"
-
-#: .\log\models.py:14 .\log\templates\log\item_log.html:32
-#: .\log\templates\log\logs.html:36
-msgid "操作人"
-msgstr ""
-
-#: .\log\models.py:21
-msgid "ID"
-msgstr ""
-
-#: .\log\models.py:35
-msgid "操作前"
-msgstr ""
-
-#: .\log\models.py:40
-msgid "操作后"
-msgstr ""
-
-#: .\log\models.py:66
-msgid "已删除"
 msgstr ""
 
 #: .\log\templates\log\item_log.html:10 .\log\templates\log\logs.html:10
@@ -737,6 +634,10 @@ msgstr ""
 msgid "时间"
 msgstr ""
 
+#: .\log\templates\log\item_log.html:32 .\log\templates\log\logs.html:36
+msgid "操作人"
+msgstr ""
+
 #: .\log\templates\log\logs.html:31 .\log\templates\log\user_log.html:29
 msgid "对象"
 msgstr ""
@@ -762,39 +663,16 @@ msgstr ""
 msgid "邮箱地址"
 msgstr ""
 
-#: .\login\models.py:12
-msgid "设置"
-msgstr ""
-
-#: .\login\models.py:17
-msgid "被管理员工"
-msgstr ""
-
-#: .\login\models.py:22 .\login\models.py:28
+#: .\login\models.py:27
 msgid "超级管理员"
 msgstr ""
 
-#: .\login\models.py:30 .\traffic\templates\traffic\users.html:160
+#: .\login\models.py:29 .\traffic\templates\traffic\users.html:160
 msgid "主管"
 msgstr ""
 
-#: .\login\models.py:32 .\traffic\templates\traffic\users.html:160
+#: .\login\models.py:31 .\traffic\templates\traffic\users.html:160
 msgid "员工"
-msgstr ""
-
-#: .\login\models.py:40 .\traffic\templates\traffic\calendar.html:10
-#: .\traffic\templates\traffic\locations.html:10
-#: .\traffic\templates\traffic\pages.html:10
-#: .\traffic\templates\traffic\users.html:10
-msgid "用户"
-msgstr ""
-
-#: .\login\models.py:54
-msgid "确认码"
-msgstr ""
-
-#: .\login\models.py:66
-msgid "邮箱白名单"
 msgstr ""
 
 #: .\login\templates\login\confirm.html:3
@@ -828,6 +706,31 @@ msgstr ""
 #: .\personal\templates\personal\locreq.html:19
 #: .\personal\templates\personal\mylocreq.html:22
 msgid "我的申请"
+msgstr ""
+
+#: .\personal\templates\personal\locreq.html:27
+#: .\personal\templates\personal\mylocreq.html:31
+msgid "申请人"
+msgstr ""
+
+#: .\personal\templates\personal\locreq.html:28
+#: .\personal\templates\personal\mylocreq.html:32
+msgid "申请位置"
+msgstr ""
+
+#: .\personal\templates\personal\locreq.html:29
+#: .\personal\templates\personal\mylocreq.html:33
+msgid "申请理由"
+msgstr ""
+
+#: .\personal\templates\personal\locreq.html:30
+#: .\personal\templates\personal\mylocreq.html:34
+msgid "申请时间"
+msgstr ""
+
+#: .\personal\templates\personal\locreq.html:31
+#: .\personal\templates\personal\mylocreq.html:35
+msgid "处理人"
 msgstr ""
 
 #: .\personal\templates\personal\locreq.html:32
@@ -900,6 +803,10 @@ msgstr ""
 msgid "注册时间"
 msgstr ""
 
+#: .\templates\base.html:71
+msgid "数据库"
+msgstr ""
+
 #: .\templates\base.html:107
 msgid "登出"
 msgstr ""
@@ -910,6 +817,13 @@ msgstr ""
 
 #: .\templates\base.html:153
 msgid "反馈问题"
+msgstr ""
+
+#: .\traffic\templates\traffic\calendar.html:10
+#: .\traffic\templates\traffic\locations.html:10
+#: .\traffic\templates\traffic\pages.html:10
+#: .\traffic\templates\traffic\users.html:10
+msgid "用户"
 msgstr ""
 
 #: .\traffic\templates\traffic\calendar.html:16

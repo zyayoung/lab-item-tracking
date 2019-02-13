@@ -2,6 +2,7 @@ from django.contrib import admin
 from .models import *
 from django.contrib.auth.models import Group, User
 from django.views.decorators.cache import never_cache
+from django.utils.translation import gettext_lazy as _
 
 
 class LocationPermissionApplicationAdmin(admin.ModelAdmin):
@@ -31,8 +32,8 @@ class ItemTemplateAdmin(admin.ModelAdmin):
     date_hierarchy = 'create_time'
 
 
-admin.site.site_header = "实验室物品数据库"
-admin.site.site_title = "数据库"
+admin.site.site_header = _("实验室物品数据库")
+admin.site.site_title = _("数据库")
 
 admin.site.unregister(Group)
 admin.site.unregister(User)

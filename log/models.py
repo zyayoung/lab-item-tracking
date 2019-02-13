@@ -11,33 +11,33 @@ from django.shortcuts import resolve_url
 class Log(models.Model):
     operator = models.ForeignKey(
         myUser,
-        verbose_name='操作人',
+        verbose_name=_("操作人"),
         null=True,
         blank=True,
         on_delete=models.SET_NULL,
     )
     time = models.DateTimeField('操作时间', auto_now_add=True)
     obj_id = models.IntegerField(
-        verbose_name='ID',
+        verbose_name=_("ID"),
         default=0,
     )
     category = models.TextField(
-        verbose_name='类型',
+        verbose_name=_("类型"),
         blank=True,
         null=True,
     )
     attribute = models.TextField(
-        verbose_name='属性',
+        verbose_name=_("属性"),
         blank=True,
         null=True,
     )
     before = models.TextField(
-        verbose_name='操作前',
+        verbose_name=_("操作前"),
         blank=True,
         null=True,
     )
     after = models.TextField(
-        verbose_name='操作后',
+        verbose_name=_("操作后"),
         blank=True,
         null=True,
     )
@@ -63,7 +63,7 @@ class Log(models.Model):
             elif self.category == '用户':
                 return myUser.objects.get(id=self.obj_id)
         except:
-            return '已删除'
+            return _('已删除')
 
     def get_html(self, name):
         html = name
@@ -84,5 +84,5 @@ class Log(models.Model):
 
     class Meta:
         ordering = ['-time']
-        verbose_name = "日志"
+        verbose_name = _("日志")
         verbose_name_plural = verbose_name
