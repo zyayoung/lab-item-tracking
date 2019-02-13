@@ -93,7 +93,7 @@
                 </a>
                 {% else %}
                 <a class="btn btn-outline-primary" href="#" role="button" onClick="cfm()">
-                    {% trans "将" %}{{ pending }}{% trans "存入此位置" %}
+                    <i class="fa fa-archive" aria-hidden="true"></i> {% trans "将" %}{{ pending }}{% trans "存入此位置" %}
                 </a>
                 {% endif %}
             </span>

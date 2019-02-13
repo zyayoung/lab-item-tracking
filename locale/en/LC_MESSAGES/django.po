@@ -310,7 +310,7 @@ msgstr "Confirm"
 #: .\inventory\templates\inventory\additem2loc.html:105
 #: .\inventory\templates\inventory\location.html:192
 msgid "您确认要将"
-msgstr "Do you sure"
+msgstr "Do you sure to "
 
 #: .\inventory\templates\inventory\additem2loc.html:105
 #: .\inventory\templates\inventory\item.html:175
@@ -501,7 +501,7 @@ msgstr "Move"
 
 #: .\inventory\templates\inventory\item.html:130
 msgid "取出"
-msgstr "Out"
+msgstr "Take Out"
 
 #: .\inventory\templates\inventory\item.html:136
 #: .\inventory\templates\inventory\template.html:52
@@ -543,7 +543,7 @@ msgstr "Filter"
 
 #: .\inventory\templates\inventory\location.html:10
 msgid "选择想存入"
-msgstr "Choose where to put "
+msgstr "Choose where to store "
 
 #: .\inventory\templates\inventory\location.html:10
 msgid "的位置"
@@ -576,7 +576,7 @@ msgstr "Items"
 
 #: .\inventory\templates\inventory\location.html:96
 msgid "将"
-msgstr "Put "
+msgstr "Store "
 
 #: .\inventory\templates\inventory\location.html:96
 msgid "存入此位置"
@@ -755,7 +755,7 @@ msgstr "Deleted"
 #: .\log\templates\log\item_log.html:10 .\log\templates\log\logs.html:10
 #: .\log\templates\log\user_log.html:10
 msgid "显示全部"
-msgstr "Show all"
+msgstr "Show All"
 
 #: .\log\templates\log\item_log.html:28 .\log\templates\log\logs.html:32
 #: .\log\templates\log\user_log.html:30
