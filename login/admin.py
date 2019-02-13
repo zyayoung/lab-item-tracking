@@ -6,10 +6,16 @@ from .models import *
 
 
 class UserAdmin(admin.ModelAdmin):
-    list_display = ('name', 'email', 'c_time', 'permission_str')
+    list_display = (
+        'name',
+        'email',
+        'c_time',
+        'permission_str',
+        'latest_online_time',
+    )
     search_fields = ('name', 'email')
-    list_filter = ('is_superadmin',)
-    filter_horizontal = ('staff',)
+    list_filter = ('is_superadmin', )
+    filter_horizontal = ('staff', )
 
 
 class AllowedEmailsAdmin(admin.ModelAdmin):

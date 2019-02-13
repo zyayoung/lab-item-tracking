@@ -60,6 +60,12 @@
             <th class="col-4">{% trans "注册时间" %}</th>
             <td class="col-8">{{ user.c_time }}</td>
         </tr>
+        {% if tmp_user.is_superadmin %}
+        <tr class="row mx-0">
+            <th class="col-4">{% trans "最后在线时间" %}</th>
+            <td class="col-8">{{ user.latest_online_time }}</td>
+        </tr>
+        {% endif %}
     </tbody>
 </table>
 {% endblock %}

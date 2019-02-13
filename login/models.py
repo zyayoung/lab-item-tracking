@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.postgres.fields import JSONField
+import django.utils.timezone as timezone
 from django.utils.translation import gettext
 from django.utils.translation import gettext_lazy as _
 
@@ -22,6 +23,7 @@ class User(models.Model):
         verbose_name=_('超级管理员'),
     )
     has_confirmed = models.BooleanField(default=False)
+    latest_online_time = models.DateTimeField(default = timezone.now)
 
     def permission_str(self):
         if self.is_superadmin:

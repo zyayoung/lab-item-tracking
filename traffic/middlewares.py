@@ -1,5 +1,6 @@
 import time
 
+import django.utils.timezone as timezone
 from django.utils.deprecation import MiddlewareMixin
 from traffic.models import Traffic
 from login.models import User
@@ -12,6 +13,8 @@ class Profiler(MiddlewareMixin):
         duration = time.clock() * 1000 - t_start
         if 'user_id' in request.session.keys():
             tmp_user = User.objects.get(id=request.session.get('user_id'))
+            tmp_user.latest_online_time = timezone.now()
+            tmp_user.save()
         else:
             tmp_user = None
         if 'HTTP_X_FORWARDED_FOR' in request.META.keys():

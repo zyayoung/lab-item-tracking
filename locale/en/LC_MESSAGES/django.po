@@ -969,6 +969,10 @@ msgstr "Employees"
 msgid "注册时间"
 msgstr "Register time"
 
+#: .\personal\templates\personal\user.html:65
+msgid "最后在线时间"
+msgstr "Latest Online time"
+
 #: .\templates\base.html:107
 msgid "登出"
 msgstr "Log out"
