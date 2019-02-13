@@ -10,6 +10,7 @@ from inventory.models import LocationPermissionApplication, Location, Item
 from login.models import User
 from log.models import Log
 from django.views.decorators.cache import cache_page
+from django.utils.translation import gettext_lazy as _
 
 
 @check_admin
@@ -130,7 +131,7 @@ def users_view(request):
         'name': 'Other',
         'type': 'line',
         'areaStyle': {},
-        'stack': '总量',
+        'stack': _('总量'),
         'data': series_hour_data
     }]
     legend = ['Other']
@@ -155,7 +156,7 @@ def users_view(request):
                 'name': user.name,
                 'type': 'line',
                 'areaStyle': {},
-                'stack': '总量',
+                'stack': _('总量'),
                 'data': series_hour_data
             })
     relation_nodes = []
@@ -166,7 +167,7 @@ def users_view(request):
                 'name':
                 user.name,
                 'category':
-                1 if user.permission_str() == "员工" else 0,
+                1 if user.permission_str() == _("员工") else 0,
                 'sc':
                 user.staff.count()
             })
