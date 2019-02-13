@@ -221,7 +221,7 @@ msgstr "No Available Item"
 #: .\personal\templates\personal\locreq.html:83
 #: .\personal\templates\personal\mylocreq.html:80
 msgid "首页"
-msgstr "Front"
+msgstr "First"
 
 #: .\inventory\templates\inventory\additem2loc.html:44
 #: .\inventory\templates\inventory\additem2loc.html:50
@@ -239,7 +239,7 @@ msgstr "Front"
 #: .\personal\templates\personal\mylocreq.html:86
 #: .\personal\templates\personal\mylocreq.html:92
 msgid "上一页"
-msgstr "Last"
+msgstr "Prev"
 
 #: .\inventory\templates\inventory\additem2loc.html:62
 #: .\inventory\templates\inventory\additem2loc.html:68
@@ -268,7 +268,7 @@ msgstr "Next"
 #: .\personal\templates\personal\locreq.html:119
 #: .\personal\templates\personal\mylocreq.html:116
 msgid "尾页"
-msgstr "End"
+msgstr "Last"
 
 #: .\inventory\templates\inventory\additem2loc.html:84
 #: .\inventory\templates\inventory\index.html:142
