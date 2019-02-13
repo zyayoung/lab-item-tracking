@@ -66,6 +66,8 @@ class Log(models.Model):
             return _('已删除')
 
     def get_html(self, name):
+        if not name:
+            return ''
         html = name
         if re.match(r'^id__(\d+)$', name):
             try:
