@@ -1,12 +1,12 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% load staticfiles %}
-{% block title %}{% trans "物品" %}{% if template.is_property %}{% trans "属性" %}{% endif %}{% trans "模板编辑" %}：{{ template }} {% endblock %}
+{% block title %}{% if is_property %}{% trans "物品属性" %}{% else %}{% trans "物品" %}{% endif %} {% trans "模板编辑" %}：{{ template }} {% endblock %}
 {% block content %}
 {% if message %}
 <div class="alert alert-warning">{{ message }}</div>
 {% endif %}
-<p class="lead">{% trans "物品" %}{% if template.is_property %}{% trans "属性" %}{% endif %}{% trans "模板编辑" %}：{{ template }}</p>
+<p class="lead">{% if is_property %}{% trans "物品属性" %}{% else %}{% trans "物品" %}{% endif %} {% trans "模板编辑" %}：{{ template }}</p>
 <form method="post" action="">
     <span class="lead pull-left">{% trans "可使用该模板用户" %}：</span>
     <select name="share" id="share_id" class="selectpicker" data-live-search="true" multiple title="{% trans "允许全部用户" %}">
