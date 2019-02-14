@@ -1,12 +1,12 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% load staticfiles %}
-{% block title %}{% trans "物品" %}{% if item.template.is_property %}{% trans "属性" %}{% endif %}{% trans "详情" %}：{{ item }} {% endblock %}
+{% block title %}{% if is_property %}{% trans "物品属性" %}{% else %}{% trans "物品" %}{% endif %} {% trans "详情" %}：{{ item }} {% endblock %}
 {% block content %}
 {% if self.message %}
 <div class="alert alert-warning">{{ self.message }}</div>
 {% endif %}
-<p class="lead">{% trans "物品" %}{% if item.template.is_property %}{% trans "属性" %}{% endif %}{% trans "详情" %}：
+<p class="lead">{% if is_property %}{% trans "物品属性" %}{% else %}{% trans "物品" %}{% endif %} {% trans "详情" %}：
     <span class="pull-right">
         <a class="btn btn-outline-primary" href="{% url 'log:item_log' item.id %}">
             <i class="fa fa-file-text" aria-hidden="true"></i> {% trans "日志" %}
