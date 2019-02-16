@@ -289,7 +289,9 @@ def template_ajax(request, *args, **kwargs):
             tmp_custom_id = template.custom_id_format.replace(
                 '%date%', time.strftime('%m%d', time.localtime()))
             tmp_id = 1
-            while Item.objects.filter(custom_id=tmp_custom_id.replace('%id%', str(tmp_id))).exists():
+            while Item.objects.filter(
+                    custom_id=tmp_custom_id.replace('%id%', str(
+                        tmp_id))).exists():
                 tmp_id += 1
             custom_id = tmp_custom_id.replace('%id%', str(tmp_id))
         extra_data = template.extra_data
@@ -512,13 +514,18 @@ class EditTemplateView(generic.View):
         if template.key_name != key_name_new:
             add_log(tmp_user, template.id, '模板', '名称', template.key_name,
                     key_name_new)
-        template.key_name = key_name_new
+            template.key_name = key_name_new
         key_name_placeholder_new = request.POST.get('key_name_placeholder',
                                                     '用于显示的名称')
         if template.key_name_placeholder != key_name_placeholder_new:
             add_log(tmp_user, template.id, '模板', '用于显示的名称',
                     template.key_name_placeholder, key_name_placeholder_new)
-        template.key_name_placeholder = key_name_placeholder_new
+            template.key_name_placeholder = key_name_placeholder_new
+        custom_id_format_new = request.POST.get('custom_id_format', None)
+        if template.custom_id_format != custom_id_format_new:
+            add_log(tmp_user, template.id, '模板', '自定编号',
+                    template.custom_id_format, custom_id_format_new)
+            template.custom_id_format = custom_id_format_new
         allowed_users_old = template.allowed_users_str()
         template.allowed_users.clear()
         for user_id in request.POST.getlist('share'):

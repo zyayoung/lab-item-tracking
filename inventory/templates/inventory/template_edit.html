@@ -27,7 +27,28 @@
         </thead>
         <tbody>
             {% csrf_token %}
-            <tr id="tr_{{ forloop.counter }}">
+            <tr>
+                <td>
+                    <input type="text" class="form-control" value="{% trans "自定编号" %}" disabled>
+                </td>
+                <td>
+                    <select class="form-control" disabled>
+                        <option selected="selected">text</option>
+                    </select>
+                </td>
+                <td>
+                    <select class="form-control" disabled>
+                        <option selected="selected">{% trans "是" %}</option>
+                    </select>
+                </td>
+                <td>
+                    <input type="text" class="form-control" name="custom_id_format" value="{{ template.custom_id_format }}">
+                </td>
+                <td>
+                    <button type="button" class="btn text-muted" disabled>{% trans "删除" %}</button>
+                </td>
+            </tr>
+            <tr>
                 <td>
                     <input type="text" class="form-control" name="key_name" value="{{ template.key_name }}" required>
                 </td>
