@@ -1090,3 +1090,6 @@ msgstr "Total"
 
 #~ msgid "切换语言"
 #~ msgstr "Language"
+
+msgid "自定编号"
+msgstr "Custom ID"

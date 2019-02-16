@@ -34,6 +34,10 @@
             <td class="col-9">{{ item }}</td>
         </tr>
         {% endif %}
+        <tr class="row mx-0">
+            <th class="col-3">{% trans "自定编号" %}</th>
+            <td class="col-9">{{ item.custom_id }}</td>
+        </tr>
         {% for key, value in extra_info %}
         <tr class="row mx-0">
             {% if value.type == 'extra' %}

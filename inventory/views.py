@@ -8,6 +8,7 @@ from inventory.utils import *
 from inventory import forms
 from log.utils import *
 import re
+import time
 from django.db import IntegrityError
 from django.utils.translation import gettext_lazy as _
 from django.utils.translation import gettext
@@ -110,25 +111,29 @@ class AddItemView(generic.View):
         action = "新建"
         action_translated = _(action) + ' '
         is_property = 'prop' in request.path
-        name = _("物品属性") if is_property else _("物品")
+        item_type = _("物品属性") if is_property else _("物品")
         message = _("请检查填写的内容！")
         add_form = forms.AddItemForm(request.POST)
         tmp_user = myUser.objects.get(id=request.session.get('user_id'))
         if add_form.is_valid():
             name = add_form.cleaned_data['name']
+            custom_id = add_form.cleaned_data['custom_id']
             public = add_form.cleaned_data['public']
             item = Item.objects.create(
                 name=name,
+                custom_id=custom_id,
                 owner=tmp_user,
                 is_public=public,
                 template=None,
             )
-            add_log(tmp_user, item.id, '物品', '名称', '', name)
-            add_log(tmp_user, item.id, '物品', '公开', 'False', 'True' if public else 'False')
+            add_log(tmp_user, item.id, item_type, '名称', '', name)
+            add_log(tmp_user, item.id, item_type, '公开', 'False',
+                    'True' if public else 'False')
+            add_log(tmp_user, item.id, item_type, '自定编号', '', custom_id)
             item.allowed_users.add(tmp_user)
-            add_log(tmp_user, item.id, '物品', '白名单', '', tmp_user.name)
+            add_log(tmp_user, item.id, item_type, '白名单', '', tmp_user.name)
         else:
-            return render(request, 'inventory/edit.html', locals())
+            return self.get(request)
         template_queryset = get_my_template_queryset(
             tmp_user, ItemTemplate.objects.all())
         choose_form = forms.ChooseTemplateForm(
@@ -183,6 +188,7 @@ class ItemView(generic.View):
         extra_info = []
         item_keys = list(item.extra_data.keys())
         if item.template:
+            is_property = item.template.is_property
             for data in item.template.extra_data:
                 filled = False
                 if data['name'] in item_keys:
@@ -247,8 +253,9 @@ class ItemView(generic.View):
                 }))
         relation_info = {}
         for key, values in item.related_items.items():
-            relation_info[gettext('作为以下') + key.replace('__', gettext('的'))] = get_my_list(
-                tmp_user, Item.objects.filter(id__in=values))
+            relation_info[gettext('作为以下') +
+                          key.replace('__', gettext('的'))] = get_my_list(
+                              tmp_user, Item.objects.filter(id__in=values))
         del_permission = item.del_permission(tmp_user)
         unlink_permission = item.unlink_permission(tmp_user)
         return render(request, 'inventory/item.html', locals())
@@ -277,6 +284,12 @@ def template_ajax(request, *args, **kwargs):
     template_id = int(request.POST.get('id', 0))
     if template_id != 0:
         template = ItemTemplate.objects.get(id=template_id)
+        tmp_custom_id = template.custom_id_format.replace(
+            '%date%', time.strftime('%m%d', time.localtime()))
+        tmp_id = 1
+        while Item.objects.filter(custom_id=tmp_custom_id.replace('%id%', str(tmp_id))).exists():
+            tmp_id += 1
+        custom_id = tmp_custom_id.replace('%id%', str(tmp_id))
         extra_data = template.extra_data
         edit_form = forms.EditItemForm(*args, data=extra_data, user=tmp_user)
     return render(request, 'inventory/editajax.html', locals())

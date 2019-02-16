@@ -1087,3 +1087,6 @@ msgstr ""
 #: .\traffic\views.py:134 .\traffic\views.py:159
 msgid "总量"
 msgstr ""
+
+msgid "自定编号"
+msgstr ""

@@ -1,7 +1,14 @@
+{% load i18n %}
 <div class="form-group row">
     <label class="col-3 col-form-label"><b>{{ template.key_name }}</b></label>
     <div class="col-9">
         <input type="text" name="name" class="form-control" maxlength="128" id="id_name" required value="" placeholder="{{ template.key_name_placeholder }}">
+    </div>
+</div>
+<div class="form-group row">
+    <label class="col-3 col-form-label"><b>{% trans "自定编号" %}</b></label>
+    <div class="col-9">
+        <input type="text" name="custom_id" class="form-control" maxlength="128" id="id_custom_id" required value="{{ custom_id }}">
     </div>
 </div>
 {% for field in edit_form %}

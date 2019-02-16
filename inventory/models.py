@@ -58,6 +58,11 @@ class ItemTemplate(models.Model):
         default='用于显示的名称',
         verbose_name=_("关键字段占位符"),
     )
+    custom_id_format = models.CharField(
+        max_length=128,
+        default='%date%-%id%',
+        verbose_name="custom_id_format",
+    )
     extra_data = JSONField(default=dict, blank=True, verbose_name=_("扩展数据"))
     is_property = models.BooleanField(default=False, verbose_name=_("不可存入"))
     create_time = models.DateTimeField("create_time", auto_now_add=True)
@@ -87,6 +92,12 @@ class ItemTemplate(models.Model):
 
 class Item(models.Model):
     name = models.CharField(max_length=128, verbose_name=_("名称"))
+    custom_id = models.CharField(
+        max_length=128,
+        verbose_name=_("自定编号"),
+        null=True,
+        blank=True,
+    )
     template = models.ForeignKey(
         ItemTemplate,
         null=True,
