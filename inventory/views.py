@@ -284,12 +284,14 @@ def template_ajax(request, *args, **kwargs):
     template_id = int(request.POST.get('id', 0))
     if template_id != 0:
         template = ItemTemplate.objects.get(id=template_id)
-        tmp_custom_id = template.custom_id_format.replace(
-            '%date%', time.strftime('%m%d', time.localtime()))
-        tmp_id = 1
-        while Item.objects.filter(custom_id=tmp_custom_id.replace('%id%', str(tmp_id))).exists():
-            tmp_id += 1
-        custom_id = tmp_custom_id.replace('%id%', str(tmp_id))
+        custom_id = ''
+        if len(template.custom_id_format) > 0:
+            tmp_custom_id = template.custom_id_format.replace(
+                '%date%', time.strftime('%m%d', time.localtime()))
+            tmp_id = 1
+            while Item.objects.filter(custom_id=tmp_custom_id.replace('%id%', str(tmp_id))).exists():
+                tmp_id += 1
+            custom_id = tmp_custom_id.replace('%id%', str(tmp_id))
         extra_data = template.extra_data
         edit_form = forms.EditItemForm(*args, data=extra_data, user=tmp_user)
     return render(request, 'inventory/editajax.html', locals())
