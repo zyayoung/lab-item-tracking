@@ -4,6 +4,7 @@ from .utils import get_my_list, get_my_template_queryset
 from django.template.loader import render_to_string
 import re
 from django.utils.translation import gettext_lazy as _
+import time
 
 
 class AddItemForm(forms.Form):
@@ -96,17 +97,47 @@ class EditItemForm(forms.Form):
                             }),
                     )
                 elif tmp_type == 'text':
-                    tmp_field = forms.CharField(
-                        label=tmp_label,
-                        required=tmp_required,
-                        max_length=128,
-                        widget=forms.TextInput(
-                            attrs={
-                                'class': 'form-control',
-                                'placeholder': tmp_placeholder,
-                                'autocomplete': tmp_label,
-                            }),
-                    )
+                    tmp_custom_id = tmp_placeholder
+                    # try to replace
+                    match_obj = re.search(r'%date:(.+?):date%', tmp_custom_id)
+                    if match_obj:
+                        tmp_custom_id = tmp_custom_id.replace(
+                            match_obj.group(),
+                            time.strftime(match_obj.group(1), time.localtime())
+                        )
+                    tmp_custom_id = tmp_custom_id.replace(
+                        '%date%', time.strftime('%m%d', time.localtime()))
+                    tmp_custom_id = tmp_custom_id.replace(
+                        '%year%', time.strftime('%y', time.localtime()))
+                    tmp_custom_id = tmp_custom_id.replace(
+                        '%month%', time.strftime('%m', time.localtime()))
+                    tmp_custom_id = tmp_custom_id.replace(
+                        '%day%', time.strftime('%d', time.localtime()))
+                    if tmp_custom_id == tmp_placeholder:
+                        tmp_field = forms.CharField(
+                            label=tmp_label,
+                            required=tmp_required,
+                            max_length=128,
+                            widget=forms.TextInput(
+                                attrs={
+                                    'class': 'form-control',
+                                    'placeholder': tmp_placeholder,
+                                    'autocomplete': tmp_label,
+                                }),
+                        )
+                    else:
+                        tmp_field = forms.CharField(
+                            label=tmp_label,
+                            required=tmp_required,
+                            max_length=128,
+                            widget=forms.TextInput(
+                                attrs={
+                                    'class': 'form-control',
+                                    'value': tmp_custom_id,
+                                    'autocomplete': tmp_label,
+                                }),
+                        )
+
                 elif tmp_type == 'date':
                     tmp_field = forms.DateField(
                         label=tmp_label,
