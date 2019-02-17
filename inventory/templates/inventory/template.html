@@ -58,7 +58,7 @@
     <i class="fa fa-trash" aria-hidden="true"></i> {% trans "删除" %}
 </a>
 <a class="btn btn-outline-primary" role="button" href="{% url 'inventory:template_alter' template.id %}">
-    <i class="fa fa-refresh" aria-hidden="true"></i> {% trans "转换为物品" %}{% if not template.is_property %}{% trans "属性" %}{% endif %}
+    <i class="fa fa-refresh" aria-hidden="true"></i> {% if not template.is_property %}{% trans "转换为物品属性" %}{% else %}{% trans "转换为物品" %}{% endif %}
 </a>
 {% endif %}
 <a class="btn btn-outline-primary" role="button" href="{% url 'inventory:template_export' template.id %}">
