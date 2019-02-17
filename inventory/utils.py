@@ -3,6 +3,7 @@ from django.http import Http404
 from inventory.models import Item, Location, ItemTemplate
 from login.models import User as myUser
 from log.utils import *
+from django.utils.translation import gettext_lazy as _
 
 
 def get_my_user(user_now, user_id):
@@ -12,6 +13,7 @@ def get_my_user(user_now, user_id):
     if not user in user_now.staff.all():
         raise Http404()
     return user
+
 
 def get_my_item(user_now, item_id):
     item = get_object_or_404(Item, id=item_id)
@@ -81,8 +83,10 @@ def get_export_keys(template, visited=[], include_links=True):
                 continue
     visited.pop()
     if not template.is_property:
-        keys.append('位置')
-    keys.append('创建者')
+        keys.append(_('位置'))
+    if template.custom_id_format:
+        keys.append(template.custom_id_name)
+    keys.append(_('创建用户'))
     return keys
 
 
@@ -137,6 +141,11 @@ def get_export_values(template,
         keys.append({
             'name': loc if loc else '',
             'href': resolve_url('inventory:location', loc.id) if loc else '',
+        })
+    if template.custom_id_format:
+        keys.append({
+            'name': item.custom_id if item.custom_id else '',
+            'href': ''
         })
     keys.append({
         'name': item.owner if item else '',

@@ -301,8 +301,9 @@ def template_ajax(request, *args, **kwargs):
             tmp_custom_id = tmp_custom_id.replace(
                 '%day%', time.strftime('%d', time.localtime()))
 
-            # Binary Search with Auto Expand
             tmp_id_max = tmp_id_min = 1  # Both tmp_id_max and tmp_id_min should be stabilize to old tmp_id
+
+            # Binary Search with Auto Expand
             while Item.objects.filter(
                     custom_id=tmp_custom_id.replace('%id%', str(
                         tmp_id_max))).exists():
