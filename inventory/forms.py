@@ -1,10 +1,8 @@
 from django import forms
 from .models import Item, ItemTemplate
-from .utils import get_my_list, get_my_template_queryset
+from .utils import get_my_list, get_my_template_queryset, replace_date
 from django.template.loader import render_to_string
-import re
 from django.utils.translation import gettext_lazy as _
-import time
 
 
 class AddItemForm(forms.Form):
@@ -97,23 +95,40 @@ class EditItemForm(forms.Form):
                             }),
                     )
                 elif tmp_type == 'text':
-                    tmp_custom_id = tmp_placeholder
-                    # try to replace
-                    match_obj = re.search(r'%date:(.+?):date%', tmp_custom_id)
-                    if match_obj:
-                        tmp_custom_id = tmp_custom_id.replace(
-                            match_obj.group(),
-                            time.strftime(match_obj.group(1), time.localtime())
-                        )
-                    tmp_custom_id = tmp_custom_id.replace(
-                        '%date%', time.strftime('%m%d', time.localtime()))
-                    tmp_custom_id = tmp_custom_id.replace(
-                        '%year%', time.strftime('%y', time.localtime()))
-                    tmp_custom_id = tmp_custom_id.replace(
-                        '%month%', time.strftime('%m', time.localtime()))
-                    tmp_custom_id = tmp_custom_id.replace(
-                        '%day%', time.strftime('%d', time.localtime()))
-                    if tmp_custom_id == tmp_placeholder:
+                    custom_id = replace_date(tmp_placeholder)
+                    if '%id%' in custom_id:
+                        tmp_id_max = tmp_id_min = 1  # Both tmp_id_max and tmp_id_min should be stabilize to old tmp_id
+
+                        # Binary Search with Auto Expand
+                        while Item.objects.filter(
+                                extra_data__contains={
+                                    tmp_label: custom_id.replace('%id%', str(tmp_id_max))
+                                }).exists():
+                            tmp_id_max *= 2
+                        while tmp_id_min < tmp_id_max:
+                            tmp_id = (tmp_id_min + tmp_id_max) // 2
+                            if Item.objects.filter(
+                                    extra_data__contains={
+                                        tmp_label: custom_id.replace('%id%', str(tmp_id))
+                                    }).exists():
+                                tmp_id_min = tmp_id + 1
+                            else:
+                                tmp_id_max = tmp_id
+
+                        # While Loop
+                        # while Item.objects.filter(
+                        #         custom_id=custom_id.replace('%id%', str(
+                        #             tmp_id_min))).exists():
+                        #     tmp_id_min += 1
+
+                        # Cached ID
+                        # if IdCache.objects.filter(pattern=custom_id).exists():
+                        #     IdCache.objects.create(pattern=custom_id)
+                        #     tmp_id_min = IdCache.objects.get(pattern=custom_id).next_id
+
+                        custom_id = custom_id.replace('%id%', str(tmp_id_min))
+
+                    if custom_id == tmp_placeholder:
                         tmp_field = forms.CharField(
                             label=tmp_label,
                             required=tmp_required,
@@ -133,7 +148,7 @@ class EditItemForm(forms.Form):
                             widget=forms.TextInput(
                                 attrs={
                                     'class': 'form-control',
-                                    'value': tmp_custom_id,
+                                    'value': custom_id,
                                     'autocomplete': tmp_label,
                                 }),
                         )

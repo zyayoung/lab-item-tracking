@@ -4,6 +4,9 @@ from inventory.models import Item, Location, ItemTemplate
 from login.models import User as myUser
 from log.utils import *
 from django.utils.translation import gettext_lazy as _
+import time
+import re
+import json
 
 
 def get_my_user(user_now, user_id):
@@ -306,3 +309,19 @@ def rebuild_related():
                             ext_item.related_items[template.name + '__' +
                                                    data['name']] = related_info
                             ext_item.save()
+
+
+def replace_date(custom_id):
+    match_obj = re.search(r'%date:(.+?):date%', custom_id)
+    if match_obj:
+        custom_id = custom_id.replace(
+            match_obj.group(),
+            time.strftime(match_obj.group(1), time.localtime())
+        )
+    return custom_id \
+        .replace('%date%', time.strftime('%m%d', time.localtime())) \
+        .replace('%year%', time.strftime('%y', time.localtime())) \
+        .replace('%month%', time.strftime('%m', time.localtime())) \
+        .replace('%day%', time.strftime('%d', time.localtime())) \
+        .replace('%minute%', time.strftime('%M', time.localtime())) \
+        .replace('%second%', time.strftime('%S', time.localtime()))

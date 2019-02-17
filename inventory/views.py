@@ -12,7 +12,7 @@ import time
 from django.db import IntegrityError
 from django.utils.translation import gettext_lazy as _
 from django.utils.translation import gettext
-from inventory.models import Item, Location, LocationPermissionApplication, ItemTemplate
+from inventory.models import Item, Location, LocationPermissionApplication, ItemTemplate, IdCache
 from login.models import User as myUser
 from personal.utils import get_others_request_list
 from urllib.parse import quote
@@ -283,35 +283,20 @@ def template_ajax(request, *args, **kwargs):
     template_id = int(request.POST.get('id', 0))
     if template_id != 0:
         template = ItemTemplate.objects.get(id=template_id)
-        custom_id = ''
-        tmp_custom_id = template.custom_id_format
-        if len(template.custom_id_format) > 0:
-            match_obj = re.search(r'%date:(.+?):date%', template.custom_id_format)
-            if match_obj:
-                tmp_custom_id = tmp_custom_id.replace(
-                    match_obj.group(),
-                    time.strftime(match_obj.group(1), time.localtime())
-                )
-            tmp_custom_id = tmp_custom_id.replace(
-                '%date%', time.strftime('%m%d', time.localtime()))
-            tmp_custom_id = tmp_custom_id.replace(
-                '%year%', time.strftime('%y', time.localtime()))
-            tmp_custom_id = tmp_custom_id.replace(
-                '%month%', time.strftime('%m', time.localtime()))
-            tmp_custom_id = tmp_custom_id.replace(
-                '%day%', time.strftime('%d', time.localtime()))
+        custom_id = replace_date(template.custom_id_format)
 
+        if '%id%' in custom_id:
             tmp_id_max = tmp_id_min = 1  # Both tmp_id_max and tmp_id_min should be stabilize to old tmp_id
 
             # Binary Search with Auto Expand
             while Item.objects.filter(
-                    custom_id=tmp_custom_id.replace('%id%', str(
+                    custom_id=custom_id.replace('%id%', str(
                         tmp_id_max))).exists():
                 tmp_id_max *= 2
             while tmp_id_min < tmp_id_max:
                 tmp_id = (tmp_id_min + tmp_id_max) // 2
                 if Item.objects.filter(
-                    custom_id=tmp_custom_id.replace('%id%', str(
+                    custom_id=custom_id.replace('%id%', str(
                         tmp_id))).exists():
                     tmp_id_min = tmp_id + 1
                 else:
@@ -319,11 +304,16 @@ def template_ajax(request, *args, **kwargs):
 
             # While Loop
             # while Item.objects.filter(
-            #         custom_id=tmp_custom_id.replace('%id%', str(
+            #         custom_id=custom_id.replace('%id%', str(
             #             tmp_id_min))).exists():
             #     tmp_id_min += 1
 
-            custom_id = tmp_custom_id.replace('%id%', str(tmp_id_min))
+            # Cached ID
+            # if IdCache.objects.filter(pattern=custom_id).exists():
+            #     IdCache.objects.create(pattern=custom_id)
+            #     tmp_id_min = IdCache.objects.get(pattern=custom_id).next_id
+
+            custom_id = custom_id.replace('%id%', str(tmp_id_min))
         extra_data = template.extra_data
         edit_form = forms.EditItemForm(*args, data=extra_data, user=tmp_user)
     return render(request, 'inventory/editajax.html', locals())
