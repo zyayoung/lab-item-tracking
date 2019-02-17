@@ -322,6 +322,7 @@ def template_ajax(request, *args, **kwargs):
 class EditItemView(generic.View):
     tmp_user = None
     item = None
+    message = None
 
     def get(self, request, *args, **kwargs):
         user_id = request.session.get('user_id')
@@ -354,7 +355,7 @@ class EditItemView(generic.View):
             messages.error(request,
                            "只有创建人（{}）及其管理员可以编辑物品！".format(item.owner.name))
             return render(request, 'inventory/info.html', locals())
-        message = _("请检查填写的内容！")
+        self.message = _("请检查填写的内容！")
         add_form = forms.AddItemForm(request.POST)
         if add_form.is_valid():
             name_old = item.name
@@ -362,7 +363,7 @@ class EditItemView(generic.View):
             is_public_old = item.is_public
             is_public_new = add_form.cleaned_data['public']
         else:
-            return render(request, 'inventory/edit.html', locals())
+            return self.get(request, *args, **kwargs)
         template_queryset = get_my_template_queryset(
             tmp_user, ItemTemplate.objects.all())
         choose_form = forms.ChooseTemplateForm(
@@ -386,7 +387,7 @@ class EditItemView(generic.View):
                             data[dictionary['name']] = data[
                                 dictionary['name']].strftime("%Y-%m-%d")
         else:
-            return render(request, 'inventory/edit.html', locals())
+            return self.get(request, *args, **kwargs)
         if 'save_as_new' in request.POST:
             new_item = Item.objects.create(
                 name=name_new,

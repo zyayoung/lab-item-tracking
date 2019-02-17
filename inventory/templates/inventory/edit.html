@@ -6,6 +6,9 @@
 <link href="https://cdn.bootcss.com/jqueryui/1.12.1/jquery-ui.min.css" rel="stylesheet">
 {% endblock %}
 {% block content %}
+{% if self.message %}
+<div class="alert alert-warning">{{ self.message }}</div>
+{% endif %}
 <p class="lead">{{ action_translated }}{{ name }}：</p>
 <form class="form-add" action="" method="post" id="main_form">
     {% csrf_token %}

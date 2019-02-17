@@ -15,7 +15,7 @@ class AddItemForm(forms.Form):
     custom_id = forms.CharField(
         label=_("自定编号"),
         max_length=128,
-        required=True,
+        required=False,
         widget=forms.TextInput(attrs={'class': 'form-control'}),
     )
     public = forms.BooleanField(
