@@ -293,12 +293,35 @@ def template_ajax(request, *args, **kwargs):
             else:
                 tmp_custom_id = template.custom_id_format.replace(
                     '%date%', time.strftime('%m%d', time.localtime()))
-            tmp_id = 1
+                tmp_custom_id = template.custom_id_format.replace(
+                    '%year%', time.strftime('%y', time.localtime()))
+                tmp_custom_id = template.custom_id_format.replace(
+                    '%month%', time.strftime('%m', time.localtime()))
+                tmp_custom_id = template.custom_id_format.replace(
+                    '%day%', time.strftime('%d', time.localtime()))
+
+            # Binary Search with Auto Expand
+            tmp_id_max = tmp_id_min = 1  # Both tmp_id_max and tmp_id_min should be stabilize to old tmp_id
             while Item.objects.filter(
                     custom_id=tmp_custom_id.replace('%id%', str(
+                        tmp_id_max))).exists():
+                tmp_id_max *= 2
+            while tmp_id_min < tmp_id_max:
+                tmp_id = (tmp_id_min + tmp_id_max) // 2
+                if Item.objects.filter(
+                    custom_id=tmp_custom_id.replace('%id%', str(
                         tmp_id))).exists():
-                tmp_id += 1
-            custom_id = tmp_custom_id.replace('%id%', str(tmp_id))
+                    tmp_id_min = tmp_id + 1
+                else:
+                    tmp_id_max = tmp_id
+
+            # While Loop
+            # while Item.objects.filter(
+            #         custom_id=tmp_custom_id.replace('%id%', str(
+            #             tmp_id_min))).exists():
+            #     tmp_id_min += 1
+
+            custom_id = tmp_custom_id.replace('%id%', str(tmp_id_min))
         extra_data = template.extra_data
         edit_form = forms.EditItemForm(*args, data=extra_data, user=tmp_user)
     return render(request, 'inventory/editajax.html', locals())
