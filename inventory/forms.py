@@ -104,6 +104,7 @@ class EditItemForm(forms.Form):
                             attrs={
                                 'class': 'form-control',
                                 'placeholder': tmp_placeholder,
+                                'autocomplete': tmp_label,
                             }),
                     )
                 elif tmp_type == 'date':

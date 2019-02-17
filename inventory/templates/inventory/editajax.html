@@ -2,7 +2,7 @@
 <div class="form-group row">
     <label class="col-3 col-form-label"><b>{{ template.key_name }}</b></label>
     <div class="col-9">
-        <input type="text" name="name" class="form-control" maxlength="128" id="id_name" required value="" placeholder="{{ template.key_name_placeholder }}">
+        <input type="text" name="name" class="form-control" maxlength="128" id="id_name" required value="" autocomplete="{{ template }}_{{ template.key_name }}" placeholder="{{ template.key_name_placeholder }}">
     </div>
 </div>
 <div class="form-group row">
