@@ -284,21 +284,22 @@ def template_ajax(request, *args, **kwargs):
     if template_id != 0:
         template = ItemTemplate.objects.get(id=template_id)
         custom_id = ''
+        tmp_custom_id = template.custom_id_format
         if len(template.custom_id_format) > 0:
             match_obj = re.search(r'%date:(.+?):date%', template.custom_id_format)
             if match_obj:
-                tmp_custom_id = template.custom_id_format.replace(
+                tmp_custom_id = tmp_custom_id.replace(
                     match_obj.group(),
-                    time.strftime(match_obj.group(1), time.localtime()))
-            else:
-                tmp_custom_id = template.custom_id_format.replace(
-                    '%date%', time.strftime('%m%d', time.localtime()))
-                tmp_custom_id = template.custom_id_format.replace(
-                    '%year%', time.strftime('%y', time.localtime()))
-                tmp_custom_id = template.custom_id_format.replace(
-                    '%month%', time.strftime('%m', time.localtime()))
-                tmp_custom_id = template.custom_id_format.replace(
-                    '%day%', time.strftime('%d', time.localtime()))
+                    time.strftime(match_obj.group(1), time.localtime())
+                )
+            tmp_custom_id = tmp_custom_id.replace(
+                '%date%', time.strftime('%m%d', time.localtime()))
+            tmp_custom_id = tmp_custom_id.replace(
+                '%year%', time.strftime('%y', time.localtime()))
+            tmp_custom_id = tmp_custom_id.replace(
+                '%month%', time.strftime('%m', time.localtime()))
+            tmp_custom_id = tmp_custom_id.replace(
+                '%day%', time.strftime('%d', time.localtime()))
 
             # Binary Search with Auto Expand
             tmp_id_max = tmp_id_min = 1  # Both tmp_id_max and tmp_id_min should be stabilize to old tmp_id
