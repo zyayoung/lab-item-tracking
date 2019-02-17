@@ -69,7 +69,11 @@
                     else
                         $('#id_' + key.replace(/ /g, '_')).val(data[key]);
                 });
+                {% if item %} {#if editing#}
                 $('#id_name').val('{{ item.name|safe }}');
+                $("#id_custom_id").attr('disabled', 'true');
+                $("#id_custom_id").val('{{ item.custom_id|safe }}');
+                {% endif %}
                 $('.selectpicker').selectpicker();
             }
         });
