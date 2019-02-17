@@ -65,7 +65,9 @@ def set_location(item, location, user):
         add_log(user, item.id, '物品', '位置', old_loc, location.__str__())
 
 
-def get_export_keys(template, visited=[], include_links=True):
+def get_export_keys(template, visited=None, include_links=True):
+    if not visited:
+        visited = []
     visited.append(template)
     keys = [template.key_name]
     for ext_data in template.extra_data:
@@ -92,9 +94,11 @@ def get_export_keys(template, visited=[], include_links=True):
 
 def get_export_values(template,
                       item,
-                      visited=[],
+                      visited=None,
                       include_links=True,
                       user=None):
+    if not visited:
+        visited = []
     visited.append(template)
     keys = [{
         'name': item.name if item else '',
@@ -171,7 +175,7 @@ def set_extradata(item, template, extra_data, user):
             if data['name'] in item_keys:
                 data_name = data['name']
                 if item.extra_data[data['name']] and \
-                    data['type'] not in ['bool', 'int', 'float', 'text', 'date']:
+                        data['type'] not in ['bool', 'int', 'float', 'text', 'date']:
                     try:
                         int(item.extra_data[data_name])
                     except ValueError:
@@ -279,7 +283,7 @@ def rebuild_related():
             if data['name'] in item_keys:
                 data_name = data['name']
                 if extra_data[data['name']] and \
-                    data['type'] not in ['bool', 'int', 'float', 'text', 'date']:
+                        data['type'] not in ['bool', 'int', 'float', 'text', 'date']:
                     try:
                         int(item.extra_data[data_name])
                     except ValueError:

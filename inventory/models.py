@@ -3,11 +3,9 @@
 from __future__ import unicode_literals
 
 from django.contrib.auth.models import User
-from django.utils import timezone
 from django.db import models
 from django.contrib.postgres.fields import JSONField
 from login.models import User as myUser
-import datetime
 from django.utils.translation import gettext_lazy as _
 
 
@@ -42,7 +40,7 @@ class Location(models.Model):
         return '-'.join(path_list)
 
     class Meta:
-        verbose_name=_("位置")
+        verbose_name = _("位置")
         verbose_name_plural = verbose_name
 
 
@@ -89,9 +87,10 @@ class ItemTemplate(models.Model):
 
     def allowed_users_str(self):
         return '|'.join([user.name for user in self.allowed_users.all()])
+
     class Meta:
         ordering = ['-create_time']
-        verbose_name=_("模板")
+        verbose_name = _("模板")
         verbose_name_plural = verbose_name
 
 
@@ -153,7 +152,7 @@ class Item(models.Model):
 
     class Meta:
         ordering = ['-update_time']
-        verbose_name=_("物品")
+        verbose_name = _("物品")
         verbose_name_plural = verbose_name
 
 
