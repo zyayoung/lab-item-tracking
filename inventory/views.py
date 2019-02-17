@@ -477,7 +477,7 @@ class AddTemplateView(generic.View):
                 message = _("模板名称重复！")
                 return render(request, 'inventory/template_add.html', locals())
             category = "物品属性" if request.GET.get('property') else "物品"
-            add_log(tmp_user, new_template.id, category, '名称', '', name)
+            add_log(tmp_user, new_template.id, '模板', '名称', '', name)
             return redirect('inventory:template_edit', new_template.id)
         else:
             return render(request, 'inventory/template_add.html', locals())
