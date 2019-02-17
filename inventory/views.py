@@ -286,8 +286,14 @@ def template_ajax(request, *args, **kwargs):
         template = ItemTemplate.objects.get(id=template_id)
         custom_id = ''
         if len(template.custom_id_format) > 0:
-            tmp_custom_id = template.custom_id_format.replace(
-                '%date%', time.strftime('%m%d', time.localtime()))
+            match_obj = re.search(r'%date:(.+?):date%', template.custom_id_format)
+            if match_obj:
+                tmp_custom_id = template.custom_id_format.replace(
+                    match_obj.group(),
+                    time.strftime(match_obj.group(1), time.localtime()))
+            else:
+                tmp_custom_id = template.custom_id_format.replace(
+                    '%date%', time.strftime('%m%d', time.localtime()))
             tmp_id = 1
             while Item.objects.filter(
                     custom_id=tmp_custom_id.replace('%id%', str(
