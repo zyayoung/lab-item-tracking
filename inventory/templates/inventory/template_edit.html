@@ -29,11 +29,11 @@
             {% csrf_token %}
             <tr>
                 <td>
-                    <input type="text" class="form-control" value="{% trans "自定编号" %}" disabled>
+                    <input type="text" class="form-control" name="custom_id_name" value="{{ template.custom_id_name }}">
                 </td>
                 <td>
                     <select class="form-control" disabled>
-                        <option selected="selected">text</option>
+                        <option selected="selected">ID</option>
                     </select>
                 </td>
                 <td>

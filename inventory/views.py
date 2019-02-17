@@ -111,7 +111,6 @@ class AddItemView(generic.View):
         action = "新建"
         action_translated = _(action) + ' '
         is_property = 'prop' in request.path
-        item_type = _("物品属性") if is_property else _("物品")
         message = _("请检查填写的内容！")
         add_form = forms.AddItemForm(request.POST)
         tmp_user = myUser.objects.get(id=request.session.get('user_id'))
@@ -126,12 +125,10 @@ class AddItemView(generic.View):
                 is_public=public,
                 template=None,
             )
-            add_log(tmp_user, item.id, item_type, '名称', '', name)
-            add_log(tmp_user, item.id, item_type, '公开', 'False',
+            add_log(tmp_user, item.id, '物品', '公开', 'False',
                     'True' if public else 'False')
-            add_log(tmp_user, item.id, item_type, '自定编号', '', custom_id)
             item.allowed_users.add(tmp_user)
-            add_log(tmp_user, item.id, item_type, '白名单', '', tmp_user.name)
+            add_log(tmp_user, item.id, '物品', '白名单', '', tmp_user.name)
         else:
             return self.get(request)
         template_queryset = get_my_template_queryset(
@@ -156,6 +153,8 @@ class AddItemView(generic.View):
                         elif dictionary['type'] == 'date':
                             data[dictionary['name']] = data[
                                 dictionary['name']].strftime("%Y-%m-%d")
+            add_log(tmp_user, item.id, '物品', template.key_name, '', name)
+            add_log(tmp_user, item.id, '物品', template.custom_id_name, '', custom_id)
             set_extradata(item, template, data, tmp_user)
         else:
             return render(request, 'inventory/edit.html', locals())
@@ -380,7 +379,7 @@ class EditItemView(generic.View):
                 owner=tmp_user,
                 is_public=is_public_new,
             )
-            add_log(tmp_user, new_item.id, '物品', '名称', '', name_new)
+            add_log(tmp_user, new_item.id, '物品', template.key_name, '', name_new)
             add_log(tmp_user, new_item.id, '物品', '公开', 'False',
                     'True' if is_public_new else 'False')
             for user in item.allowed_users.all():
@@ -392,7 +391,7 @@ class EditItemView(generic.View):
             return redirect('inventory:item', new_item.id)
         else:
             if name_old != name_new:
-                add_log(tmp_user, item.id, '物品', '名称', name_old, name_new)
+                add_log(tmp_user, item.id, '物品', template.key_name, name_old, name_new)
             if is_public_old != is_public_new:
                 add_log(tmp_user, item.id, '物品', '公开',
                         'True' if is_public_old else 'False',
@@ -476,6 +475,7 @@ class AddTemplateView(generic.View):
                     name=name,
                     key_name=_("名称"),
                     key_name_placeholder=_("用于显示的名称"),
+                    custom_id_name=_("自定编号"),
                     is_property=request.GET.get('property') is not None,
                 )
                 new_template.save()
@@ -528,6 +528,11 @@ class EditTemplateView(generic.View):
             add_log(tmp_user, template.id, '模板', '用于显示的名称',
                     template.key_name_placeholder, key_name_placeholder_new)
             template.key_name_placeholder = key_name_placeholder_new
+        custom_id_name_new = request.POST.get('custom_id_name', '名称')
+        if template.custom_id_name != custom_id_name_new:
+            add_log(tmp_user, template.id, '模板', 'ID名称', template.custom_id_name,
+                    custom_id_name_new)
+            template.custom_id_name = custom_id_name_new
         custom_id_format_new = request.POST.get('custom_id_format', None)
         if template.custom_id_format != custom_id_format_new:
             add_log(tmp_user, template.id, '模板', '自定编号',

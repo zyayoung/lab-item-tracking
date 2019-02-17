@@ -35,7 +35,7 @@
         </tr>
         {% endif %}
         <tr class="row mx-0">
-            <th class="col-3">{% trans "自定编号" %}</th>
+            <th class="col-3">{{ item.template.custom_id_name }}</th>
             <td class="col-9">{{ item.custom_id }}</td>
         </tr>
         {% for key, value in extra_info %}

@@ -58,6 +58,11 @@ class ItemTemplate(models.Model):
         default='用于显示的名称',
         verbose_name=_("关键字段占位符"),
     )
+    custom_id_name = models.CharField(
+        max_length=128,
+        default='ID',
+        verbose_name="custom_id_name",
+    )
     custom_id_format = models.CharField(
         max_length=128,
         default='%date%-%id%',
