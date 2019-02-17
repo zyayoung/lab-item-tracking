@@ -139,9 +139,8 @@ class AddItemView(generic.View):
             data = {}
             template_id = int(choose_form.cleaned_data['template'])
             template = ItemTemplate.objects.get(id=template_id)
-            extra_data = template.extra_data
             edit_form = forms.EditItemForm(
-                request.POST, data=extra_data, user=tmp_user)
+                request.POST, template=template, user=tmp_user)
             if edit_form.is_valid():
                 for dictionary in template.extra_data:
                     data[dictionary['name']] = edit_form.cleaned_data[
@@ -314,8 +313,7 @@ def template_ajax(request, *args, **kwargs):
             #     tmp_id_min = IdCache.objects.get(pattern=custom_id).next_id
 
             custom_id = custom_id.replace('%id%', str(tmp_id_min))
-        extra_data = template.extra_data
-        edit_form = forms.EditItemForm(*args, data=extra_data, user=tmp_user)
+        edit_form = forms.EditItemForm(*args, template=template, user=tmp_user)
     return render(request, 'inventory/editajax.html', locals())
 
 
@@ -372,9 +370,8 @@ class EditItemView(generic.View):
             data = {}
             template_id = int(choose_form.cleaned_data['template'])
             template = ItemTemplate.objects.get(id=template_id)
-            extra_data = template.extra_data
             edit_form = forms.EditItemForm(
-                request.POST, data=extra_data, user=tmp_user)
+                request.POST, template=template, user=tmp_user)
             if edit_form.is_valid():
                 for dictionary in template.extra_data:
                     data[dictionary['name']] = edit_form.cleaned_data[

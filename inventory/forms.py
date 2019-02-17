@@ -53,8 +53,9 @@ class SelectWithAdd(forms.Select):
 class EditItemForm(forms.Form):
     def __init__(self, *args, **kwargs):
         super(EditItemForm, self).__init__(*args)
-        data = kwargs.get('data')
+        template = kwargs.get('template')
         user = kwargs.get('user')
+        data = template.extra_data
         if data:
             for idx, value in enumerate(data):
                 tmp_type = value.get('type', 'text').lower()
@@ -101,6 +102,7 @@ class EditItemForm(forms.Form):
 
                         # Binary Search with Auto Expand
                         while Item.objects.filter(
+                                template=template,
                                 extra_data__contains={
                                     tmp_label: custom_id.replace('%id%', str(tmp_id_max))
                                 }).exists():
@@ -108,6 +110,7 @@ class EditItemForm(forms.Form):
                         while tmp_id_min < tmp_id_max:
                             tmp_id = (tmp_id_min + tmp_id_max) // 2
                             if Item.objects.filter(
+                                    template=template,
                                     extra_data__contains={
                                         tmp_label: custom_id.replace('%id%', str(tmp_id))
                                     }).exists():
