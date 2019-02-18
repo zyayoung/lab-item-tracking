@@ -213,8 +213,3 @@ class LocationPermissionApplication(models.Model):
         ordering = ['closed', 'id']
         verbose_name=_("位置申请")
         verbose_name_plural = verbose_name
-
-
-class IdCache(models.Model):
-    pattern = models.CharField(max_length=256, verbose_name=_("模式"))
-    next_id = models.IntegerField(default=1)
