@@ -167,22 +167,38 @@
     <script src="https://cdn.bootcss.com/bootstrap-select/1.13.5/js/bootstrap-select.min.js"></script>
 
 
-    <script type="text/javascript" async
-            src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML">
-    </script>
-    <script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-        tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]},
-        PlainSource: {
-        styles: {
-            ".MathJax_PlainSource_Display": {
-                "text-align": "center",
-                margin: ".75em 0px",
-                "white-space": "pre"
-            }
-        }
-        }
-    });
+{#    <script type="text/javascript" async#}
+{#            src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML">#}
+{#    </script>#}
+{#    <script type="text/x-mathjax-config">#}
+{#    MathJax.Hub.Config({#}
+{#        tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]},#}
+{#        PlainSource: {#}
+{#        styles: {#}
+{#            ".MathJax_PlainSource_Display": {#}
+{#                "text-align": "center",#}
+{#                margin: ".75em 0px",#}
+{#                "white-space": "pre"#}
+{#            }#}
+{#        }#}
+{#        }#}
+{#    });#}
+{#    </script>#}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.css" integrity="sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.js" integrity="sha384-K3vbOmF2BtaVai+Qk37uypf7VrgBubhQreNQe9aGsz9lB63dIFiQVlJbr92dw2Lx" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/contrib/auto-render.min.js" integrity="sha384-kmZOZB5ObwgQnS/DuDg6TScgOiWWBiVt0plIRkZCmE6rDZGrEOQeHM5PcHi+nyqe" crossorigin="anonymous"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            renderMathInElement(document.body, {
+                delimiters:[
+                    {left: "$$", right: "$$", display: true},
+                    {left: "$", right: "$", display: false},
+                    {left: "\\(", right: "\\)", display: false},
+                    {left: "\\[", right: "\\]", display: true}
+                ],
+                ignoredClasses: ['MathJax_PlainSource_Display']
+            });
+        });
     </script>
     {% block script %}{% endblock %}
 </body>
