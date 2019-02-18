@@ -323,5 +323,6 @@ def replace_date(custom_id):
         .replace('%year%', time.strftime('%y', time.localtime())) \
         .replace('%month%', time.strftime('%m', time.localtime())) \
         .replace('%day%', time.strftime('%d', time.localtime())) \
+        .replace('%hour%', time.strftime('%H', time.localtime())) \
         .replace('%minute%', time.strftime('%M', time.localtime())) \
         .replace('%second%', time.strftime('%S', time.localtime()))
