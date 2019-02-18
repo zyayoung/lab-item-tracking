@@ -172,7 +172,16 @@
     </script>
     <script type="text/x-mathjax-config">
     MathJax.Hub.Config({
-        tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+        tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]},
+        PlainSource: {
+        styles: {
+            ".MathJax_PlainSource_Display": {
+                "text-align": "center",
+                margin: ".75em 0px",
+                "white-space": "pre"
+            }
+        }
+        }
     });
     </script>
     {% block script %}{% endblock %}

@@ -30,7 +30,7 @@
         {% for obj in full_info %}
             <tr>
             {% for value in obj %}
-                <td>{% if value.href %}<a href="{{ value.href }}">{{ value.name }}</a>{% else %}{{ value.name }}{% endif %}</td>
+                <td class="MathJax_PlainSource_Display">{% if value.href %}<a href="{{ value.href }}">{{ value.name }}</a>{% else %}{{ value.name }}{% endif %}</td>
             {% endfor %}
             </tr>
         {% endfor %}

@@ -32,20 +32,20 @@
             <td>{{ template.custom_id_name }}</td>
             <td>text</td>
             <td>{% trans "是" %}</td>
-            <td>{{ template.custom_id_format }}</td>
+            <td class="MathJax_PlainSource_Display">{{ template.custom_id_format }}</td>
         </tr>
         <tr>
             <td>{{ template.key_name }}</td>
             <td>text</td>
             <td>{% trans "是" %}</td>
-            <td>{{ template.key_name_placeholder }}</td>
+            <td class="MathJax_PlainSource_Display">{{ template.key_name_placeholder }}</td>
         </tr>
         {% for value in template.extra_data %}
         <tr>
             <td>{{ value.name }}</td>
             <td>{{ value.type }}</td>
             <td>{% if value.required %}{% trans "是" %}{% else %}{% trans "否" %}{% endif %}</td>
-            <td>{{ value.placeholder }}</td>
+            <td class="MathJax_PlainSource_Display">{{ value.placeholder }}</td>
         </tr>
         {% endfor %}
     </tbody>

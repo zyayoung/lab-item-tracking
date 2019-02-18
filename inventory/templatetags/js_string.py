@@ -2,6 +2,7 @@ from django import template
 from django.template.defaultfilters import stringfilter
 from django.utils.safestring import mark_safe
 from django.utils.html import conditional_escape
+import re
 
 register = template.Library()
 
@@ -19,13 +20,3 @@ def js_string(value):
         .replace('&gt;', '>')
         .replace('&amp;', '&')
     )
-
-
-@register.filter
-def a(value):
-    return {'v': value}
-
-
-@register.filter
-def b(value):
-    return value['v']
