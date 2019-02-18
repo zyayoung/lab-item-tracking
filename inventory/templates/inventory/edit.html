@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% load staticfiles %}
+{% load js_string %}
 {% block title %}{{ action }}{{ name }}{% endblock %}
 {% block css %}
 <link href="https://cdn.bootcss.com/jqueryui/1.12.1/jquery-ui.min.css" rel="stylesheet">
@@ -73,9 +74,9 @@
                         $('#id_' + key.replace(/ /g, '_')).val(data[key]);
                 });
                 {% if item %} {#if editing#}
-                $('#id_name').val('{{ item.name|safe }}');
+                $('#id_name').val('{{ item.name|js_string }}');
                 $("#id_custom_id").attr('disabled', 'true');
-                $("#id_custom_id").val('{{ item.custom_id|safe }}');
+                $("#id_custom_id").val('{{ item.custom_id|js_string }}');
                 {% endif %}
                 $('.selectpicker').selectpicker();
             }
