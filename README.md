@@ -24,7 +24,7 @@ cp local_settings.py.template local_settings.py
 vi local_settings.py
 ```
 
-Edit the settings, then run:
+Edit `local_settings.py`, then run:
 
 ```bash
 python manage.py runserver
@@ -49,16 +49,10 @@ python manage.py runserver
   - [x] Share (link & unlink)
   - [x] Edit
   - [x] Delete
-- Trace
-  - [x] Location
-  - [x] Quantity
-  - [x] Operater
-  - [x] Time
-  - [x] Attr
 - Permission
   - [x] Public
   - [x] Private item
   - [x] Secret location
   - [x] Apply for permission
 - Log
-  - [ ] All Changes
+  - [x] All Changes
