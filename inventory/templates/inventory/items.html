@@ -1,49 +1,55 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
+{% load i18n %}
 {% load staticfiles %}
-{% block title %}物品列表{% endblock %}
+{% block title %}{{ name }}{% trans "列表" %}{% endblock %}
 {% block content %}
+{% if self.message %}
+<div class="alert alert-warning">{{ self.message }}</div>
+{% endif %}
 <span class="lead">
-    物品：
+    {{ name }}：
 </span>
 <form class="form-inline pull-right" method="get" action="">
-    <input class="form-control mr-sm-2" name="q" type="search" placeholder="搜索">
+    <input class="form-control mr-sm-2" name="q" type="search" placeholder="{% trans "搜索" %}" value="{{ keyword }}">
     <button class="btn btn-outline-primary d-none d-md-block" type="submit">
         <i class="fa fa-search" aria-hidden="true"></i>
     </button>
 </form>
 <span class="pull-right">
-    <a class="btn btn-outline-primary" role="button" href="{% url 'inventory:add' %}">
-        <i class="fa fa-plus" aria-hidden="true"></i> 新建
+    <a class="btn btn-outline-primary" role="button" href="{% if is_property %}{% url 'inventory:add_property' %}{% else %}{% url 'inventory:add' %}{% endif %}">
+        <i class="fa fa-plus" aria-hidden="true"></i>
+        <span class="d-none d-md-inline">{% trans "新建" %}</span>
     </a>
 </span>
 <p></p>
-{% if keyword %}
-<p class="lead">
-    名称中含关键词：{{ keyword }}
-</p>
-{% endif %}
 {% if item_list %}
 <table class="table table-striped table-sm">
     <thead>
-        <th>名称</th>
-        <th>位置</th>
-        <th class="d-none d-sm-table-cell">数量</th>
-        <th>类型</th>
-        <th class="d-none d-md-table-cell">所有者</th>
+        <th>{% trans "名称" %}</th>
+        {% if not is_property %}
+        <th>{% trans "位置" %}</th>
+        {% endif %}
+        <th>{% trans "类型" %}</th>
+        <th class="d-none d-md-table-cell">{% trans "创建用户" %}</th>
     </thead>
     <tbody>
         {% for item in item_list %}
         <tr>
             <td><a href="{% url 'inventory:item' item.id %}">{{ item }}</a></td>
+            {% if not is_property %}
             <td>
                 {% if item.location %}
                 <a href="{% url 'inventory:location' item.location.id %}">{{ item.location }}</a>
                 {% else %}
-                未放入
+                {% trans "未放入" %}
                 {% endif %}
             </td>
-            <td class="d-none d-sm-table-cell">{{ item.quantity }} {% if item.unit %}{{ item.unit }}{% endif %}</td>
-            <td>{% if item.template %}{{ item.template }}{% endif %}</td>
+            {% endif %}
+            <td>
+                {% if item.template %}
+                <a href="{% url 'inventory:template' item.template.id %}">{{ item.template }}</a>
+                {% endif %}
+            </td>
             <td class="d-none d-md-table-cell">
                 <a href="{% url 'personal:user' item.owner.id %}">
                     {{ item.owner }}
@@ -57,19 +63,19 @@
     <ul class="pagination justify-content-center">
         <li class="page-item">
             <a class="page-link" href="?page=1&q={{ keyword_iri }}">
-                首页
+                {% trans "首页" %}
             </a>
         </li>
         {% if item_list.has_previous %}
         <li class="page-item">
             <a class="page-link" href="?page={{ item_list.previous_page_number }}&q={{ keyword_iri }}">
-                上一页
+                {% trans "上一页" %}
             </a>
         </li>
         {% else %}
         <li class="page-item disabled">
             <a class="page-link" href="#">
-                上一页
+                {% trans "上一页" %}
             </a>
         </li>
         {% endif %}
@@ -81,24 +87,35 @@
         {% if item_list.has_next %}
         <li class="page-item">
             <a class="page-link" href="?page={{ item_list.next_page_number }}&q={{ keyword_iri }}">
-                下一页
+                {% trans "下一页" %}
             </a>
         </li>
         {% else %}
         <li class="page-item disabled">
             <a class="page-link" href="#">
-                下一页
+                {% trans "下一页" %}
             </a>
         </li>
         {% endif %}
         <li class="page-item">
             <a class="page-link" href="?page={{ item_list.paginator.num_pages }}&q={{ keyword_iri }}">
-                尾页
+                {% trans "尾页" %}
             </a>
         </li>
     </ul>
 </nav>
 {% else %}
-<p class="lead">没有符合条件的物品</p>
+<p class="lead">{% trans "没有符合条件的" %}{{ name }}</p>
 {% endif %}
+<form id="selectForm" method="post" action="./?action=user">
+    {% csrf_token %}
+    <select name="filter" id="id_filter" class="selectpicker" multiple title="{% trans "过滤器" %}" data-actions-box="true">
+        {% for key, value in choices %}
+        <option value="{{ key }}" {% if key not in user_filter %} selected {% endif %}>
+            {{ value }}
+        </option>
+        {% endfor %}
+    </select>
+    <button type="submit" class="btn btn-outline-primary">{% trans "确认" %}</button>
+</form>
 {% endblock %}

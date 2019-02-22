@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load staticfiles %}
+{% block title %}{% if is_property %}{% trans "物品属性" %}{% else %}{% trans "物品" %}{% endif %} {% trans "模板详情" %}：{{ template }} {% endblock %}
+{% block content %}
+{% if message %}
+<div class="alert alert-warning">{{ message }}</div>
+{% endif %}
+<p class="lead pull-left">{% if is_property %}{% trans "物品属性" %}{% else %}{% trans "物品" %}{% endif %} {% trans "模板详情导出" %}：{{ template }}</p>
+<div class="pull-right">
+    <button class="btn btn-outline-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
+        aria-haspopup="true" aria-expanded="false">
+        {% trans "导出为" %}...
+    </button>
+    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+        <a class="dropdown-item" href="javascript://" onclick="exportAll('csv');">CSV</a>
+        <a class="dropdown-item" href="javascript://" onclick="exportAll('txt');">TXT</a>
+        <a class="dropdown-item" href="javascript://" onclick="exportAll('xls');">XLS</a>
+        <a class="dropdown-item" href="javascript://" onclick="exportAll('sql');">SQL</a>
+        <a class="dropdown-item" href="javascript://" onclick="exportAll('json');">JSON </a>
+    </div>
+</div>
+<table data-toggle="table" data-search="true" data-sort-class="table-active" data-sortable="true" class="table table-sm" id="export_data">
+    <thead>
+        {% for key in export_keys %}
+        <th data-sortable="true">{{ key }}</th>
+        {% endfor %}
+    </thead>
+    <tbody>
+        {% for obj in full_info %}
+            <tr>
+            {% for value in obj %}
+                <td class="MathJax_PlainSource_Display">{% if value.href %}<a href="{{ value.href }}">{{ value.name }}</a>{% else %}{{ value.name }}{% endif %}</td>
+            {% endfor %}
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
+{% block script %}
+<link href="https://cdn.bootcss.com/bootstrap-table/1.13.1/bootstrap-table.min.css" rel="stylesheet">
+<script src="https://cdn.bootcss.com/bootstrap-table/1.13.1/bootstrap-table.min.js"></script>
+<script src="https://cdn.bootcss.com/bootstrap-table/1.13.1/locale/bootstrap-table-zh-CN.min.js"></script>
+
+<script>
+    function cfm(url, item) {
+        $('#modalNotice').html('{% trans "您确认要删除模板" %}<b>' + item + '</b>{% trans "吗" %}？');
+        $('#cfmUrl').val(url);
+        $('#cfmModal').modal();
+    }
+
+    function urlSubmit() {
+        var url = $.trim($("#cfmUrl").val());
+        window.location.href = url;
+    }
+</script>
+<script src="{% static '/js/tableExport.min.js' %}"></script>
+<script>
+    function exportAll(type) {
+        $('#export_data').tableExport({
+            filename: '{{ user.name }}{% trans "操作记录" %}_%YY%-%MM%-%DD%',
+            format: type
+        });
+    }
+</script>
+{% endblock %}

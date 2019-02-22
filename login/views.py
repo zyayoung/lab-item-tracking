@@ -6,9 +6,11 @@ from captcha.models import CaptchaStore
 from captcha.helpers import captcha_image_url
 from . import forms
 from django.conf import settings
+from log.utils import *
 import hashlib
 import datetime
 from urllib import request, parse
+from django.utils.translation import gettext_lazy as _
 
 # Create your views here.
 
@@ -31,16 +33,18 @@ def login(request):
     image_url = captcha_image_url(hashkey)
     if request.method == "POST":
         login_form = forms.UserForm(request.POST)
-        message = "请检查填写的内容！"
+        message = _("请检查填写的内容！")
         if login_form.is_valid():
             username = login_form.cleaned_data['username']
             password = login_form.cleaned_data['password']
             try:
                 user = models.User.objects.get(name=username)
                 if settings.EMAIL_ENABLE and not user.has_confirmed:
-                    message = "该用户还未通过邮件确认！请查看收件箱（及垃圾邮件）"
-                if settings.EMAIL_WHITELIST_ENABLE and not models.AllowedEmails.objects.filter(email=user.email).exists():
-                    message = "该用户不在白名单中，请联系网站管理员！"
+                    message = _("该用户还未通过邮件确认！请查看收件箱（及垃圾邮件）")
+                    return render(request, 'login/login.html', locals())
+                if settings.EMAIL_WHITELIST_ENABLE and not models.AllowedEmails.objects.filter(
+                        email=user.email).exists():
+                    message = _("该用户不在白名单中，请联系网站管理员！")
                     return render(request, 'login/login.html', locals())
                 if user.password == hash_code(password):
                     request.session['is_login'] = True
@@ -49,9 +53,12 @@ def login(request):
                     request.session['user_name'] = user.__str__()
                     return redirect('/index/')
                 else:
-                    message = "密码不正确！"
+                    message = _("密码不正确！")
             except:
-                message = "用户不存在！"
+                message = _("用户不存在！")
+        else:
+            if not request.POST.get('captcha_1', None):
+                message = _("验证码不能为空")
         return render(request, 'login/login.html', locals())
 
     login_form = forms.UserForm()
@@ -65,14 +72,14 @@ def register(request):
     image_url = captcha_image_url(hashkey)
     if request.method == "POST":
         register_form = forms.RegisterForm(request.POST)
-        message = "请检查填写的内容！"
+        message = _("请检查填写的内容！")
         if register_form.is_valid():
             username = register_form.cleaned_data['username']
             password1 = register_form.cleaned_data['password1']
             password2 = register_form.cleaned_data['password2']
             email = register_form.cleaned_data['email']
             if password1 != password2:
-                message = "两次输入的密码不同！"
+                message = _("两次输入的密码不同！")
                 return render(request, 'login/register.html', locals())
             else:
                 same_name_user = models.User.objects.filter(name=username)
@@ -90,16 +97,17 @@ def register(request):
             new_user.password = hash_code(password1)
             new_user.email = email
             new_user.save()
+            add_log(new_user, new_user.id, '用户', '用户名', '', username)
             if settings.EMAIL_ENABLE:
                 # Send confirm email
                 code = get_confirm_string(new_user)
                 send_email(email, code)
-            message = "请前往注册邮箱，进行邮件确认！（注意检查垃圾邮件）"
+            message = _("请前往注册邮箱，进行邮件确认！（注意检查垃圾邮件）")
             return render(request, 'login/confirm.html', locals())
             # return redirect('/login/')
         else:
-            if request.POST.get('captcha_1') == "":
-                message = "验证码不能为空"
+            if not request.POST.get('captcha_1', None):
+                message = _("验证码不能为空")
     register_form = forms.RegisterForm()
     return render(request, 'login/register.html', locals())
 
@@ -117,7 +125,9 @@ def send_email(email, code):
                     '''.format(settings.SITE_DOMAIN, code,
                                settings.CONFIRM_DAYS)
     try:
-        url = settings.EMAIL_API + '?to=' + parse.quote(email) + '&title=' + parse.quote(subject) + '&body=' + parse.quote(text_content) + '&html=' + parse.quote(html_content)
+        url = settings.EMAIL_API + '?to=' + parse.quote(
+            email) + '&title=' + parse.quote(subject) + '&body=' + parse.quote(
+                text_content) + '&html=' + parse.quote(html_content)
         print(url)
         request.urlopen(url)
     except:
@@ -168,6 +178,7 @@ def user_confirm(request):
     else:
         confirm.user.has_confirmed = True
         confirm.user.save()
+        add_log(confirm.user, confirm.user.id, '用户', '邮件确认', 'False', 'True')
         confirm.delete()
         message = '感谢确认，请使用账户登录！'
     return render(request, 'login/confirm.html', locals())

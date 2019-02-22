@@ -1,40 +1,47 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
+{% load i18n %}
 {% load staticfiles %}
-{% block title %}物品列表{% endblock %}
+{% block title %}{% trans "物品列表" %}{% endblock %}
 {% block content %}
-<span class="lead">
-    物品模板：
-</span>
+<span class="lead">{% trans "模板" %}：</span>
 <form class="form-inline pull-right" method="get" action="">
-    <input class="form-control mr-sm-2" name="q" type="search" placeholder="搜索">
+    <input class="form-control mr-sm-2" name="q" type="search" placeholder="{% trans "搜索" %}" value="{{ keyword }}">
     <button class="btn btn-outline-primary d-none d-md-block" type="submit">
         <i class="fa fa-search" aria-hidden="true"></i>
     </button>
 </form>
-<span class="pull-right">
-    <a class="btn btn-outline-primary" role="button" href="{% url 'inventory:add_template' %}">
-        <i class="fa fa-plus" aria-hidden="true"></i> 新建
-    </a>
-</span>
+{% if tmp_user.is_superadmin %}
+<div class="pull-right">
+    <button class="btn btn-outline-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
+        aria-haspopup="true" aria-expanded="false">
+        <i class="fa fa-plus" aria-hidden="true"></i>
+        {% trans "新建" %}
+    </button>
+    <div class="dropdown-menu" style="min-width: 0px;" aria-labelledby="dropdownMenuButton">
+        <a class="dropdown-item" href="{% url 'inventory:add_template' %}">{% trans "物品模板" %}</a>
+        <a class="dropdown-item" href="{% url 'inventory:add_template' %}?property=true">{% trans "物品属性模板" %}</a>
+    </div>
+</div>
 <p></p>
-{% if keyword %}
-<p class="lead">
-    名称中含关键词：{{ keyword }}
-</p>
 {% endif %}
 {% if template_list %}
-<table class="table table-striped table-sm">
-    <thead>
-        <th>名称</th>
-        <th>属性</th>
+<table class="table table-striped table-sm row mx-0">
+    <thead class="w-100">
+        <tr class="row mx-0">
+            <th class="col-2">{% trans "名称" %}</th>
+            <th class="col-2">{% trans "类型" %}</th>
+            <th class="col-8">{% trans "属性" %}</th>
+        </tr>
     </thead>
-    <tbody>
+    <tbody class="w-100">
         {% for template in template_list %}
-        <tr>
-            <td><a href="{% url 'inventory:template' template.id %}">{{ template }}</a></td>
-            <td>
+        <tr class="row mx-0">
+            <td class="col-2"><a href="{% url 'inventory:template' template.id %}">{{ template }}</a></td>
+            <td class="col-2">{% if template.is_property %}{% trans "物品属性模板" %}{% else %}{% trans "物品模板" %}{% endif %}</td>
+            <td class="col-8">
+                {{ template.key_name }}
                 {% for value in template.extra_data %}
-                {{ value.name }}
+                | {{ value.name }}
                 {% endfor %}
             </td>
         </tr>
@@ -45,19 +52,19 @@
     <ul class="pagination justify-content-center">
         <li class="page-item">
             <a class="page-link" href="?page=1&q={{ keyword_iri }}">
-                首页
+                {% trans "首页" %}
             </a>
         </li>
         {% if template_list.has_previous %}
         <li class="page-item">
             <a class="page-link" href="?page={{ template_list.previous_page_number }}&q={{ keyword_iri }}">
-                上一页
+                {% trans "上一页" %}
             </a>
         </li>
         {% else %}
         <li class="page-item disabled">
             <a class="page-link" href="#">
-                上一页
+                {% trans "上一页" %}
             </a>
         </li>
         {% endif %}
@@ -69,24 +76,24 @@
         {% if template_list.has_next %}
         <li class="page-item">
             <a class="page-link" href="?page={{ template_list.next_page_number }}&q={{ keyword_iri }}">
-                下一页
+                {% trans "下一页" %}
             </a>
         </li>
         {% else %}
         <li class="page-item disabled">
             <a class="page-link" href="#">
-                下一页
+                {% trans "下一页" %}
             </a>
         </li>
         {% endif %}
         <li class="page-item">
             <a class="page-link" href="?page={{ template_list.paginator.num_pages }}&q={{ keyword_iri }}">
-                尾页
+                {% trans "尾页" %}
             </a>
         </li>
     </ul>
 </nav>
 {% else %}
-<p class="lead">没有符合条件的物品模板</p>
+<p class="lead">{% trans "没有符合条件的物品模板" %}</p>
 {% endif %}
 {% endblock %}

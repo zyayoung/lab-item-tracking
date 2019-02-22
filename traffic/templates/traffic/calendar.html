@@ -1,21 +1,22 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
+{% load i18n %}
 
-{% block title %} 实验室物品管理 {% endblock %}
+{% block title %} {% trans "实验室物品管理" %} {% endblock %}
 
 {% block content %}
 <nav class="mb-3">
     <div class="nav nav-tabs" role="tablist">
         <a class="nav-item nav-link" href="{% url 'traffic:userAnalyze' %}" aria-selected="false">
-            用户
+            {% trans "用户" %}
         </a>
         <a class="nav-item nav-link" href="{% url 'traffic:locationAnalyze' %}" aria-selected="false">
-            位置
+            {% trans "位置" %}
         </a>
         <a class="nav-item nav-link active" href="#" aria-selected="true">
-            日历
+            {% trans "日历" %}
         </a>
         <a class="nav-item nav-link" href="{% url 'traffic:performance' %}" aria-selected="false">
-            性能
+            {% trans "性能" %}
         </a>
     </div>
 </nav>
@@ -31,7 +32,7 @@ var option = {
     title: {
         top: 30,
         left: 'center',
-        text: '网站访问次数'
+        text: '{% trans "网站访问次数" %}'
     },
     tooltip : {},
     visualMap: {
@@ -71,7 +72,7 @@ var option = {
     title: {
         top: 30,
         left: 'center',
-        text: '物品操作次数'
+        text: '{% trans "物品操作次数" %}'
     },
     tooltip : {},
     visualMap: {
@@ -111,7 +112,7 @@ var option = {
     title: {
         top: 30,
         left: 'center',
-        text: '权限申请次数'
+        text: '{% trans "权限申请次数" %}'
     },
     tooltip : {},
     visualMap: {

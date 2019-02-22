@@ -1,0 +1,9 @@
+{% load i18n %}
+<div class="row">
+    <div class="col-7 col-sm-8 col-md-9 col-lg-10">
+    {{ select }}
+    </div>
+    <button id="add_{{ name }}" class="btn btn-outline-primary pull-right" style="width:75px;" type="button" onclick="popup('id_{{ name }}', '{{ template_name }}')">
+        <i class="fa fa-plus" aria-hidden="true"></i> {% trans "新建" %}
+    </button>
+</div>

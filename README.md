@@ -4,8 +4,15 @@
 
 ## Deploy
 
+Create a postgresql server
+
+```bash
+docker run --name postgresql -e POSTGRES_PASSWORD=password -p 5432:5432 -d postgres
+```
+
 ```bash
 python manage.py migrate
+python manage.py compilemessages
 python manage.py createsuperuser
 python manage.py runserver
 ```
@@ -26,28 +33,26 @@ python manage.py runserver
 ## Features
 
 - Users
-    - [x] Admin
-    - [x] Manager
-    - [x] Normal User
+  - [x] Admin
+  - [x] Manager
+  - [x] Normal User
 - Location
-    - [x] Tree structure
-    - [x] QR Code
+  - [x] Tree structure
+  - [x] QR Code
 - Items
-    - [x] Add
-    - [x] Attr
-    - [x] Location
-    - [x] Owner
-    - [x] Share (link & unlink)
-    - [x] Edit
-    - [x] Delete
-- Trace
-    - [x] Location
-    - [x] Quantity
-    - [x] Operater
-    - [x] Time
-    - [x] Attr
+  - [x] Add
+  - [x] Attr
+  - [x] Modular
+  - [x] Link
+  - [x] Location
+  - [x] Owner
+  - [x] Share (link & unlink)
+  - [x] Edit
+  - [x] Delete
 - Permission
-    - [x] Public
-    - [x] Private item
-    - [x] Secret location
-    - [x] Apply for permission
+  - [x] Public
+  - [x] Private item
+  - [x] Secret location
+  - [x] Apply for permission
+- Log
+  - [x] All Changes

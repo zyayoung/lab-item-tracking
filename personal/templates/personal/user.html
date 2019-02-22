@@ -1,22 +1,40 @@
 {% extends 'base.html' %}
+{% load i18n %}
 {% load staticfiles %}
-{% block title %}用户信息{% endblock %}
+{% block title %}{% trans "用户信息" %}{% endblock %}
 {% block css %}{% endblock %}
 {% block content %}
-<p class="lead">个人信息：</p>
+<p class="lead">{% trans "个人信息" %}：
+    {% if tmp_user.is_superadmin %}
+    <span class="pull-right">
+        <a class="btn btn-outline-primary" role="button" href="{% url 'admin:login_user_change' user.id %}">
+            <i class="fa fa-edit" aria-hidden="true"></i> {% trans "编辑" %}
+        </a>
+        <a class="btn btn-outline-primary" href="{% url 'log:user_log' user.id %}">
+            <i class="fa fa-file-text" aria-hidden="true"></i> {% trans "日志" %}
+        </a>
+        {% endif %}
+    </span>
+</p>
 <table class="table table-striped row mx-0">
     <tbody class="w-100">
         <tr class="row mx-0">
-            <th class="col-4">用户名</th>
+            <th class="col-4">{% trans "用户名" %}</th>
             <td class="col-8">{{ user.name }}</td>
         </tr>
+        {% if tmp_user.is_superadmin %}
         <tr class="row mx-0">
-            <th class="col-4">权限</th>
+            <th class="col-4">{% trans "邮箱" %}</th>
+            <td class="col-8">{{ user.email }}</td>
+        </tr>
+        {% endif %}
+        <tr class="row mx-0">
+            <th class="col-4">{% trans "权限" %}</th>
             <td class="col-8">{{ permission }}</td>
         </tr>
         {% if manager_list %}
         <tr class="row mx-0">
-            <th class="col-4">所属主管</th>
+            <th class="col-4">{% trans "所属主管" %}</th>
             <td class="col-8">
                 {% for user in manager_list %}
                 <a href="{% url 'personal:user' user.id %}">
@@ -28,7 +46,7 @@
         {% endif %}
         {% if staff_list %}
         <tr class="row mx-0">
-            <th class="col-4">下属员工</th>
+            <th class="col-4">{% trans "下属员工" %}</th>
             <td class="col-8">
                 {% for user in staff_list %}
                 <a href="{% url 'personal:user' user.id %}">
@@ -39,16 +57,16 @@
         </tr>
         {% endif %}
         <tr class="row mx-0">
-            <th class="col-4">注册时间</th>
+            <th class="col-4">{% trans "注册时间" %}</th>
             <td class="col-8">{{ user.c_time }}</td>
         </tr>
+        {% if tmp_user.is_superadmin %}
+        <tr class="row mx-0">
+            <th class="col-4">{% trans "最后在线时间" %}</th>
+            <td class="col-8">{{ user.latest_online_time }}</td>
+        </tr>
+        {% endif %}
     </tbody>
 </table>
-{% if tmp_user.is_superadmin %}
-<a class="btn btn-outline-primary" role="button" href="{% url 'admin:login_user_change' user.id %}">
-    <i class="fa fa-edit" aria-hidden="true"></i> 编辑
-</a>
-{% endif %}
-<a class="btn btn-outline-primary" href="{% url 'trace_item:traceUser' user.id %}">追踪</a>
 {% endblock %}
 {% block script %}{% endblock %}

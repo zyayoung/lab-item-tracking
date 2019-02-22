@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load staticfiles %}
+{% block title %}{{ user.name }} {% trans "操作记录" %}{% endblock %}
+{% block content %}
+<span class="lead">{{ user.name }} {% trans "操作记录" %}：</span>
+<div class="pull-right">
+    {% if logs.has_next %}
+    <a class="btn btn-outline-primary" href="?all" role="button">
+        {% trans "显示全部" %}
+    </a>
+    {% endif %}
+    <button class="btn btn-outline-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
+        aria-haspopup="true" aria-expanded="false">
+        {% trans "导出为" %}...
+    </button>
+    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+        <a class="dropdown-item" href="javascript://" onclick="exportAll('csv');">CSV</a>
+        <a class="dropdown-item" href="javascript://" onclick="exportAll('txt');">TXT</a>
+        <a class="dropdown-item" href="javascript://" onclick="exportAll('xls');">XLS</a>
+        <a class="dropdown-item" href="javascript://" onclick="exportAll('sql');">SQL</a>
+        <a class="dropdown-item" href="javascript://" onclick="exportAll('json');">JSON </a>
+    </div>
+</div>
+<p></p>
+<div class="table-responsive">
+    <nobr>
+        <table class="table table-striped table-sm">
+            <thead>
+                <th class="d-none d-md-table-cell">{% trans "时间" %}</th>
+                <th>{% trans "类型" %}</th>
+                <th>{% trans "对象" %}</th>
+                <th>{% trans "调整" %}</th>
+                <th>{% trans "从" %}</th>
+                <th>{% trans "至" %}</th>
+            </thead>
+            <tbody>
+                {% for log in logs %}
+                <tr>
+                    <td class="d-none d-md-table-cell">{{ log.time }}</td>
+                    <td>{% trans log.category %}</td>
+                    <td>
+                        {{ log.get_obj_html|safe }}
+                    </td>
+                    <td>{% trans log.attribute %}</td>
+                    <td>{{ log.get_before_html|safe }}</td>
+                    <td>{{ log.get_after_html|safe }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </nobr>
+</div>
+{% if paginator %}
+<nav aria-label="page navigation">
+    <ul class="pagination justify-content-center">
+        <li class="page-item">
+            <a class="page-link" href="?page=1">
+                {% trans "首页" %}
+            </a>
+        </li>
+        {% if logs.has_previous %}
+        <li class="page-item">
+            <a class="page-link" href="?page={{ logs.previous_page_number }}">
+                {% trans "上一页" %}
+            </a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+            <a class="page-link" href="#">
+                {% trans "上一页" %}
+            </a>
+        </li>
+        {% endif %}
+        <li class="page-item active">
+            <a class="page-link" href="#">
+                {{ logs.number }}/{{ logs.paginator.num_pages }}
+            </a>
+        </li>
+        {% if logs.has_next %}
+        <li class="page-item">
+            <a class="page-link" href="?page={{ logs.next_page_number }}">
+                {% trans "下一页" %}
+            </a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+            <a class="page-link" href="#">
+                {% trans "下一页" %}
+            </a>
+        </li>
+        {% endif %}
+        <li class="page-item">
+            <a class="page-link" href="?page={{ logs.paginator.num_pages }}">
+                {% trans "尾页" %}
+            </a>
+        </li>
+    </ul>
+</nav>
+{% endif %}
+{% endblock %}
+{% block script %}
+<script src="{% static '/js/tableExport.min.js' %}"></script>
+<script>
+    function exportAll(type) {
+        $('.table').tableExport({
+            filename: '{{ user.name }}{% trans "操作记录" %}_%YY%-%MM%-%DD%',
+            format: type
+        });
+    }
+</script>
+{% endblock %}

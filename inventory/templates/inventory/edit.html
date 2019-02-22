@@ -1,51 +1,59 @@
 {% extends 'base.html' %}
+{% load i18n %}
 {% load staticfiles %}
-{% block title %}编辑物品{% endblock %}
-{% block css %}{% endblock %}
+{% load js_string %}
+{% block title %}{{ action }}{{ name }}{% endblock %}
+{% block css %}
+<link href="https://cdn.bootcss.com/jqueryui/1.12.1/jquery-ui.min.css" rel="stylesheet">
+{% endblock %}
 {% block content %}
-<p class="lead">编辑物品：</p>
-<form class="form-add" action="" method="post">
+{% if self.message %}
+<div class="alert alert-warning">{{ self.message }}</div>
+{% endif %}
+<p class="lead">{{ action_translated }}{{ name }}：</p>
+<form class="form-add" action="" method="post" id="main_form">
     {% csrf_token %}
     <div class="form-group row">
-        <label class="col-3 col-form-label"><b>名称</b></label>
-        <div class="col-9">
-            <input type="text" name="name" class="form-control" maxlength="128" required="" id="id_name" value="{{ item.name }}">
-        </div>
-    </div>
-    <div class="form-group row">
-        <label class="col-3 col-form-label"><b>数量</b></label>
-        <div class="col-3">
-            <input type="number" name="quantity" class="form-control" min="1e-12" step="1e-12" required="" id="id_quantity" value="{{ item.quantity }}">
-        </div>
-        <label class="col-3 col-form-label"><b>单位</b></label>
-        <div class="col-3">
-            <input type="text" name="unit" class="form-control" maxlength="32" id="id_unit" value="{{ item.unit }}">
-        </div>
-    </div>
-    <div class="form-group row">
-        <div class="col-3"><b>公开</b></div>
+        <div class="col-3">{{ add_form.public.label }}</div>
         <div class="col-9">
             <div class="form-check">
-                <input type="checkbox" name="public" class="form-check-input" id="id_public" {% if item.is_public %}checked=""{% endif %}>
+                <input type="checkbox" name="public" class="form-check-input" id="id_public"
+                {% if item.is_public or action == "新建" %}checked{% endif %}>
             </div>
         </div>
     </div>
     <div class="form-group row">
-        <label class="col-3 col-form-label"><b>类型</b></label>
+        <label class="col-3 col-form-label"><b>{% trans "类型" %}</b></label>
         <div class="col-9">{{ choose_form.template }}</div>
     </div>
     <div id="innerform">
     </div>
-    <button type="submit" class="btn btn-outline-primary">提交</button>
+    <input name="is_popup" type="checkbox" {% if is_popup %}checked{% endif %} hidden>
+    {% if is_popup %}
+        <input name="template" value="{{ template_id }}" hidden>
+        <input name="select_id" value="{{ select_id }}" hidden>
+    {% endif %}
+    <button type="submit" class="btn btn-outline-primary">
+        <i class="fa fa-save" aria-hidden="true"></i> {% trans "提交" %}
+    </button>
+    {% if is_edit %}
+    <button type="submit" class="btn btn-outline-primary" name="save_as_new">
+        <i class="fa fa-plus" aria-hidden="true"></i> {% trans "另存为新" %}
+    </button>
+    {% endif %}
 </form>
 {% endblock %}
 {% block script %}
+<script src="https://cdn.bootcss.com/jqueryui/1.12.1/jquery-ui.min.js"></script>
 <script>
     False = false;
     True = true;
     None = null;
-    data = {{ item.extra_data | safe }};
-
+    data = {% if item.extra_data %}{{ item.extra_data | safe }}{% else %}{}{% endif %};
+    {% if is_popup %}
+    $("#site_header").remove();
+    $('#id_template').attr('disabled', 'true');
+    {% endif %}
     function ajaxSubmit() {
         var id = $.trim($('#id_template').val());
         $.ajax({
@@ -58,7 +66,6 @@
             success: function (arg) {
                 $('#innerform').html(arg);
                 Object.keys(data).forEach(function (key) {
-                    console.log('#id_' + key.replace(' ', '_'));
                     if (data[key] === True)
                         $('#id_' + key.replace(/ /g, '_')).prop("checked", true);
                     else if (data[key] === False)
@@ -66,15 +73,26 @@
                     else
                         $('#id_' + key.replace(/ /g, '_')).val(data[key]);
                 });
+                {% if item %} {#if editing#}
+                $('#id_name').val('{{ item.name|js_string }}');
+                $("#id_custom_id").attr('disabled', 'true');
+                $("#id_custom_id").val('{{ item.custom_id|js_string }}');
+                {% endif %}
+                $('.selectpicker').selectpicker();
             }
         });
-    };
+    }
     $('#id_template').change(function () {
-        ajaxSubmit()
-    });
-    $(function () {
-        $('#id_template').val({{ item.template.id }});
         ajaxSubmit();
     });
+    $(function () {
+        {% if template_id %}
+            $('#id_template').val({{ template_id }});
+        {% endif %}
+        ajaxSubmit();
+    });
+    function popup(n, t) {
+        window.open('{% url 'inventory:add' %}'+'?template='+encodeURI(t)+'&select_id='+encodeURI(n), Math.random().toString(32).substr(2), 'height=900,width=800,resizable=yes,scrollbars=yes');
+    }
 </script>
 {% endblock %}

@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load staticfiles %}
+{% block title %}{% trans "设置" %}{% endblock %}
+{% block css %}{% endblock %}
+{% block content %}
+<p class="lead">{% trans "设置" %}</p>
+<form action="{% url 'set_language' %}" method="post">
+    {% csrf_token %}
+    <input name="next" type="hidden" value="{{ redirect_to }}">
+    <div class="form-group row">
+    <label class="col-4 col-form-label">{% trans "语言" %}</label>
+        <select class="col-form-label col-6" name="language">
+            {% get_current_language as LANGUAGE_CODE %}
+            {% get_available_languages as LANGUAGES %}
+            {% get_language_info_list for LANGUAGES as languages %}
+            {% for language in languages %}
+                <option value="{{ language.code }}"{% if language.code == LANGUAGE_CODE %} selected{% endif %}>
+                    {{ language.name_local }} ({{ language.code }})
+                </option>
+            {% endfor %}
+        </select>
+        <input class="form-control col-2" type="submit" value="Go">
+    </div>
+</form>
+<form method="post">
+    {% csrf_token %}
+    <div class="form-group row">
+    <label class="col-4 col-form-label">{% trans "Tex引擎" %}</label>
+        <select class="col-form-label col-6" name="tex_engine">
+            <option value="MathJax"{% if request.session.tex_engine != 'KaTeX' %} selected{% endif %}>
+                MathJax
+            </option>
+            <option value="KaTeX"{% if request.session.tex_engine == 'KaTeX' %} selected{% endif %}>
+                KaTeX
+            </option>
+        </select>
+        <input class="form-control col-2" type="submit" value="Go">
+    </div>
+</form>
+{% endblock %}
+{% block script %}{% endblock %}

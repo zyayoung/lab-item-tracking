@@ -1,22 +1,74 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
+{% load i18n %}
 {% load staticfiles %}
-{% block title %}物品模板编辑：{{ template }} {% endblock %}
+{% block title %}{% if is_property %}{% trans "物品属性" %}{% else %}{% trans "物品" %}{% endif %} {% trans "模板编辑" %}：{{ template }} {% endblock %}
 {% block content %}
 {% if message %}
 <div class="alert alert-warning">{{ message }}</div>
 {% endif %}
-<p class="lead pull-left">物品模板编辑：{{ template }}</p>
+<p class="lead">{% if is_property %}{% trans "物品属性" %}{% else %}{% trans "物品" %}{% endif %} {% trans "模板编辑" %}：{{ template }}</p>
 <form method="post" action="">
+    <span class="lead pull-left">{% trans "可使用该模板用户" %}：</span>
+    <select name="share" id="share_id" class="selectpicker" data-live-search="true" multiple title="{% trans "允许全部用户" %}">
+        {% for user in all_users %}
+        <option value="{{ user.id }}" {% if user in template.allowed_users.all %} selected {% endif %}>
+            {{ user.name }}
+        </option>
+        {% endfor %}
+    </select>
+    <p></p>
     <table class="table table-striped" id="editTable">
         <thead>
-            <th>属性名称</th>
-            <th>类型</th>
-            <th>必填</th>
-            <th>提示信息</th>
+            <th>{% trans "属性名称" %}</th>
+            <th>{% trans "类型" %}</th>
+            <th>{% trans "必填" %}</th>
+            <th>{% trans "提示信息" %}</th>
             <th></th>
         </thead>
         <tbody>
             {% csrf_token %}
+            <tr>
+                <td>
+                    <input type="text" class="form-control" name="custom_id_name" value="{{ template.custom_id_name }}">
+                </td>
+                <td>
+                    <select class="form-control" disabled>
+                        <option selected="selected">ID</option>
+                    </select>
+                </td>
+                <td>
+                    <select class="form-control" disabled>
+                        <option selected="selected">{% trans "是" %}</option>
+                    </select>
+                </td>
+                <td>
+                    <input type="text" class="form-control" name="custom_id_format" value="{{ template.custom_id_format }}">
+                </td>
+                <td>
+                    <button type="button" class="btn text-muted" disabled>{% trans "删除" %}</button>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <input type="text" class="form-control" name="key_name" value="{{ template.key_name }}" required>
+                </td>
+                <td>
+                    <select class="form-control" disabled>
+                        <option selected="selected">text</option>
+                    </select>
+                </td>
+                <td>
+                    <select class="form-control" disabled>
+                        <option selected="selected">{% trans "是" %}</option>
+                    </select>
+                </td>
+                <td>
+                    <input type="text" class="form-control" name="key_name_placeholder" value="{{ template.key_name_placeholder }}">
+                </td>
+                <td>
+                    <button type="button" class="btn text-muted" disabled>{% trans "删除" %}</button>
+                </td>
+            </tr>
             {% for value in template.extra_data %}
             <tr id="tr_{{ forloop.counter }}">
                 <td>
@@ -24,16 +76,15 @@
                 </td>
                 <td>
                     <select name="type_{{ forloop.counter }}" class="form-control">
-                        <option value="int" {% if value.type == "int" %} selected="selected" {% endif %}>int</option>
-                        <option value="float" {% if value.type == "float" %} selected="selected" {% endif %}>float</option>
-                        <option value="bool" {% if value.type == "bool" %} selected="selected" {% endif %}>bool</option>
-                        <option value="text" {% if value.type == "text" %} selected="selected" {% endif %}>text</option>
+                    {% for type in choices %}
+                        <option value="{{ type }}" {% if value.type == type %} selected="selected" {% endif %}>{{ type }}</option>
+                    {% endfor %}
                     </select>
                 </td>
                 <td>
                     <select name="required_{{ forloop.counter }}" class="form-control">
-                        <option value="1" {% if value.required %} selected="selected" {% endif %}>是</option>
-                        <option value="0" {% if not value.required %} selected="selected" {% endif %}>否</option>
+                        <option value="1" {% if value.required %} selected="selected" {% endif %}>{% trans "是" %}</option>
+                        <option value="0" {% if not value.required %} selected="selected" {% endif %}>{% trans "否" %}</option>
                     </select>
                 </td>
                 <td>
@@ -41,16 +92,18 @@
                         value="{{ value.placeholder }}">
                 </td>
                 <td>
-                    <button type="button" class="btn btn-outline-primary" onclick="del_row({{ forloop.counter }})">删除</button>
+                    <button type="button" class="btn btn-outline-primary" onclick="del_row({{ forloop.counter }})">{% trans "删除" %}</button>
                 </td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
     <button type="button" class="btn btn-outline-primary" onClick="addRow()">
-        <i class="fa fa-plus" aria-hidden="true"></i> 添加属性
+        <i class="fa fa-plus" aria-hidden="true"></i> {% trans "新建属性" %}
     </button>
-    <button type="submit" class="btn btn-outline-primary">保存</button>
+    <button type="submit" class="btn btn-outline-primary">
+        <i class="fa fa-save" aria-hidden="true"></i> {% trans "保存" %}
+    </button>
 </form>
 {% endblock %}
 {% block script %}
@@ -64,23 +117,22 @@
                 '    </td>',
                 '    <td>',
                 '        <select name="type_' + index + '" class="form-control">',
-                '            <option value="int" selected="selected">int</option>',
-                '            <option value="float">float</option>',
-                '            <option value="bool">bool</option>',
-                '            <option value="text">text</option>',
+                {% for type in choices %}
+                '        <option value="{{ type }}">{{ type }}</option>',
+                {% endfor %}
                 '        </select>',
                 '    </td>',
                 '    <td>',
                 '        <select name="required_' + index + '" class="form-control">',
-                '            <option value="1" selected="selected">是</option>',
-                '            <option value="0">否</option>',
+                '            <option value="1" selected="selected">{% trans "是" %}</option>',
+                '            <option value="0">{% trans "否" %}</option>',
                 '        </select>',
                 '    </td>',
                 '    <td>',
                 '        <input type="text" name="placeholder_' + index + '" class="form-control" maxlength="128">',
                 '    </td>',
                 '    <td>',
-                '        <button type="button" class="btn btn-outline-primary" onclick="del_row(' + index + ')">删除</button>',
+                '        <button type="button" class="btn btn-outline-primary" onclick="del_row(' + index + ')">{% trans "删除" %}</button>',
                 '    </td>',
                 '</tr>'].join("");
         $("#editTable").append(myHtml);

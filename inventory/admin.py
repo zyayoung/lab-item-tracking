@@ -2,6 +2,7 @@ from django.contrib import admin
 from .models import *
 from django.contrib.auth.models import Group, User
 from django.views.decorators.cache import never_cache
+from django.utils.translation import gettext_lazy as _
 
 
 class LocationPermissionApplicationAdmin(admin.ModelAdmin):
@@ -12,9 +13,9 @@ class LocationPermissionApplicationAdmin(admin.ModelAdmin):
 
 
 class ItemAdmin(admin.ModelAdmin):
-    list_display = ('name', 'quantity', 'unit', 'location', 'template', 'owner', 'is_public')
-    search_fields = ('name', 'unit', 'owner__name', 'location__path')
-    list_filter = ('is_public', 'owner', 'unit')
+    list_display = ('name', 'location', 'template', 'owner', 'is_public')
+    search_fields = ('name', 'owner__name', 'location__path')
+    list_filter = ('is_public', 'owner')
     filter_horizontal = ('allowed_users',)
 
 
@@ -25,13 +26,14 @@ class LocationAdmin(admin.ModelAdmin):
 
 
 class ItemTemplateAdmin(admin.ModelAdmin):
-    list_display = ('name', 'extra_data')
+    list_display = ('name', 'is_property', 'extra_data', 'allowed_users_summary')
     search_fields = ('name', 'extra_data')
+    list_filter = ('is_property', )
     date_hierarchy = 'create_time'
 
 
-admin.site.site_header = "实验室物品数据库"
-admin.site.site_title = "数据库"
+admin.site.site_header = _("实验室物品数据库")
+admin.site.site_title = _("数据库")
 
 admin.site.unregister(Group)
 admin.site.unregister(User)

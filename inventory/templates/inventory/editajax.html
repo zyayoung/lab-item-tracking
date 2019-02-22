@@ -1,7 +1,20 @@
+{% load i18n %}
+<div class="form-group row">
+    <label class="col-3 col-form-label"><b>{{ template.key_name }}</b></label>
+    <div class="col-9">
+        <input type="text" name="name" class="form-control" maxlength="128" id="id_name" required value="" autocomplete="{{ template }}_{{ template.key_name }}" placeholder="{{ template.key_name_placeholder }}">
+    </div>
+</div>
+<div class="form-group row">
+    <label class="col-3 col-form-label"><b>{{ template.custom_id_name }}</b></label>
+    <div class="col-9">
+        <input type="text" name="custom_id" class="form-control" maxlength="128" id="id_custom_id" required value="{{ custom_id }}">
+    </div>
+</div>
 {% for field in edit_form %}
 {% if field.data == False or field.data == True %}
 <div class="form-group row">
-    <div class="col-3"><b>{{ field.label }}</b></div>
+    <div class="col-3">{{ field.label }}</div>
     <div class="col-9">
         <div class="form-check">
             {{ field }}
@@ -10,10 +23,19 @@
 </div>
 {% else %}
 <div class="form-group row">
-    <label class="col-3 col-form-label"><b>{{ field.label }}</b></label>
+    <label class="col-3 col-form-label">
+        {% if field.field.required %}
+        <b>{{ field.label }}</b>
+        {% else %}
+        {{ field.label }}
+        {% endif %}
+    </label>
     <div class="col-9">
         {{ field }}
     </div>
 </div>
 {% endif %}
 {% endfor %}
+<script>
+    $(".form_datetime").datepicker({dateFormat: "yy-mm-dd"});
+</script>

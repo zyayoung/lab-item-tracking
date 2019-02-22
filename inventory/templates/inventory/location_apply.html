@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
+{% load i18n %}
 {% load staticfiles %}
-{% block title %}申请权限{% endblock %}
+{% block title %}{% trans "申请权限" %}{% endblock %}
 {% block css %}{% endblock %}
 {% block content %}
 <!-- TODO:add items properly -->
@@ -12,12 +13,12 @@
             {% endif %}
             {% csrf_token %}
 
-            <h2 class="text-center">申请权限</h2>
+            <h2 class="text-center">{% trans "申请权限" %}</h2>
             <div class="form-group">
                 {{ apply_form.note.label_tag }}
                 {{ apply_form.note}}
             </div>
-            <button type="submit" class="btn btn-outline-primary">提交</button>
+            <button type="submit" class="btn btn-outline-primary">{% trans "提交" %}</button>
         </form>
     </div>
 </div> <!-- /container -->

@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
+{% load i18n %}
 {% load staticfiles %}
-{% block title %}注册{% endblock %}
+{% block title %}{% trans "注册" %}{% endblock %}
 {% block css %}{% endblock %}
 {% block content %}
 <div class="container">
@@ -10,7 +11,7 @@
             <div class="alert alert-warning">{{ message }}</div>
             {% endif %}
             {% csrf_token %}
-            <h2 class="text-center">注册</h2>
+            <h2 class="text-center">{% trans "注册" %}</h2>
             <div class="form-group">
                 {{ register_form.username.label_tag }}
                 {{ register_form.username}}
@@ -38,7 +39,7 @@
                     <img src="{{ image_url }}" class="captcha" alt="captcha" style="cursor:pointer;">
                 </div>
             </div>
-            <button type="submit" class="btn btn-outline-primary btn-block">提交</button>
+            <button type="submit" class="btn btn-outline-primary btn-block">{% trans "提交" %}</button>
         </form>
     </div>
 </div> <!-- /container -->

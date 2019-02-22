@@ -1,141 +1,206 @@
-{% load staticfiles %}
 <!DOCTYPE html>
 <html lang="zh-CN">
-
+{% load staticfiles %}
+{% load i18n %}
 <head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{% block title %}base{% endblock %}</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}base{% endblock %}</title>
 
-  <link rel="icon" type="image/png" href="{% static 'img/favicon.png' %}" />
-  <!-- Bootstrap -->
-  <link href="https://cdn.bootcss.com/twitter-bootstrap/4.2.1/css/bootstrap.min.css" rel="stylesheet" />
-  <!-- Font Awesome -->
-  <link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
-  <!-- Bootstrap Select -->
-  <link href="https://cdn.bootcss.com/bootstrap-select/1.13.5/css/bootstrap-select.min.css" rel="stylesheet">
-  <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-  <!--[if lt IE 9]>
+    <link rel="icon" type="image/png" href="{% static 'img/favicon.png' %}" />
+    <!-- Bootstrap -->
+    <link href="https://cdn.bootcss.com/twitter-bootstrap/4.2.1/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- Font Awesome -->
+    <link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <!-- Bootstrap Select -->
+    <link href="https://cdn.bootcss.com/bootstrap-select/1.13.5/css/bootstrap-select.min.css" rel="stylesheet">
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
     <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
     <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
-  <style>
-    .chart {
-        margin-bottom: 20px;
-    }
-    .btn-outline-primary {
-        margin: 0 .2rem;
-    }
-  </style>
-  {% block css %}{% endblock %}
+    <style>
+        .chart {
+            margin-bottom: 20px;
+        }
+        .btn-outline-primary {
+            margin: 0 .2rem;
+        }
+    </style>
+    <link href="{% static 'css/sticky-footer.css' %}" rel="stylesheet" />
+    {% block css %}{% endblock %}
 </head>
 
 <body>
-  <nav class="navbar navbar-expand-lg navbar-light bg-light" style="margin-bottom: 10px;">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light mb-3" id="site_header">
+        <div class="container">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <a class="navbar-brand" href="/">
+                <!-- <img src="{% static 'img/favicon.png' %}" width="30" height="30" class="d-inline-block align-top" alt=""> -->
+                {% trans "实验室物品管理" %}
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    {% block navbar %}
+                    <li class="nav-item">
+                        <a href="{% url 'inventory:items' %}" class="nav-link">
+                            {% trans "物品" %}
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'inventory:location_root' %}" class="nav-link">
+                            {% trans "位置" %}
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'inventory:templates' %}" class="nav-link">
+                            {% trans "模板" %}
+                        </a>
+                    </li>
+                    {% if request.session.is_superadmin %}
+                    <li class="nav-item">
+                        <a href="{% url 'admin:index' %}" class="nav-link">
+                            {% trans "数据库" %}
+                        </a>
+                    </li>
+                    {% endif %}
+                    {% endblock %}
+                </ul>
+                <div class="dropdown-divider"></div>
+                <ul class="navbar-nav mr-right">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'personal:settings' %}">
+                            <i class="fa fa-gear fa-lg"></i>
+                            <span class="d-lg-none">Settings</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="nav-link" href="https://github.com/zyayoung/lab-item-tracking">
+                            <i class="fa fa-github fa-lg"></i>
+                            <span class="d-lg-none">Github</span>
+                        </a>
+                    </li>
+                    <div class="dropdown-divider"></div>
+                    <li class="nav-item d-none d-lg-block">
+                        <a class="nav-link">
+                            |
+                        </a>
+                    </li>
+                    {% if request.session.is_login %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="/personal/">
+                            <i class="fa fa-user fa-lg" aria-hidden="true"></i>
+                            {{ request.session.user_name }}
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/logout/">
+                            <i class="fa fa-sign-out fa-lg" aria-hidden="true"></i>
+                            {% trans "登出" %}
+                        </a>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="/login/">
+                            <i class="fa fa-sign-in fa-lg" aria-hidden="true"></i>
+                            {% trans "登录" %}
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/register/">
+                            <i class="fa fa-user-plus" aria-hidden="true"></i>
+                            {% trans "注册" %}
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div><!-- /.navbar-collapse -->
+        </div><!-- /.container-fluid -->
+    </nav>
+
     <div class="container">
-      <!-- Brand and toggle get grouped for better mobile display -->
-      <a class="navbar-brand" href="/">
-        <!-- <img src="{% static 'img/favicon.png' %}" width="30" height="30" class="d-inline-block align-top" alt=""> -->
-        实验室物品管理
-      </a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
+        {% block content %}{% endblock %}
+    </div>
 
-      <!-- Collect the nav links, forms, and other content for toggling -->
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav mr-auto">
-          {% block navbar %}
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="itemDropdown" role="button" data-toggle="dropdown"
-              aria-haspopup="true" aria-expanded="false">
-              物品
-            </a>
-            <div class="dropdown-menu" style="min-width: 0px;" aria-labelledby="itemDropdown">
-              <a class="dropdown-item" href="{% url 'inventory:items' %}">清单</a>
-              <a class="dropdown-item" href="{% url 'inventory:add' %}">添加</a>
-            </div>
-          </li>
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="locDropdown" role="button" data-toggle="dropdown"
-              aria-haspopup="true" aria-expanded="false">
-              位置
-            </a>
-            <div class="dropdown-menu" style="min-width: 0px;" aria-labelledby="locDropdown">
-              <a class="dropdown-item" href="{% url 'inventory:location_root' %}">浏览</a>
-              <a class="dropdown-item" href="{% url 'personal:locreq' %}">申请</a>
-            </div>
-          </li>
-          {% if request.session.is_superadmin %}
-          <li class="nav-item">
-            <a href="{% url 'admin:index' %}" class="nav-link">
-              数据库
-            </a>
-          </li>
-          {% endif %}
-          {% endblock %}
-        </ul>
-        <div class="dropdown-divider"></div>
-        <ul class="navbar-nav mr-right">
-          <li class="nav-item">
-            <a class="nav-link" href="https://github.com/zyayoung/lab-item-tracking">
-              <i class="fa fa-github fa-lg"></i>
-              <span class="d-lg-none">Github</span>
-            </a>
-          </li>
-          <div class="dropdown-divider"></div>
-          <li class="nav-item d-none d-lg-block">
-            <a class="nav-link">
-              |
-            </a>
-          </li>
-          {% if request.session.is_login %}
-          <li class="nav-item">
-            <a class="nav-link" href="/personal/">
-              <i class="fa fa-user fa-lg" aria-hidden="true"></i>
-              {{ request.session.user_name }}
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/logout/">
-              <i class="fa fa-sign-out fa-lg" aria-hidden="true"></i>
-              登出
-            </a>
-          </li>
-          {% else %}
-          <li class="nav-item">
-            <a class="nav-link" href="/login/">
-              <i class="fa fa-sign-in fa-lg" aria-hidden="true"></i>
-              登录
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/register/">
-              <i class="fa fa-user-plus" aria-hidden="true"></i>
-              注册
-            </a>
-          </li>
-          {% endif %}
-        </ul>
-      </div><!-- /.navbar-collapse -->
-    </div><!-- /.container-fluid -->
-  </nav>
+    <form action="{% url 'set_language' %}" method="post" id="switch_language">{% csrf_token %}
+        <input name="next" type="hidden" value="{{ redirect_to }}">
+        {% get_current_language as LANGUAGE_CODE %}
+        <input type="text" name="language" value="{% if LANGUAGE_CODE == 'en' %}zh-hans{% else %}en{% endif %}" hidden>
+    </form>
 
-  <div class="container">
-    {% block content %}{% endblock %}
-  </div>
+    <footer class="footer text-center">
+        <div class="container">
+            <nobr class="text-muted mr-2">
+                Copyright © 2018-2019
+            </nobr>
+            <nobr class="text-muted mr-2">
+                <a href="https://zyayoung.oicp.io/">
+                    {% trans "实验室物品管理" %}
+                </a>
+            </nobr>
+            <nobr class="text-muted mr-2">All Rights Reserved.</nobr>
+            <nobr class="text-muted mr-2">
+                <a href="https://github.com/zyayoung/lab-item-tracking/wiki">
+                    {% trans "使用手册" %}
+                </a>&nbsp;
+                <a href="https://github.com/zyayoung/lab-item-tracking/issues">
+                    {% trans "反馈问题" %}
+                </a>
+            </nobr>
+        </div>
+    </footer>
 
-  <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-  <script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
-  <!-- Bootstrap Select -->
-  <script src="https://cdn.bootcss.com/popper.js/1.14.6/umd/popper.min.js"></script>
-  <!-- Include all compiled plugins (below), or include individual files as needed -->
-  <script src="https://cdn.bootcss.com/twitter-bootstrap/4.2.1/js/bootstrap.min.js"></script>
-  <script src="https://cdn.bootcss.com/bootstrap-select/1.13.5/js/bootstrap-select.min.js"></script>
-  {% block script %}{% endblock %}
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
+    <!-- Bootstrap Select -->
+    <script src="https://cdn.bootcss.com/popper.js/1.14.6/umd/popper.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="https://cdn.bootcss.com/twitter-bootstrap/4.2.1/js/bootstrap.min.js"></script>
+    <script src="https://cdn.bootcss.com/bootstrap-select/1.13.5/js/bootstrap-select.min.js"></script>
+
+
+    {% if request.session.tex_engine == 'KaTeX' %}
+        <link rel="stylesheet" href="https://cdn.bootcss.com/KaTeX/0.10.0-rc.1/katex.min.css">
+        <script defer src="https://cdn.bootcss.com/KaTeX/0.10.0-rc.1/katex.min.js"></script>
+        <script defer src="https://cdn.bootcss.com/KaTeX/0.10.0-rc.1/contrib/auto-render.min.js"></script>
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                renderMathInElement(document.body, {
+                    delimiters:[
+                        {left: "$$", right: "$$", display: true},
+                        {left: "$", right: "$", display: false},
+                        {left: "\\(", right: "\\)", display: false},
+                        {left: "\\[", right: "\\]", display: true}
+                    ],
+                    ignoredClasses: ['MathJax_PlainSource_Display']
+                });
+            });
+        </script>
+    {% else %}
+        <script type="text/javascript" async
+            src="https://cdn.bootcss.com/mathjax/2.7.5/latest.js">
+        </script>
+        <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+            jax: ["input/TeX","output/CommonHTML"],
+            extensions: ["tex2jax.js",],
+            tex2jax: {
+                inlineMath: [['$','$'], ['\\(','\\)']],
+                ignoreClass: "MathJax_PlainSource_Display"
+            },
+            showMathMenu: false
+        });
+        </script>
+    {% endif %}
+    {% block script %}{% endblock %}
 </body>
 
 </html>

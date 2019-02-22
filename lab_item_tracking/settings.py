@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 """
 
 import os
+from django.utils.translation import gettext_lazy as _
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -29,6 +30,13 @@ ALLOWED_HOSTS = ['*']
 CAPTCHA_IMAGE_SIZE = (100, 30)
 CAPTCHA_TEST_MODE = DEBUG
 
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'unique-snowflake',
+    }
+}
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -41,16 +49,17 @@ INSTALLED_APPS = [
     'inventory',
     'captcha',
     'login',
-    'trace_item',
     'personal',
     'silk',
     'traffic',
+    'log',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.middleware.gzip.GZipMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -89,9 +98,9 @@ DATABASES = {
     'ENGINE': 'django.db.backends.postgresql_psycopg2',
     'NAME': 'lab',
     'USER': 'postgres',
-    'PASSWORD': 'postgres',
+    'PASSWORD': 'password',
     'HOST': 'localhost',
-    'PORT': '54321',
+    'PORT': '5432',
   }
 }
 
@@ -122,6 +131,11 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'zh-Hans'
 
+LANGUAGES = [
+  ('zh-hans', _('Chinese')),
+  ('en', _('English')),
+]
+
 TIME_ZONE = 'Asia/Shanghai'
 
 USE_I18N = True
@@ -129,6 +143,10 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = False
+
+LOCALE_PATHS = (
+    os.path.join(BASE_DIR, 'locale'),
+)
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/

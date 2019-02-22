@@ -18,7 +18,7 @@ def show_urls(url_list, depth=0):
                 ret.update({str(entry.name): str(entry.pattern)})
         if hasattr(entry, 'url_patterns'):
             if entry.app_name in [
-                    'inventory', 'login', 'trace_item', 'personal', 'traffic'
+                    'inventory', 'login', 'log', 'personal', 'traffic'
             ]:
                 ret.update(show_urls(entry.url_patterns, depth + 1))
     return ret
@@ -26,30 +26,6 @@ def show_urls(url_list, depth=0):
 
 def wash_regex(r):
     return re.sub(r'\?P<.+?>', '', r)
-
-# def display(locations, tot_count, user=None, cnt=True):
-#     res_list = []
-#     for loc in locations:
-#         count = Item.objects.filter(location=loc).count() if cnt else 1
-#         tmp_dict = {
-#             "name": loc.path,
-#             "value": count,
-#         }
-#         tmp_count = 0
-#         children = loc.location_children.all()
-#         if user:
-#             children = get_my_list(user, children)
-#         if len(children) > 0:
-#             tmp_dict["children"], tmp_count = display(
-#                 loc.location_children.all(),
-#                 tot_count,
-#                 user,
-#                 cnt,
-#             )
-#         tmp_dict["symbolSize"] = int(
-#             ((count + tmp_count) / tot_count)**0.5 * 60) + 10
-#         res_list.append(tmp_dict)
-#     return res_list, count + tmp_count
 
 
 def build_loc_tree(location=None, count=False, user=None, depth=1000, link=False):
