@@ -16,6 +16,17 @@ from inventory.models import LocationPermissionApplication as LocPmsnApp
 OBJ_PER_PAGE = 50
 
 
+class SettingsView(generic.View):
+    def get(self, request):
+        return render(request, 'personal/settings.html', locals())
+
+    def post(self, request):
+        request.session['tex_engine'] = request.POST.get('tex_engine', 'MathJax')
+        return render(request, 'personal/settings.html', locals())
+
+
+
+
 class UserView(generic.View):
     def get(self, request, *args, **kwargs):
         tmp_user = myUser.objects.get(id=request.session.get('user_id'))

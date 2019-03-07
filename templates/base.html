@@ -79,9 +79,9 @@
                 <div class="dropdown-divider"></div>
                 <ul class="navbar-nav mr-right">
                     <li class="nav-item">
-                        <a class="nav-link" href="#" onclick="document.getElementById('switch_language').submit();">
-                            <i class="fa fa-globe fa-lg"></i>
-                            <span class="d-lg-none">Language</span>
+                        <a class="nav-link" href="{% url 'personal:settings' %}">
+                            <i class="fa fa-gear fa-lg"></i>
+                            <span class="d-lg-none">Settings</span>
                         </a>
                     </li>
                     <li>
@@ -167,6 +167,41 @@
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="https://cdn.bootcss.com/twitter-bootstrap/4.2.1/js/bootstrap.min.js"></script>
     <script src="https://cdn.bootcss.com/bootstrap-select/1.13.5/js/bootstrap-select.min.js"></script>
+
+
+    {% if request.session.tex_engine == 'KaTeX' %}
+        <link rel="stylesheet" href="https://cdn.bootcss.com/KaTeX/0.10.0-rc.1/katex.min.css">
+        <script defer src="https://cdn.bootcss.com/KaTeX/0.10.0-rc.1/katex.min.js"></script>
+        <script defer src="https://cdn.bootcss.com/KaTeX/0.10.0-rc.1/contrib/auto-render.min.js"></script>
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                renderMathInElement(document.body, {
+                    delimiters:[
+                        {left: "$$", right: "$$", display: true},
+                        {left: "$", right: "$", display: false},
+                        {left: "\\(", right: "\\)", display: false},
+                        {left: "\\[", right: "\\]", display: true}
+                    ],
+                    ignoredClasses: ['MathJax_PlainSource_Display']
+                });
+            });
+        </script>
+    {% else %}
+        <script type="text/javascript" async
+            src="https://cdn.bootcss.com/mathjax/2.7.5/latest.js">
+        </script>
+        <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+            jax: ["input/TeX","output/CommonHTML"],
+            extensions: ["tex2jax.js",],
+            tex2jax: {
+                inlineMath: [['$','$'], ['\\(','\\)']],
+                ignoreClass: "MathJax_PlainSource_Display"
+            },
+            showMathMenu: false
+        });
+        </script>
+    {% endif %}
     {% block script %}{% endblock %}
 </body>
 

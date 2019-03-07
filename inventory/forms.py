@@ -3,6 +3,7 @@ from .models import Item, ItemTemplate
 from .utils import get_my_list, get_my_template_queryset, replace_date
 from django.template.loader import render_to_string
 from django.utils.translation import gettext_lazy as _
+import time
 
 
 class AddItemForm(forms.Form):
@@ -157,11 +158,16 @@ class EditItemForm(forms.Form):
                         )
 
                 elif tmp_type == 'date':
+                    attrs = {
+                        'class': 'form_datetime form-control',
+                        'autocomplete': 'off',
+                    }
+                    if '%date%' in tmp_placeholder:
+                        attrs['value'] = time.strftime('%Y/%m/%d', time.localtime())
                     tmp_field = forms.DateField(
                         label=tmp_label,
                         required=tmp_required,
-                        widget=forms.TextInput(
-                            attrs={'class': 'form_datetime form-control', 'autocomplete': 'off'}),
+                        widget=forms.TextInput(attrs=attrs),
                     )
                 else:
                     objects = Item.objects.filter(template__name=tmp_type)

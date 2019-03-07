@@ -12,7 +12,7 @@ import time
 from django.db import IntegrityError
 from django.utils.translation import gettext_lazy as _
 from django.utils.translation import gettext
-from inventory.models import Item, Location, LocationPermissionApplication, ItemTemplate, IdCache
+from inventory.models import Item, Location, LocationPermissionApplication, ItemTemplate
 from login.models import User as myUser
 from personal.utils import get_others_request_list
 from urllib.parse import quote
